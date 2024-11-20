@@ -91,7 +91,7 @@ void LevelCreatorBehaviourScript::createLevel(Scene* scene, const TileMapData& t
         }
 
         GameObject* roomObject = new GameObject;
-        roomObject->addComponent(new RoomBehaviourScript(roomTrigger.roomID, enemySpawns));
+        //roomObject->addComponent(new RoomBehaviourScript(roomTrigger.roomID, enemySpawns));
         BoxCollider* boxCollider = new BoxCollider();
         Transform transform;
         transform.position.x = roomTrigger.x;
