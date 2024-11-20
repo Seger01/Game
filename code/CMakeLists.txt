@@ -7,6 +7,9 @@ project(Game)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# Disable the ENABLE_TESTGAME option for the Engine-Bravo library
+set(ENABLE_TESTGAME OFF CACHE BOOL "Disable building the testGame" FORCE)
+
 # Add engine bravo library
 add_subdirectory(external/Engine-Bravo/code)
 
@@ -17,6 +20,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
 
 set(ENGINE_BRAVO_DIR ${PROJECT_SOURCE_DIR}/external/Engine-Bravo/code)
+
+file(GLOB_RECURSE HEADERS ${PROJECT_SOURCE_DIR}/inc/*.h)
 
 # Find all source files in the src directory
 file(GLOB_RECURSE SOURCES ${SOURCE_DIR}/*.cpp)
