@@ -13,7 +13,11 @@
 #include "CanvasBehaviourScript.h"
 #include <Text.h>
 //#include <FPSCounterBehaviourScript.h>
+#include "RoomBehaviourScript.h"
 #include <AudioSource.h>
+#include "PlayerPrefab.h"
+#include <CircleCollider.h>
+
 
 
 void LevelCreatorBehaviourScript::onStart() {
@@ -61,8 +65,14 @@ void LevelCreatorBehaviourScript::createLevel3() {
 
 }
 
-void LevelCreatorBehaviourScript::createPlayer() {
+void LevelCreatorBehaviourScript::createPlayer(Scene* scene) {
+    if (scene == nullptr) {
+        std::runtime_error("Scene is null in LevelCreatorBehaviourScript::createPlayer");
+    }
 
+    GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
+
+    scene->addGameObject(defaultPlayerPrefab);
 }
 
 void LevelCreatorBehaviourScript::createEnemy() {
@@ -78,6 +88,8 @@ void LevelCreatorBehaviourScript::createLevel(Scene* scene, const TileMapData& t
         std::runtime_error("Scene is null in LevelCreatorBehaviourScript::createLevel");
     }
 
+    createPlayer(scene);
+
     EngineBravo& engine = EngineBravo::getInstance();
 
 
@@ -91,7 +103,7 @@ void LevelCreatorBehaviourScript::createLevel(Scene* scene, const TileMapData& t
         }
 
         GameObject* roomObject = new GameObject;
-        //roomObject->addComponent(new RoomBehaviourScript(roomTrigger.roomID, enemySpawns));
+        roomObject->addComponent(new RoomBehaviourScript(roomTrigger.roomID, enemySpawns));
         BoxCollider* boxCollider = new BoxCollider();
         Transform transform;
         transform.position.x = roomTrigger.x;
