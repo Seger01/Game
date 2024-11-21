@@ -11,7 +11,7 @@ public:
     void onStart() override;
     void onUpdate() override;
     std::unique_ptr<Component> clone() const override { return std::make_unique<LevelCreatorBehaviourScript>(*this); }
-
+    friend class LevelManagerBehaviourScript;
     
 private:
     void createLevel1();

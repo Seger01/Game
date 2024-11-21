@@ -16,7 +16,7 @@ private:
     void createLevelCreator();
 
 private:
-    int mCurrentLevel = 0;
+    int mCurrentLevel;
 };
 
 #endif

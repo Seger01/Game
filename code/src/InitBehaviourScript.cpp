@@ -22,7 +22,7 @@ void InitBehaviourScript::createLevelManager() {
     GameObject* LevelManagerObject = new GameObject;
     LevelManagerObject->addComponent<LevelManagerBehaviourScript>();
 
-    scene->addGameObject(LevelManagerObject);
+    scene->addPersistentGameObject(LevelManagerObject);
 
     int cameraID = scene->addCamera();
     scene->setActiveCamera(cameraID);
