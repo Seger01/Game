@@ -58,7 +58,6 @@ SpriteDef firstFramePlayerWalkingFrontSide = {
 GameObject *PlayerPrefabFactory::createPlayerPrefab() {
   GameObject *defaultPlayerPrefab = new GameObject;
   defaultPlayerPrefab->setName("Player");
-
   setTransform(defaultPlayerPrefab);
   addPlayerBehaviourScript(defaultPlayerPrefab);
   setTag(defaultPlayerPrefab);

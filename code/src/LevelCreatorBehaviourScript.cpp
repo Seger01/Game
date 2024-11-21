@@ -18,6 +18,8 @@
 #include "RoomBehaviourScript.h"
 #include <AudioSource.h>
 #include <CircleCollider.h>
+#include <Transform.h>
+#include <algorithm>
 
 void LevelCreatorBehaviourScript::onStart() { createLevel1(); }
 
@@ -64,7 +66,7 @@ void LevelCreatorBehaviourScript::createLevel2() {
   int cameraID = scene->addCamera();
   scene->setActiveCamera(cameraID);
 
-  scene->getActiveCamera().setTransform(Transform(Vector2(80, 96)));
+  //scene->getActiveCamera().setTransform(Transform(Vector2(80, 96)));
   scene->getActiveCamera().setWidth(16 * 30);
   scene->getActiveCamera().setHeight(9 * 30);
 
@@ -74,9 +76,11 @@ void LevelCreatorBehaviourScript::createLevel2() {
   tileMapParser.parse();
   const TileMapData &tileMapData = tileMapParser.getTileMapData();
 
+
   createLevel(scene, tileMapData);
-  setPlayerStartPosition(scene, tileMapData);
   sceneManager.requestSceneChange("Level-2");
+  Scene* currentScene = sceneManager.getCurrentScene();
+  setPlayerStartPosition(currentScene, tileMapData);
 }
 
 void LevelCreatorBehaviourScript::createLevel3() {}
@@ -94,21 +98,40 @@ void LevelCreatorBehaviourScript::createPlayer(Scene *scene,
 }
 
 void LevelCreatorBehaviourScript::setPlayerStartPosition(Scene *scene, const TileMapData &tileMapData) {
-  if (tileMapData.mSpawnPoints.size() == 0) {
-    std::runtime_error(
-        "No spawn points found in LevelCreatorBehaviourScript::setPlayerStartPosition");
+  if (tileMapData.mSpawnPoints.empty()) {
+    throw std::runtime_error("No spawn points found in LevelCreatorBehaviourScript::setPlayerStartPosition");
   }
 
   for (const auto &spawnPoint : tileMapData.mSpawnPoints) {
+    std::cout << "Spawn point: " << spawnPoint.x << ", " << spawnPoint.y << std::endl;
     if (spawnPoint.isPlayerSpawn) {
       // Set player position
-      scene->getGameObjectsWithTag("Player")[0]->setTransform(
-          Transform(Vector2(spawnPoint.x, spawnPoint.y)));
-      break;
+      std::cout << "Setting player position to " << spawnPoint.x << ", " << spawnPoint.y << std::endl;
+      
+      std::vector<GameObject*> persistentObjects = scene->getPersistentGameObjects();
+      std::cout << "Number of persistent objects: " << persistentObjects.size() << std::endl;
+
+      auto playerIt = std::find_if(persistentObjects.begin(), persistentObjects.end(), [](GameObject* obj) {
+        return obj->getTag() == "Player";
+      });
+
+      if (playerIt == persistentObjects.end()) {
+        throw std::runtime_error("No player found in LevelCreatorBehaviourScript::setPlayerStartPosition");
+      }
+
+      Transform transform;
+      transform.position.x = spawnPoint.x;
+      transform.position.y = spawnPoint.y;
+
+      (*playerIt)->setTransform(transform);
+      std::cout << "Player position set to " << transform.position.x << ", " << transform.position.y << std::endl;
+    }
+    else {
+      std::cout << "Spawn point is not a player spawn point\n";
     }
   }
-
 }
+
 void LevelCreatorBehaviourScript::createEnemy() {}
 
 void LevelCreatorBehaviourScript::createBoss() {}
