@@ -19,6 +19,7 @@ private:
     void createLevel2();
     void createLevel3();
     void createPlayer(Scene* scene, const TileMapData& tileMapData);
+    void setPlayerStartPosition(Scene* scene, const TileMapData& tileMapData);
     void createEnemy();
     void createBoss();
     void createLevel(Scene* scene, const TileMapData& tileMapData);

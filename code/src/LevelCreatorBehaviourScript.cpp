@@ -48,6 +48,7 @@ void LevelCreatorBehaviourScript::createLevel1() {
 
   createLevel(scene, tileMapData);
   createPlayer(scene, tileMapData);
+  setPlayerStartPosition(scene, tileMapData);
   sceneManager.requestSceneChange("Level-1");
 }
 
@@ -74,7 +75,7 @@ void LevelCreatorBehaviourScript::createLevel2() {
   const TileMapData &tileMapData = tileMapParser.getTileMapData();
 
   createLevel(scene, tileMapData);
-
+  setPlayerStartPosition(scene, tileMapData);
   sceneManager.requestSceneChange("Level-2");
 }
 
@@ -89,23 +90,25 @@ void LevelCreatorBehaviourScript::createPlayer(Scene *scene,
 
   GameObject *defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
 
-  // Find the player spawn point
+  scene->addPersistentGameObject(defaultPlayerPrefab);
+}
+
+void LevelCreatorBehaviourScript::setPlayerStartPosition(Scene *scene, const TileMapData &tileMapData) {
+  if (tileMapData.mSpawnPoints.size() == 0) {
+    std::runtime_error(
+        "No spawn points found in LevelCreatorBehaviourScript::setPlayerStartPosition");
+  }
+
   for (const auto &spawnPoint : tileMapData.mSpawnPoints) {
     if (spawnPoint.isPlayerSpawn) {
-      if (defaultPlayerPrefab->getComponents<Transform>().size() == 0) {
-        std::runtime_error(
-            "Transform component not found in defaultPlayerPrefab in "
-            "LevelCreatorBehaviourScript::createPlayer");
-      }
-     // defaultPlayerPrefab->getComponents<Transform>()[0]->position.x = spawnPoint.x;
-      //defaultPlayerPrefab->getComponents<Transform>()[0]->position.y = spawnPoint.y;
+      // Set player position
+      scene->getGameObjectsWithTag("Player")[0]->setTransform(
+          Transform(Vector2(spawnPoint.x, spawnPoint.y)));
       break;
     }
   }
 
-  scene->addPersistentGameObject(defaultPlayerPrefab);
 }
-
 void LevelCreatorBehaviourScript::createEnemy() {}
 
 void LevelCreatorBehaviourScript::createBoss() {}
