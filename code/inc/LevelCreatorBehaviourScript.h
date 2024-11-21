@@ -5,6 +5,7 @@
 #include <GameObject.h>
 #include <Scene.h>
 #include <TileMapParser.h>
+#include <FSConverter.h>
 
 class LevelCreatorBehaviourScript : public IBehaviourScript {
 public:
@@ -17,11 +18,12 @@ private:
     void createLevel1();
     void createLevel2();
     void createLevel3();
-    void createPlayer(Scene* scene);
+    void createPlayer(Scene* scene, const TileMapData& tileMapData);
     void createEnemy();
     void createBoss();
     void createLevel(Scene* scene, const TileMapData& tileMapData);
 private:
+    FSConverter mFsConverter;
 };
 
 #endif

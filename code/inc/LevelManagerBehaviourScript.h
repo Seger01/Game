@@ -9,10 +9,9 @@ public:
     void onStart() override;
     void onUpdate() override;
     std::unique_ptr<Component> clone() const override { return std::make_unique<LevelManagerBehaviourScript>(*this); }
-
+    void doneWithCurrentLevel();
 
 private:
-    void doneWithCurrentLevel();
     void createLevelCreator();
 
 private:
