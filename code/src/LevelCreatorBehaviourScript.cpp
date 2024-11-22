@@ -83,7 +83,34 @@ void LevelCreatorBehaviourScript::createLevel2() {
   setPlayerStartPosition(currentScene, tileMapData);
 }
 
-void LevelCreatorBehaviourScript::createLevel3() {}
+void LevelCreatorBehaviourScript::createLevel3() {
+  EngineBravo &engine = EngineBravo::getInstance();
+  SceneManager &sceneManager = engine.getSceneManager();
+
+  Scene *scene = sceneManager.createScene("Level-3");
+  if (scene == nullptr) {
+    exit(1);
+  }
+
+  int cameraID = scene->addCamera();
+  scene->setActiveCamera(cameraID);
+
+  //scene->getActiveCamera().setTransform(Transform(Vector2(80, 96)));
+  scene->getActiveCamera().setWidth(16 * 30);
+  scene->getActiveCamera().setHeight(9 * 30);
+
+  std::string path = mFsConverter.getResourcePath("LevelDefs/level3.json");
+
+  TileMapParser tileMapParser(path);
+  tileMapParser.parse();
+  const TileMapData &tileMapData = tileMapParser.getTileMapData();
+
+
+  createLevel(scene, tileMapData);
+  sceneManager.requestSceneChange("Level-3");
+  Scene* currentScene = sceneManager.getCurrentScene();
+  setPlayerStartPosition(currentScene, tileMapData);
+}
 
 void LevelCreatorBehaviourScript::createPlayer(Scene *scene,
                                                const TileMapData &tileMapData) {
