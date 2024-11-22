@@ -28,8 +28,18 @@ void RoomBehaviourScript::onStart() {
 }
 
 void RoomBehaviourScript::onUpdate() {
-  // Check if enemy count is zero after entering
-  // If so, openDoors() & set mDoorsOpen to true
+  if (!mDoorsOpen) {
+    // Check if enemy count is zero after entering
+    // If so, openDoors()
+    EngineBravo &engine = EngineBravo::getInstance();
+    SceneManager &sceneManager = engine.getSceneManager();
+    std::vector<GameObject *> enemyGameObjects =
+        sceneManager.getCurrentScene()->getGameObjectsWithTag("Enemy");
+    
+    if (enemyGameObjects.size() == 0) {
+      openDoors();
+    }
+  }
 }
 
 void RoomBehaviourScript::spawnEnemies() {
@@ -73,7 +83,8 @@ void RoomBehaviourScript::spawnEnemies() {
       rigidBody->setGravityScale(10.0f);
       rigidBody->setCanRotate(false);
       enemy->setTransform(transform);
-      enemy->addComponent(new EnemyBehaviourScript());
+      enemy->addComponent<EnemyBehaviourScript>(100);
+      enemy->setTag("Enemy");
       sceneManager.getCurrentScene()->addGameObject(enemy);
     }
   }
@@ -129,6 +140,10 @@ void RoomBehaviourScript::onCollide(GameObject *aGameObject) {
   if (mDoorsOpen) {
     spawnEnemies();
     closeDoors();
+    RigidBody *rigidBody = mGameObject->getComponents<RigidBody>().at(0);
+    if (rigidBody != nullptr) {
+      rigidBody->setActive(false);
+    }
   } else {
     openDoors();
   }

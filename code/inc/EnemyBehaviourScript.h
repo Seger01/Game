@@ -6,6 +6,8 @@
 
 class EnemyBehaviourScript : public IBehaviourScript {
 public:
+    EnemyBehaviourScript(float aHealth);
+    ~EnemyBehaviourScript() {}
     void onStart() override;
     void onUpdate() override;
     void onCollide(GameObject* aGameObject) override;
@@ -17,4 +19,9 @@ private:
     void deactivateAllAnimations();
     void setFlipX(bool aState);
     void setFlipY(bool aState);
+    void takeDamage(float aDamage);
+    void onDeath();
+private :
+    float mHealth;
+    bool mIsDead;
 };

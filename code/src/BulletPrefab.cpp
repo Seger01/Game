@@ -15,7 +15,9 @@ BulletPrefabFactory::BulletPrefabFactory() {
 GameObject* BulletPrefabFactory::createBulletPrefab(GameObject& shooter) {
     GameObject* bulletPrefab = new GameObject;
     bulletPrefab->setName("Bullet");
-    bulletPrefab->addComponent<BulletBehaviourScript>();
+    bulletPrefab->setTag("Bullet");
+    float damage = 20.0f;
+    bulletPrefab->addComponent<BulletBehaviourScript>(damage);
     setTransform(bulletPrefab, shooter.getTransform());
     addSprite(bulletPrefab);
     addRigidBody(bulletPrefab);
@@ -61,3 +63,4 @@ void BulletPrefabFactory::addCollider(GameObject* gameObject) {
     boxCollider->setTrigger(true);
     gameObject->addComponent(boxCollider);
 }
+
