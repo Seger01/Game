@@ -247,13 +247,13 @@ void PlayerBehaviourScript::fireBullet(Point mousePosition) {
 
     // Normalize the direction vector
     float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-    if (length > 0.0001f) {  // Prevent division by zero
+    if (length > 0.0001f) { 
         direction.x /= length;
         direction.y /= length;
     }
     
     // Create bullet slightly offset from player position in the firing direction
-    Vector2 spawnOffset = direction * 20.0f;  // Offset bullet spawn by 20 units in firing direction
+    Vector2 spawnOffset = direction * 20.0f; 
     Vector2 bulletSpawnPosition = playerPosition + spawnOffset;
     
     // Create and setup the bullet
@@ -264,7 +264,7 @@ void PlayerBehaviourScript::fireBullet(Point mousePosition) {
     
     // Add force to bullet
     RigidBody* bulletRigidBody = bulletObject->getComponents<RigidBody>()[0];
-    float bulletSpeed = 1000.0f;  // Adjust this value to control bullet speed
+    float bulletSpeed = 1000.0f;  
     direction = direction * -1;
     bulletRigidBody->addForce(direction * bulletSpeed);
     
