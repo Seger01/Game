@@ -1,5 +1,7 @@
 #include "EnemyBehaviourScript.h"
 #include "BulletBehaviourScript.h"
+#include "BSCoinPrefab.h"
+#include "ECCoinPrefab.h"
 
 EnemyBehaviourScript::EnemyBehaviourScript(float aHealth) : mHealth(aHealth) {
 }
@@ -61,8 +63,18 @@ void EnemyBehaviourScript::onDeath()
     EngineBravo& engine = EngineBravo::getInstance();
     SceneManager& sceneManager = engine.getSceneManager();
     if (mGameObject != nullptr) {
+      //  std::cout << "Creating Coins" << std::endl;
+       // BSCoinPrefab coinPrefab;
+       // GameObject* coin = coinPrefab.createBSCoinPrefab(*mGameObject);
+       // sceneManager.getCurrentScene()->addGameObject(coin);
+
+      //  ECCoinPrefab coinPrefab2;
+       // GameObject* coin2 = coinPrefab2.createECCoinPrefab(*mGameObject);
+      //  sceneManager.getCurrentScene()->addGameObject(coin2);
+
         std::cout << "Removing GameObject: " << mGameObject->getTag() << std::endl;
         sceneManager.getCurrentScene()->requestGameObjectRemoval(mGameObject);
+
     } 
     else {
         std::cerr << "Error: mGameObject is already null!" << std::endl;

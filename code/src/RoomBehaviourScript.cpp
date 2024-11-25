@@ -9,6 +9,9 @@
 #include <Sprite.h>
 #include <SpriteDef.h>
 #include <random>
+#include "BSCoinPrefab.h"
+#include "ECCoinPrefab.h"
+
 
 void RoomBehaviourScript::onStart() {
   FSConverter fsConverter;
@@ -86,6 +89,15 @@ void RoomBehaviourScript::spawnEnemies() {
       enemy->addComponent<EnemyBehaviourScript>(100);
       enemy->setTag("Enemy");
       sceneManager.getCurrentScene()->addGameObject(enemy);
+
+      //Add some coins
+      BSCoinPrefab coinPrefab;
+      GameObject *coin = coinPrefab.createBSCoinPrefab(*enemy);
+      sceneManager.getCurrentScene()->addGameObject(coin);
+
+      ECCoinPrefab coinPrefab2;
+      GameObject *coin2 = coinPrefab2.createECCoinPrefab(*enemy);
+      sceneManager.getCurrentScene()->addGameObject(coin2);
     }
   }
 }

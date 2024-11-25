@@ -14,7 +14,7 @@ ECCoinPrefab::ECCoinPrefab() {
     };
 }
 
-GameObject* ECCoinPrefab::createECCoinPrefab() {
+GameObject* ECCoinPrefab::createECCoinPrefab(GameObject& objDroppingCoin) {
     GameObject* coinPrefab = new GameObject;
     coinPrefab->setTag("ECCoin");
     addSprite(coinPrefab);
@@ -26,3 +26,37 @@ void ECCoinPrefab::addSprite(GameObject* gameObject) {
     coinSprite->setLayer(3);
     gameObject->addComponent(coinSprite);
 }
+
+void ECCoinPrefab::addRigidBody(GameObject* gameObject) {
+    RigidBody* rigidBody = new RigidBody();
+    rigidBody->setCanRotate(true);
+    rigidBody->setHasGravity(false);
+    rigidBody->setIsMoveableByForce(true);
+    rigidBody->setDensity(1.0f);
+    rigidBody->setFriction(0.0f);
+    rigidBody->setRestitution(0.0f);
+    rigidBody->setGravityScale(0.0f);
+    rigidBody->setMass(0.0f);
+    rigidBody->setLinearDamping(0.0f);
+    rigidBody->setAngularDamping(0.0f);
+    gameObject->addComponent(rigidBody);
+}
+
+void ECCoinPrefab::addCollider(GameObject* gameObject) {
+   // CircleCollider* circleCollider = new CircleCollider();
+    //circleCollider->setIsTrigger(true);
+   // circleCollider->setRadius(8.0f);
+    BoxCollider* boxCollider = new BoxCollider();
+    boxCollider->setWidth(16);
+    boxCollider->setHeight(16);
+   // boxCollider->setTrigger(true);
+    gameObject->addComponent(boxCollider);
+}
+
+void ECCoinPrefab::setTransform(GameObject* gameObject, Transform objDroppingCoinTransform) {
+    Transform objectTransform;
+    objectTransform.position.x = objDroppingCoinTransform.position.x;
+    objectTransform.position.y = objDroppingCoinTransform.position.y;
+    gameObject->setTransform(objectTransform);
+}
+
