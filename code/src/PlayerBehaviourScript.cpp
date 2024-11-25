@@ -211,61 +211,64 @@ void PlayerBehaviourScript::hanldeCameraMovement() {
   currentCam.setTransform(playerTransform);
 }
 
-void PlayerBehaviourScript::fireBullet() {
-  EngineBravo &engine = EngineBravo::getInstance();
-  SceneManager &sceneManager = engine.getSceneManager();
-  Input &input = Input::getInstance();
+void PlayerBehaviourScript::fireBullet(Point mousePosition) {
+    EngineBravo &engine = EngineBravo::getInstance();
+    SceneManager &sceneManager = engine.getSceneManager();
+    
+    // Get the camera
+    Camera &currentCam = sceneManager.getCurrentScene()->getActiveCamera();
+    Vector2 cameraOrigin = currentCam.getOrigin();
+    
+    // Get window dimensions
+    int windowWidth = EngineBravo::getInstance().getRenderSystem().getWindow().getSize().x;
+    int windowHeight = EngineBravo::getInstance().getRenderSystem().getWindow().getSize().y;
+    
+    // Convert mouse position to Vector2 and calculate relative to screen center
+    Vector2 mousePositionVector(mousePosition.x, mousePosition.y);
+    
+    // Transform to world space, accounting for camera position and window dimensions
+    Vector2 worldMousePosition = cameraOrigin + Vector2(
+        mousePositionVector.x * (currentCam.getWidth() / static_cast<float>(windowWidth)),
+        mousePositionVector.y * (currentCam.getHeight() / static_cast<float>(windowHeight))
+    );
+    
+    // Get player position and calculate direction
+    Vector2 playerPosition = this->mGameObject->getTransform().position;
+    Vector2 direction = worldMousePosition - playerPosition;
+    
+    // Debug output
+    #ifdef DEBUG_SHOOTING
+        std::cout << "Mouse Position: " << mousePositionVector.x << ", " << mousePositionVector.y << std::endl;
+        std::cout << "Camera Origin: " << cameraOrigin.x << ", " << cameraOrigin.y << std::endl;
+        std::cout << "World Mouse: " << worldMousePosition.x << ", " << worldMousePosition.y << std::endl;
+        std::cout << "Player Position: " << playerPosition.x << ", " << playerPosition.y << std::endl;
+        std::cout << "Pre-normalized Direction: " << direction.x << ", " << direction.y << std::endl;
+    #endif
 
-  // Get the mouse position in screen space
-  Point mousePosition = input.MousePosition();
-  Vector2 mousePositionVector = Vector2(mousePosition.x, mousePosition.y);
-
-  // Get the camera
-  Camera &currentCam = sceneManager.getCurrentScene()->getActiveCamera();
-  Vector2 cameraOrigin = currentCam.getOrigin();
-
-  // Transform the mouse position to world space
-  Vector2 screenCenter(currentCam.getWidth() / 2.0f,
-                       currentCam.getHeight() / 2.0f);
-  Vector2 relativeMousePosition = mousePositionVector - screenCenter;
-
-  // Transform to world space
-  Vector2 worldMousePosition = cameraOrigin + relativeMousePosition;
-
-  // Calculate the direction from the player to the mouse position
-  Vector2 playerPosition = this->mGameObject->getTransform().position;
-  Vector2 direction = worldMousePosition - playerPosition;
-
-  // std::cout << "Screen Mouse: (" << mousePosition.x << ", " <<
-  // mousePosition.y << ")" << std::endl; std::cout << "Screen Center: (" <<
-  // screenCenter.x << ", " << screenCenter.y << ")" << std::endl; std::cout <<
-  // "Relative Mouse: (" << relativeMousePosition.x << ", " <<
-  // relativeMousePosition.y << ")" << std::endl; std::cout << "World Mouse: ("
-  // << worldMousePosition.x << ", " << worldMousePosition.y << ")" <<
-  // std::endl; std::cout << "Player Pos: (" << playerPosition.x << ", " <<
-  // playerPosition.y << ")" << std::endl; std::cout << "Direction before norm:
-  // (" << direction.x << ", " << direction.y << ")" << std::endl;
-
-  // Normalize the direction vector
-  float length =
-      std::sqrt(direction.x * direction.x + direction.y * direction.y);
-  if (length > 0.0001f) {
-    direction.x /= length;
-    direction.y /= length;
-  }
-
-  direction = direction * -1;
-
-  // std::cout << "Final Direction: (" << direction.x << ", " << direction.y <<
-  // ")" << std::endl;
-
-  // Create and setup the bullet
-  GameObject *bulletObject =
-      BulletPrefabFactory().createBulletPrefab(*this->mGameObject);
-  RigidBody *bulletRigidBody = bulletObject->getComponents<RigidBody>()[0];
-  bulletRigidBody->addForce(direction * 1000.0f);
-
-  sceneManager.getCurrentScene()->addGameObject(bulletObject);
+    // Normalize the direction vector
+    float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+    if (length > 0.0001f) {  // Prevent division by zero
+        direction.x /= length;
+        direction.y /= length;
+    }
+    
+    // Create bullet slightly offset from player position in the firing direction
+    Vector2 spawnOffset = direction * 20.0f;  // Offset bullet spawn by 20 units in firing direction
+    Vector2 bulletSpawnPosition = playerPosition + spawnOffset;
+    
+    // Create and setup the bullet
+    GameObject* bulletObject = BulletPrefabFactory().createBulletPrefab(*this->mGameObject);
+    
+    // Set bullet's initial position
+    bulletObject->getTransform().position = bulletSpawnPosition;
+    
+    // Add force to bullet
+    RigidBody* bulletRigidBody = bulletObject->getComponents<RigidBody>()[0];
+    float bulletSpeed = 1000.0f;  // Adjust this value to control bullet speed
+    direction = direction * -1;
+    bulletRigidBody->addForce(direction * bulletSpeed);
+    
+    sceneManager.getCurrentScene()->addGameObject(bulletObject);
 }
 
 void PlayerBehaviourScript::onUpdate() {
@@ -287,7 +290,7 @@ void PlayerBehaviourScript::onUpdate() {
   }
 
   if (input.GetMouseButtonDown(MouseButton::LEFT)) {
-    fireBullet();
+    fireBullet(input.MousePosition());
   }
 
   if (mGameObject->hasComponent<ParticleEmitter>()) {

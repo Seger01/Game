@@ -1,9 +1,10 @@
 #ifndef PLAYERBEHAVIOURSCRIPT_H
 #define PLAYERBEHAVIOURSCRIPT_H
 
-#include "Animation.h"
-#include "Components/IBehaviourScript.h"
-#include "GameObject.h"
+#include <Animation.h>
+#include <Components/IBehaviourScript.h>
+#include <GameObject.h>
+#include <Point.h>
 
 class PlayerBehaviourScript : public IBehaviourScript {
 public:
@@ -26,7 +27,7 @@ private:
     void handleAnimations();
     void handleMovement();
     void hanldeCameraMovement();
-    void fireBullet();
+    void fireBullet(Point mousePosition);
 };
 
 #endif
