@@ -1,15 +1,15 @@
 #include "BSCoinPrefab.h"
 
 BSCoinPrefab::BSCoinPrefab() {
-    mCoinWidth = 16;
-    mCoinHeight = 16;
+    mCoinWidth = 6;
+    mCoinHeight = 6;
     mCoinSpritePosition = {0, 0}; // Adjust the sprite position as needed
 
     FSConverter fsConverter;
-    std::string coinSpritePath = fsConverter.getResourcePath("Coins/bs_coin_circle.png");
+    std::string coinSpritePath = fsConverter.getResourcePath("Coins/Money.png");
     mCoinSpriteDef = {
         coinSpritePath,
-        Rect{mCoinSpritePosition.x, mCoinSpritePosition.y, mCoinWidth, mCoinHeight},
+        Rect(),
         mCoinWidth, mCoinHeight
     };
 }
@@ -53,8 +53,8 @@ void BSCoinPrefab::addCollider(GameObject* gameObject) {
     //gameObject->addComponent(circleCollider);
 
     BoxCollider* boxCollider = new BoxCollider();
-    boxCollider->setWidth(16);
-    boxCollider->setHeight(16);
+    boxCollider->setWidth(6);
+    boxCollider->setHeight(6);
     //boxCollider->setTrigger(true);
     gameObject->addComponent(boxCollider);
 }
