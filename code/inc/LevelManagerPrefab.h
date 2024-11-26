@@ -1,3 +1,4 @@
+#pragma once
 #include <GameObject.h>
 #include <LevelManagerBehaviourScript.h>
 #include <LevelCreatorBehaviourScript.h>
