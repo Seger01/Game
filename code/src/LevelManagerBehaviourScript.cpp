@@ -7,11 +7,13 @@
 #include <iostream>
 
 void LevelManagerBehaviourScript::onStart() {
-  mCurrentLevel = 1;
-  createLevelCreator();
 }
 
 void LevelManagerBehaviourScript::onUpdate() {}
+
+void LevelManagerBehaviourScript::beginGame() {
+  mGameObject->getComponents<LevelCreatorBehaviourScript>().at(0)->createLevel1();
+}
 
 void LevelManagerBehaviourScript::doneWithCurrentLevel() {
   mCurrentLevel++;
@@ -42,16 +44,4 @@ void LevelManagerBehaviourScript::doneWithCurrentLevel() {
                  "(LevelManagerBehaviourScript.cpp)\n";
   }
   // TODO: Load next level
-}
-
-void LevelManagerBehaviourScript::createLevelCreator() {
-  EngineBravo &engine = EngineBravo::getInstance();
-  SceneManager &sceneManager = engine.getSceneManager();
-
-  Scene *scene = sceneManager.getCurrentScene();
-  GameObject *LevelCreatorObject = new GameObject;
-  LevelCreatorObject->addComponent<LevelCreatorBehaviourScript>();
-  LevelCreatorObject->setTag("LevelCreator");
-
-  scene->addPersistentGameObject(LevelCreatorObject);
 }

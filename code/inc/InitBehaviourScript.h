@@ -12,6 +12,7 @@ public:
 
 private:
     void createLevelManager();
+    void createMainMenu();
 };
 
 #endif

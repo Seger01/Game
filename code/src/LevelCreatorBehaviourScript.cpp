@@ -21,7 +21,7 @@
 #include <Transform.h>
 #include <algorithm>
 
-void LevelCreatorBehaviourScript::onStart() { createLevel1(); }
+void LevelCreatorBehaviourScript::onStart() {}
 
 void LevelCreatorBehaviourScript::onUpdate() {}
 
