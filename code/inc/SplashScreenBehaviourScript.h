@@ -20,6 +20,7 @@ public:
 
 private:
     std::chrono::time_point<std::chrono::system_clock> startTime;
+    GameObject *splashScreenPrefab;
 };
 
 #endif // SPLASH_SCREEN_BEHAVIOUR_SCRIPT_H
