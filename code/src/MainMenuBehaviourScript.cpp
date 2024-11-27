@@ -46,4 +46,4 @@ void MainMenuBehaviourScript::onMultiplayerRelease() { std::cout << "Wanted to m
 
 void MainMenuBehaviourScript::onDemoRelease() { std::cout << "Wanted to play demo" << std::endl; }
 
-void MainMenuBehaviourScript::onExitRelease() { std::cout << "Wanted to play demo" << std::endl; }
+void MainMenuBehaviourScript::onExitRelease() { std::cout << "Wanted to exit game" << std::endl; }
