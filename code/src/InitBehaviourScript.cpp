@@ -48,9 +48,12 @@ void InitBehaviourScript::createMainMenu() {
         buttonObject->addComponent<MainMenuButtonBehaviour>();
         buttonObject->setParent(MainMenuObject);
         Text* buttonText = new Text("Play", "werkt niet", Color(255, 255, 255), Vector2(0, 0), Vector2(0.5, 0.5));
+        buttonText->setLayer(2);
         buttonText->setParent(buttonObject);
+        buttonText->setTag("PlayButtonText");
 
         Sprite* buttonSprite = engine.getResourceManager().createSprite(buttonSpriteDef);
+        buttonSprite->setLayer(1);
         buttonObject->addComponent(buttonSprite);
         int width = 0;
         int height = 0;
@@ -80,9 +83,12 @@ void InitBehaviourScript::createMainMenu() {
         buttonObject->setParent(MainMenuObject);
         Text* buttonText =
             new Text("Multiplayer", "werkt niet", Color(255, 255, 255), Vector2(0, 0), Vector2(0.5, 0.5));
+        buttonText->setTag("MultiplayerButtonText");
+        buttonText->setLayer(2);
         buttonText->setParent(buttonObject);
 
         Sprite* buttonSprite = engine.getResourceManager().createSprite(buttonSpriteDef);
+        buttonSprite->setLayer(1);
         buttonObject->addComponent(buttonSprite);
         int width = 0;
         int height = 0;
@@ -111,9 +117,12 @@ void InitBehaviourScript::createMainMenu() {
         buttonObject->addComponent<MainMenuButtonBehaviour>();
         buttonObject->setParent(MainMenuObject);
         Text* buttonText = new Text("Demo", "werkt niet", Color(255, 255, 255), Vector2(0, 0), Vector2(0.5, 0.5));
+        buttonText->setTag("DemoButtonText");
+        buttonText->setLayer(2);
         buttonText->setParent(buttonObject);
 
         Sprite* buttonSprite = engine.getResourceManager().createSprite(buttonSpriteDef);
+        buttonSprite->setLayer(1);
         buttonObject->addComponent(buttonSprite);
         int width = 0;
         int height = 0;
@@ -142,9 +151,12 @@ void InitBehaviourScript::createMainMenu() {
         buttonObject->addComponent<MainMenuButtonBehaviour>();
         buttonObject->setParent(MainMenuObject);
         Text* buttonText = new Text("Exit", "werkt niet", Color(255, 255, 255), Vector2(0, 0), Vector2(0.5, 0.5));
+        buttonText->setLayer(2);
         buttonText->setParent(buttonObject);
+        buttonText->setTag("ExitButtonText");
 
         Sprite* buttonSprite = engine.getResourceManager().createSprite(buttonSpriteDef);
+        buttonSprite->setLayer(1);
         buttonObject->addComponent(buttonSprite);
         int width = 0;
         int height = 0;
