@@ -36,3 +36,7 @@ code/build/
 
 #ignore vscode files
 .vscode/
+
+code/.cache
+
+code/compile_commands.json
