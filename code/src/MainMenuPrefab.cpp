@@ -59,6 +59,7 @@ Button* MainMenuPrefabFactory::createDefaultButton(GameObject* gameObject, Scene
     buttonObject->addComponent(buttonSprite);
     int width = 0;
     int height = 0;
+    buttonSprite->setColorFilter({255, 255, 255, 100});
     engine.getRenderSystem().getTextSize(buttonTextObj->getFont(), buttonTextObj->getText(), width, height,
                                          buttonTextObj->getScale());
     width += 2;
