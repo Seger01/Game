@@ -28,6 +28,11 @@ void MainMenuBehaviourScript::onStart() {
         Button* buttonObject = dynamic_cast<Button*>(button);
         buttonObject->setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onExitRelease, this));
     }
+    for (GameObject* button :
+         EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("DemoMultiButton")) {
+        Button* buttonObject = dynamic_cast<Button*>(button);
+        buttonObject->setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onDemoRelease, this));
+    }
 }
 
 void MainMenuBehaviourScript::onUpdate() {}
@@ -47,3 +52,5 @@ void MainMenuBehaviourScript::onMultiplayerRelease() { std::cout << "Wanted to m
 void MainMenuBehaviourScript::onDemoRelease() { std::cout << "Wanted to play demo" << std::endl; }
 
 void MainMenuBehaviourScript::onExitRelease() { std::cout << "Wanted to exit game" << std::endl; }
+
+void MainMenuBehaviourScript::onDemoMultiRelease() { std::cout << "Wanted to play demo multiplayer" << std::endl; }
