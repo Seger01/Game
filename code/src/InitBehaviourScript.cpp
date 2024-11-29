@@ -49,8 +49,10 @@ void InitBehaviourScript::createMainMenu() {
         buttonObject->setParent(MainMenuObject);
         Text* buttonText = new Text("Play", "werkt niet", Color(255, 255, 255), Vector2(0, 0), Vector2(0.5, 0.5));
         buttonText->setParent(buttonObject);
+        buttonText->setLayer(2);
 
         Sprite* buttonSprite = engine.getResourceManager().createSprite(buttonSpriteDef);
+        buttonSprite->setLayer(1);
         buttonObject->addComponent(buttonSprite);
         int width = 0;
         int height = 0;
@@ -81,8 +83,10 @@ void InitBehaviourScript::createMainMenu() {
         Text* buttonText =
             new Text("Multiplayer", "werkt niet", Color(255, 255, 255), Vector2(0, 0), Vector2(0.5, 0.5));
         buttonText->setParent(buttonObject);
+        buttonText->setLayer(2);
 
         Sprite* buttonSprite = engine.getResourceManager().createSprite(buttonSpriteDef);
+        buttonSprite->setLayer(1);
         buttonObject->addComponent(buttonSprite);
         int width = 0;
         int height = 0;
@@ -112,9 +116,11 @@ void InitBehaviourScript::createMainMenu() {
         buttonObject->setParent(MainMenuObject);
         Text* buttonText = new Text("Demo", "werkt niet", Color(255, 255, 255), Vector2(0, 0), Vector2(0.5, 0.5));
         buttonText->setParent(buttonObject);
+        buttonText->setLayer(2);
 
         Sprite* buttonSprite = engine.getResourceManager().createSprite(buttonSpriteDef);
         buttonObject->addComponent(buttonSprite);
+        buttonSprite->setLayer(1);
         int width = 0;
         int height = 0;
         engine.getRenderSystem().getTextSize(buttonText->getFont(), buttonText->getText(), width, height,
