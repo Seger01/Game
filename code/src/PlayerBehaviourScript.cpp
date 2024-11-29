@@ -264,8 +264,7 @@ void PlayerBehaviourScript::fireBullet(Point mousePosition) {
     
     // Add force to bullet
     RigidBody* bulletRigidBody = bulletObject->getComponents<RigidBody>()[0];
-    float bulletSpeed = 1000.0f;  
-    direction = direction * -1;
+    float bulletSpeed = 1000.0f;
     bulletRigidBody->addForce(direction * bulletSpeed);
     
     sceneManager.getCurrentScene()->addGameObject(bulletObject);
