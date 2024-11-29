@@ -1,11 +1,21 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Define the project name
-project(Game)
+project(BulletBravo)
 
 # Set the C++ standard
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+# Add an option to enable debug mode
+option(ENABLE_DEBUG "Enable debug mode" OFF)
+
+if(ENABLE_DEBUG)
+    message(STATUS "Debug mode enabled")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
+else()
+    message(STATUS "Debug mode disabled")
+endif()
 
 # Disable the ENABLE_TESTGAME option for the Engine-Bravo library
 set(ENABLE_TESTGAME OFF CACHE BOOL "Disable building the testGame" FORCE)
