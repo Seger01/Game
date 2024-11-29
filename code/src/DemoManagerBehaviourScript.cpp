@@ -1,6 +1,7 @@
 #include "DemoManagerBehaviourScript.h"
 #include "DemoButtonBehaviourScript.h"
 #include "DemoEndOfLevelTriggerBehaviourScript.h"
+#include "Input.h"
 #include "LevelCreatorBehaviourScript.h"
 #include "LevelManagerBehaviourScript.h"
 #include "LevelManagerPrefab.h"
@@ -98,8 +99,12 @@ void DemoManagerBehaviourScript::createSecondScene() {
     }
 
     // set starting pos for player in this scene
-    std::cout << "Resseting player position for second scene" << std::endl;
-    sceneManager.getCurrentScene()->getGameObjectsWithTag("Player").at(0)->setTransform(Transform(Vector2(50, 80)));
+    // GameObject* playerObject = sceneManager.getCurrentScene()->getGameObjectsWithTag("Player").at(0);
+    // playerObject->setTransform(Transform(Vector2(40, 40)));
+    GameObject* playerObject =
+        EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
+    // std::cout << "Setting player transform" << std::endl;
+    playerObject->setTransform(Transform(Vector2(40, 40)));
 
     int cameraID = scene->addCamera();
     scene->setActiveCamera(cameraID);
@@ -183,4 +188,13 @@ void DemoManagerBehaviourScript::onStart() {
     createFirstScene();
 }
 
-void DemoManagerBehaviourScript::onUpdate() {}
+void DemoManagerBehaviourScript::onUpdate() {
+    Input& input = Input::getInstance();
+
+    if (input.GetKeyDown(Key::Key_Space)) {
+        GameObject* playerObject =
+            EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
+        std::cout << "Setting player transform" << std::endl;
+        playerObject->setTransform(Transform(Vector2(40, 40)));
+    }
+}
