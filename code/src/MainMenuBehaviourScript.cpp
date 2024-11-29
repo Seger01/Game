@@ -1,6 +1,6 @@
 #include "MainMenuBehaviourScript.h"
 
-#include "DemoInitBehaviourScript.h"
+#include "DemoManagerBehaviourScript.h"
 #include "EngineBravo.h"
 #include "LevelManagerBehaviourScript.h"
 
@@ -46,14 +46,15 @@ void MainMenuBehaviourScript::onPlayRelease() {
 void MainMenuBehaviourScript::onMultiplayerRelease() { std::cout << "Wanted to multiplayer" << std::endl; }
 
 void MainMenuBehaviourScript::onDemoRelease() {
-    GameObject* demoobject = new GameObject;
-    demoobject->addComponent<DemoInitBehaviourScript>();
+    GameObject* demoManagerObject = new GameObject;
+    demoManagerObject->addComponent<DemoManagerBehaviourScript>();
+    demoManagerObject->setTag("DemoManager");
 
     Scene* scene = EngineBravo::getInstance().getSceneManager().getCurrentScene();
 
     std::cout << "Current scene: " << scene->getName() << std::endl;
 
-    scene->addGameObject(demoobject);
+    scene->addPersistentGameObject(demoManagerObject);
 
     std::cout << "Wanted to play demo" << std::endl;
 }

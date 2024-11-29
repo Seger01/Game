@@ -1,6 +1,6 @@
 #include "DemoButtonBehaviourScript.h"
 
-#include "DemoInitBehaviourScript.h"
+#include "DemoManagerBehaviourScript.h"
 #include "EngineBravo.h"
 #include "GameObject.h"
 #include "LevelManagerBehaviourScript.h"
@@ -13,10 +13,7 @@ DemoButtonBehaviourScript::~DemoButtonBehaviourScript() {}
 
 void DemoButtonBehaviourScript::onStart() {}
 
-void DemoButtonBehaviourScript::onUpdate() {
-    std::cout << "Button Position: " << mGameObject->getTransform().position.x << ", "
-              << mGameObject->getTransform().position.y << std::endl;
-}
+void DemoButtonBehaviourScript::onUpdate() {}
 
 void DemoButtonBehaviourScript::onCollide(GameObject* aGameObject) {
     if (aGameObject != nullptr) {

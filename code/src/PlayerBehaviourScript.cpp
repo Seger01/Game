@@ -261,6 +261,8 @@ void PlayerBehaviourScript::onUpdate() {
 
     // std::cout << "Player Position: " << mGameObject->getTransform().position.x << ", "
     //           << mGameObject->getTransform().position.y << std::endl;
+    //
+    // std::cout << "Tag: " << mGameObject->getTag() << std::endl;
 
     handleMovement();
     handleAnimations();
