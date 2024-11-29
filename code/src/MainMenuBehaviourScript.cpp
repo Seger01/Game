@@ -1,5 +1,6 @@
 #include "MainMenuBehaviourScript.h"
 
+#include "DemoInitBehaviourScript.h"
 #include "EngineBravo.h"
 #include "LevelManagerBehaviourScript.h"
 
@@ -44,6 +45,17 @@ void MainMenuBehaviourScript::onPlayRelease() {
 
 void MainMenuBehaviourScript::onMultiplayerRelease() { std::cout << "Wanted to multiplayer" << std::endl; }
 
-void MainMenuBehaviourScript::onDemoRelease() { std::cout << "Wanted to play demo" << std::endl; }
+void MainMenuBehaviourScript::onDemoRelease() {
+    GameObject* demoobject = new GameObject;
+    demoobject->addComponent<DemoInitBehaviourScript>();
 
-void MainMenuBehaviourScript::onExitRelease() { std::cout << "Wanted to exit game" << std::endl; }
+    Scene* scene = EngineBravo::getInstance().getSceneManager().getCurrentScene();
+
+    std::cout << "Current scene: " << scene->getName() << std::endl;
+
+    scene->addGameObject(demoobject);
+
+    std::cout << "Wanted to play demo" << std::endl;
+}
+
+void MainMenuBehaviourScript::onExitRelease() { std::cout << "adfljasdflkjafds to exit game" << std::endl; }
