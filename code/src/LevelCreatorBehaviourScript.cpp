@@ -164,13 +164,9 @@ void LevelCreatorBehaviourScript::createLevel(Scene *scene, const TileMapData &t
     EngineBravo &engine = EngineBravo::getInstance();
 
     for (const auto &mapObject : tileMapData.mMapObjects) {
-        std::cout << "Creating object at: " << mapObject.x << ", " << mapObject.y << std::endl;
         if (!mapObject.type.empty()) {
             std::string type = mapObject.type;
-            std::cout << "Creating object of type: " << type << std::endl;
-            if (type == "room_entry") {
-                std::cout << "Creating RoomTrigger for roomID: " << mapObject.properties.at("roomID") << std::endl;
-                // Collect enemy spawns for this room
+            if (type == "room_entry") {                // Collect enemy spawns for this room
                 std::vector<MapObject> enemySpawns;
                 for (const auto &spawnPoint : tileMapData.mMapObjects) {
                     if (spawnPoint.properties.find("isEnemySpawn") != spawnPoint.properties.end() &&
@@ -196,7 +192,10 @@ void LevelCreatorBehaviourScript::createLevel(Scene *scene, const TileMapData &t
                 roomObject->addComponent(rigidBody);
                 roomObject->setName("RoomTrigger");
                 scene->addGameObject(roomObject);
-            } else if (type == "LevelEndTrigger") {
+            } 
+            // Add a trigger for the level end
+            else if (type == "LevelEndTrigger") {
+                std::cout << "Creating LevelEndTrigger" << std::endl;
                 GameObject *levelEndObject = new GameObject;
                 BoxCollider *boxCollider = new BoxCollider();
                 Transform transform;
