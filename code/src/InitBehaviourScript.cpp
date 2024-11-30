@@ -1,7 +1,7 @@
 #include "InitBehaviourScript.h"
 #include "LevelManagerBehaviourScript.h"
-#include "MainMenuPrefab.h"
 #include "LevelManagerPrefab.h"
+#include "MainMenuPrefab.h"
 #include <EngineBravo.h>
 #include <GameObject.h>
 #include <Scene.h>
@@ -10,40 +10,56 @@
 
 void InitBehaviourScript::onStart() { createLevelManager(); }
 
-void InitBehaviourScript::onUpdate() {
-  
-}
+void InitBehaviourScript::onUpdate() {}
 
 void InitBehaviourScript::createLevelManager() {
-  EngineBravo &engine = EngineBravo::getInstance();
-  SceneManager &sceneManager = engine.getSceneManager();
-  Scene *scene = sceneManager.getCurrentScene();
+    EngineBravo& engine = EngineBravo::getInstance();
+    SceneManager& sceneManager = engine.getSceneManager();
+    Scene* scene = sceneManager.getCurrentScene();
 
+    GameObject* LevelManagerObject = LevelManagerFactory().createLevelManagerPrefab();
 
-  GameObject *LevelManagerObject = LevelManagerFactory().createLevelManagerPrefab();
+    scene->addPersistentGameObject(LevelManagerObject);
 
-  scene->addPersistentGameObject(LevelManagerObject);
-
-  createMainMenu();
-  //LevelManagerBehaviourScript* levelManager = LevelManagerObject->getComponents<LevelManagerBehaviourScript>()[0];
-  //levelManager->beginGame();
+    createMainMenu();
+    // LevelManagerBehaviourScript* levelManager =
+    // LevelManagerObject->getComponents<LevelManagerBehaviourScript>()[0];
+    // levelManager->beginGame();
 }
 
 void InitBehaviourScript::createMainMenu() {
-  EngineBravo &engine = EngineBravo::getInstance();
-  SceneManager &sceneManager = engine.getSceneManager();
-  Scene *scene = sceneManager.createScene("MainMenuScene");
+    EngineBravo& engine = EngineBravo::getInstance();
+    SceneManager& sceneManager = engine.getSceneManager();
+    Scene* scene = sceneManager.createScene("MainMenuScene");
 
-  GameObject *MainMenuObject = MainMenuPrefabFactory().createMainMenuPrefab();
+    int menuStartX = 240 + 13;
+    int menuStartY = 135 + 5;
 
-  scene->addGameObject(MainMenuObject);
+    GameObject* MainMenuObject = MainMenuPrefabFactory().createMainMenuPrefab();
 
-  int cameraID = scene->addCamera();
-  scene->setActiveCamera(cameraID);
+    MainMenuPrefabFactory().createDefaultButton(MainMenuObject, scene, "Play", "PlayButton", "Play", menuStartX,
+                                                menuStartY);
+    menuStartY += 20;
 
-  scene->getActiveCamera().setTransform(Transform(Vector2(80, 96)));
-  scene->getActiveCamera().setWidth(16 * 30);
-  scene->getActiveCamera().setHeight(9 * 30);
-  
-  sceneManager.requestSceneChange("MainMenuScene");
+    MainMenuPrefabFactory().createDefaultButton(MainMenuObject, scene, "Multiplayer", "MultiplayerButton",
+                                                "Multiplayer", menuStartX, menuStartY);
+    menuStartY += 20;
+
+    MainMenuPrefabFactory().createDefaultButton(MainMenuObject, scene, "Demo", "DemoButton", "Demo", menuStartX,
+                                                menuStartY);
+    menuStartY += 20;
+
+    MainMenuPrefabFactory().createDefaultButton(MainMenuObject, scene, "Exit", "ExitButton", "Exit", menuStartX,
+                                                menuStartY);
+
+    scene->addGameObject(MainMenuObject);
+
+    int cameraID = scene->addCamera();
+    scene->setActiveCamera(cameraID);
+
+    scene->getActiveCamera().setTransform(Transform(Vector2((16 * 30) / 2, (9 * 30) / 2)));
+    scene->getActiveCamera().setWidth(16 * 30);
+    scene->getActiveCamera().setHeight(9 * 30);
+
+    sceneManager.requestSceneChange("MainMenuScene");
 }
