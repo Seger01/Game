@@ -66,7 +66,7 @@ void LevelCreatorBehaviourScript::createLevel2() {
   int cameraID = scene->addCamera();
   scene->setActiveCamera(cameraID);
 
-  //scene->getActiveCamera().setTransform(Transform(Vector2(80, 96)));
+  // scene->getActiveCamera().setTransform(Transform(Vector2(80, 96)));
   scene->getActiveCamera().setWidth(16 * 30);
   scene->getActiveCamera().setHeight(9 * 30);
 
@@ -76,10 +76,9 @@ void LevelCreatorBehaviourScript::createLevel2() {
   tileMapParser.parse();
   const TileMapData &tileMapData = tileMapParser.getTileMapData();
 
-
   createLevel(scene, tileMapData);
   sceneManager.requestSceneChange("Level-2");
-  Scene* currentScene = sceneManager.getCurrentScene();
+  Scene *currentScene = sceneManager.getCurrentScene();
   setPlayerStartPosition(currentScene, tileMapData);
 }
 
@@ -95,7 +94,7 @@ void LevelCreatorBehaviourScript::createLevel3() {
   int cameraID = scene->addCamera();
   scene->setActiveCamera(cameraID);
 
-  //scene->getActiveCamera().setTransform(Transform(Vector2(80, 96)));
+  // scene->getActiveCamera().setTransform(Transform(Vector2(80, 96)));
   scene->getActiveCamera().setWidth(16 * 30);
   scene->getActiveCamera().setHeight(9 * 30);
 
@@ -105,10 +104,9 @@ void LevelCreatorBehaviourScript::createLevel3() {
   tileMapParser.parse();
   const TileMapData &tileMapData = tileMapParser.getTileMapData();
 
-
   createLevel(scene, tileMapData);
   sceneManager.requestSceneChange("Level-3");
-  Scene* currentScene = sceneManager.getCurrentScene();
+  Scene *currentScene = sceneManager.getCurrentScene();
   setPlayerStartPosition(currentScene, tileMapData);
 }
 
@@ -125,16 +123,14 @@ void LevelCreatorBehaviourScript::createPlayer(Scene *scene,
 }
 
 void LevelCreatorBehaviourScript::setPlayerStartPosition(Scene *scene, const TileMapData &tileMapData) {
-  if (tileMapData.mSpawnPoints.empty()) {
-    throw std::runtime_error("No spawn points found in LevelCreatorBehaviourScript::setPlayerStartPosition");
+  if (tileMapData.mMapObjects.empty()) {
+    throw std::runtime_error("No map objects found in LevelCreatorBehaviourScript::setPlayerStartPosition");
   }
 
-  for (const auto &spawnPoint : tileMapData.mSpawnPoints) {
-    std::cout << "Spawn point: " << spawnPoint.x << ", " << spawnPoint.y << std::endl;
-    if (spawnPoint.isPlayerSpawn) {
-      // Set player position
-      std::cout << "Setting player position to " << spawnPoint.x << ", " << spawnPoint.y << std::endl;
-      
+  for (const auto &mapObject : tileMapData.mMapObjects) {
+    if (mapObject.properties.find("isPlayerSpawn") != mapObject.properties.end() && mapObject.properties.at("isPlayerSpawn") == "true") {
+      std::cout << "Setting player position to " << mapObject.x << ", " << mapObject.y << std::endl;
+
       std::vector<GameObject*> persistentObjects = scene->getPersistentGameObjects();
       std::cout << "Number of persistent objects: " << persistentObjects.size() << std::endl;
 
@@ -147,14 +143,11 @@ void LevelCreatorBehaviourScript::setPlayerStartPosition(Scene *scene, const Til
       }
 
       Transform transform;
-      transform.position.x = spawnPoint.x;
-      transform.position.y = spawnPoint.y;
+      transform.position.x = mapObject.x;
+      transform.position.y = mapObject.y;
 
       (*playerIt)->setTransform(transform);
       std::cout << "Player position set to " << transform.position.x << ", " << transform.position.y << std::endl;
-    }
-    else {
-      std::cout << "Spawn point is not a player spawn point\n";
     }
   }
 }
@@ -163,62 +156,67 @@ void LevelCreatorBehaviourScript::createEnemy() {}
 
 void LevelCreatorBehaviourScript::createBoss() {}
 
-void LevelCreatorBehaviourScript::createLevel(Scene *scene,
-                                              const TileMapData &tileMapData) {
-  if (scene == nullptr) {
-    std::runtime_error(
-        "Scene is null in LevelCreatorBehaviourScript::createLevel");
-  }
-
-  EngineBravo &engine = EngineBravo::getInstance();
-
-  for (const auto &roomTrigger : tileMapData.mRoomTriggers) {
-    // Collect enemy spawns for this room
-    std::vector<SpawnPoint> enemySpawns;
-    for (const auto &spawnPoint : tileMapData.mSpawnPoints) {
-      if (spawnPoint.isEnemySpawn && spawnPoint.roomID == roomTrigger.roomID) {
-        enemySpawns.push_back(spawnPoint);
-      }
+void LevelCreatorBehaviourScript::createLevel(Scene *scene, const TileMapData &tileMapData) {
+    if (scene == nullptr) {
+        throw std::runtime_error("Scene is null in LevelCreatorBehaviourScript::createLevel");
     }
 
-    GameObject *roomObject = new GameObject;
-    roomObject->addComponent(
-        new RoomBehaviourScript(roomTrigger.roomID, enemySpawns));
-    BoxCollider *boxCollider = new BoxCollider();
-    Transform transform;
-    transform.position.x = roomTrigger.x;
-    transform.position.y = roomTrigger.y;
-    boxCollider->setTransform(transform);
-    boxCollider->setWidth(roomTrigger.mWidth);
-    boxCollider->setHeight(roomTrigger.mHeight);
-    boxCollider->setTrigger(true);
-    roomObject->addComponent(boxCollider);
-    RigidBody *rigidBody = new RigidBody();
-    rigidBody->setTransform(transform);
-    roomObject->addComponent(rigidBody);
-    roomObject->setName("Roomtrigger");
-    scene->addGameObject(roomObject);
-  }
+    EngineBravo &engine = EngineBravo::getInstance();
 
-  for (const auto &levelEndTrigger : tileMapData.mLevelEndTriggers) {
-    GameObject *levelEndObject = new GameObject;
-    BoxCollider *boxCollider = new BoxCollider();
-    Transform transform;
-    transform.position.x = levelEndTrigger.x;
-    transform.position.y = levelEndTrigger.y;
-    boxCollider->setTransform(transform);
-    boxCollider->setWidth(levelEndTrigger.mWidth);
-    boxCollider->setHeight(levelEndTrigger.mHeight);
-    boxCollider->setTrigger(true);
-    levelEndObject->addComponent(boxCollider);
-    RigidBody *rigidBody = new RigidBody();
-    rigidBody->setTransform(transform);
-    levelEndObject->addComponent(rigidBody);
-    levelEndObject->setName("LevelEndTrigger");
-    levelEndObject->setTag("LevelEnd");
-    levelEndObject->addComponent(new LevelEndBehaviourScript());
-    scene->addGameObject(levelEndObject);
-  }
+    for (const auto &mapObject : tileMapData.mMapObjects) {
+        std::cout << "Creating object at: " << mapObject.x << ", " << mapObject.y << std::endl;
+        if (!mapObject.type.empty()) {
+            std::string type = mapObject.type;
+            std::cout << "Creating object of type: " << type << std::endl;
+            if (type == "room_entry") {
+                std::cout << "Creating RoomTrigger for roomID: " << mapObject.properties.at("roomID") << std::endl;
+                // Collect enemy spawns for this room
+                std::vector<MapObject> enemySpawns;
+                for (const auto &spawnPoint : tileMapData.mMapObjects) {
+                    if (spawnPoint.properties.find("isEnemySpawn") != spawnPoint.properties.end() &&
+                        spawnPoint.properties.at("isEnemySpawn") == "true" &&
+                        spawnPoint.properties.at("roomID") == mapObject.properties.at("roomID")) {
+                        enemySpawns.push_back(spawnPoint);
+                    }
+                }
+
+                GameObject *roomObject = new GameObject;
+                roomObject->addComponent(new RoomBehaviourScript(mapObject.properties.at("roomID"), enemySpawns));
+                BoxCollider *boxCollider = new BoxCollider();
+                Transform transform;
+                transform.position.x = mapObject.x;
+                transform.position.y = mapObject.y;
+                boxCollider->setTransform(transform);
+                boxCollider->setWidth(mapObject.width);
+                boxCollider->setHeight(mapObject.height);
+                boxCollider->setTrigger(true);
+                roomObject->addComponent(boxCollider);
+                RigidBody *rigidBody = new RigidBody();
+                rigidBody->setTransform(transform);
+                roomObject->addComponent(rigidBody);
+                roomObject->setName("RoomTrigger");
+                scene->addGameObject(roomObject);
+            } else if (type == "LevelEndTrigger") {
+                GameObject *levelEndObject = new GameObject;
+                BoxCollider *boxCollider = new BoxCollider();
+                Transform transform;
+                transform.position.x = mapObject.x;
+                transform.position.y = mapObject.y;
+                boxCollider->setTransform(transform);
+                boxCollider->setWidth(mapObject.width);
+                boxCollider->setHeight(mapObject.height);
+                boxCollider->setTrigger(true);
+                levelEndObject->addComponent(boxCollider);
+                RigidBody *rigidBody = new RigidBody();
+                rigidBody->setTransform(transform);
+                levelEndObject->addComponent(rigidBody);
+                levelEndObject->setName("LevelEndTrigger");
+                levelEndObject->setTag("LevelEnd");
+                levelEndObject->addComponent(new LevelEndBehaviourScript());
+                scene->addGameObject(levelEndObject);
+            }
+        }
+    }
 
   GameObject *canvasObject = new GameObject;
 

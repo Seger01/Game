@@ -11,6 +11,7 @@
 #include <random>
 #include "BSCoinPrefab.h"
 #include "ECCoinPrefab.h"
+#include <iostream>
 
 
 void RoomBehaviourScript::onStart() {
@@ -23,9 +24,9 @@ void RoomBehaviourScript::onStart() {
   const Point doorClosedPosition = {256, 80};
   mClosedDoorSpriteDef = {
       doorSpriteSheetPath,
-      Rect{doorClosedPosition.x, doorClosedPosition.y, 64, 64}, 64, 64};
+      Rect{static_cast<int>(doorClosedPosition.x), static_cast<int>(doorClosedPosition.y), 64, 64}, 64, 64};
   mOpenDoorSpriteDef = {doorSpriteSheetPath,
-                        Rect{doorOpenPosition.x, doorOpenPosition.y, 64, 64},
+                        Rect{static_cast<int>(doorOpenPosition.x), static_cast<int>(doorOpenPosition.y), 64, 64},
                         64, 64};
   mEnemyFrameDef = {enemySpritePath, Rect{182, 389, 20, 27}, 20, 27};
 }
@@ -52,11 +53,9 @@ void RoomBehaviourScript::spawnEnemies() {
   std::mt19937 gen(rd());
 
   for (const auto &spawnPoint : mEnemySpawns) {
-    if (spawnPoint.roomID == mRoomID && mEnemySpawns.size() > 0) {
-      std::uniform_real_distribution<> disX(spawnPoint.x,
-                                            spawnPoint.x + spawnPoint.width);
-      std::uniform_real_distribution<> disY(spawnPoint.y,
-                                            spawnPoint.y + spawnPoint.height);
+    if (spawnPoint.properties.at("roomID") == mRoomID) {
+      std::uniform_real_distribution<> disX(spawnPoint.x, spawnPoint.x + spawnPoint.width);
+      std::uniform_real_distribution<> disY(spawnPoint.y, spawnPoint.y + spawnPoint.height);
 
       float randomX = disX(gen);
       float randomY = disY(gen);
@@ -65,16 +64,13 @@ void RoomBehaviourScript::spawnEnemies() {
       Transform transform;
       transform.position.x = randomX;
       transform.position.y = randomY;
-      Sprite *enemySprite =
-          engine.getResourceManager().createSprite(mEnemyFrameDef);
+      Sprite *enemySprite = engine.getResourceManager().createSprite(mEnemyFrameDef);
       enemySprite->setLayer(3);
       enemy->addComponent(enemySprite);
 
       enemy->addComponent<BoxCollider>();
-      enemy->getComponents<BoxCollider>().at(0)->setWidth(
-          enemySprite->getWidth());
-      enemy->getComponents<BoxCollider>().at(0)->setHeight(
-          enemySprite->getHeight());
+      enemy->getComponents<BoxCollider>().at(0)->setWidth(enemySprite->getWidth());
+      enemy->getComponents<BoxCollider>().at(0)->setHeight(enemySprite->getHeight());
 
       enemy->addComponent<RigidBody>();
       RigidBody *rigidBody = enemy->getComponents<RigidBody>().at(0);
@@ -90,7 +86,7 @@ void RoomBehaviourScript::spawnEnemies() {
       enemy->setTag("Enemy");
       sceneManager.getCurrentScene()->addGameObject(enemy);
 
-      //Add some coins
+      // Add some coins
       BSCoinPrefab coinPrefab;
       GameObject *coin = coinPrefab.createBSCoinPrefab(*enemy);
       sceneManager.getCurrentScene()->addGameObject(coin);
