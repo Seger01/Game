@@ -25,6 +25,8 @@ private:
     void createLevel(Scene* scene, const TileMapData& tileMapData);
 private:
     FSConverter mFsConverter;
+    bool mPlayerPositionSet = false;
+    TileMapData mTileMapData;
 };
 
 #endif
