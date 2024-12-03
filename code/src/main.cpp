@@ -1,36 +1,36 @@
 #include <iostream>
 
-#include "InitBehaviourScript.h"
+#include "SplashScreenBehaviourScript.h"
 #include <EngineBravo.h>
 #include <GameObject.h>
 #include <Scene.h>
 #include <SceneManager.h>
 
-void initScene() {
-  EngineBravo &engine = EngineBravo::getInstance();
-  engine.initialize();
-  SceneManager &sceneManager = engine.getSceneManager();
+void init()
+{
+  EngineBravo::getInstance().initialize();
+  SceneManager &sceneManager = EngineBravo::getInstance().getSceneManager();
 
-  Scene *scene = sceneManager.createScene("InitScene");
+  Scene *scene = sceneManager.createScene("SplashScreenScene");
   GameObject *initObject = new GameObject;
-  initObject->addComponent<InitBehaviourScript>();
+  initObject->addComponent<SplashScreenBehaviourScript>();
 
   scene->addGameObject(initObject);
 
   int cameraID = scene->addCamera();
   scene->setActiveCamera(cameraID);
 
-  scene->getActiveCamera().setTransform(Transform(Vector2(80, 96)));
-  scene->getActiveCamera().setWidth(16 * 30);
-  scene->getActiveCamera().setHeight(9 * 30);
+  scene->getActiveCamera().setTransform(Transform(Vector2(100, 100)));
+  scene->getActiveCamera().setWidth(200);
+  scene->getActiveCamera().setHeight(200);
 
-  sceneManager.requestSceneChange("InitScene");
+  sceneManager.requestSceneChange("SplashScreenScene");
 
-  engine.run();
+  EngineBravo::getInstance().run();
 
   return;
 }
 int main() {
-  initScene();
+  init();
   return 0;
 }
