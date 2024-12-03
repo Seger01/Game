@@ -57,12 +57,15 @@ void LevelCreatorBehaviourScript::createLevel1()
 		exit(1);
 	}
 
-	int cameraID = scene->addCamera();
-	scene->setActiveCamera(cameraID);
+	Camera* camera = new Camera;
+	camera->setTag("MainCamera");
+	camera->setActive(true);
 
-	scene->getActiveCamera().setTransform(Transform(Vector2(80, 96)));
-	scene->getActiveCamera().setWidth(16 * 30);
-	scene->getActiveCamera().setHeight(9 * 30);
+	camera->setTransform(Transform(Vector2(80, 96)));
+	camera->setWidth(16 * 30);
+	camera->setHeight(9 * 30);
+
+	scene->addGameObject(camera);
 
 	std::string path = mFsConverter.getResourcePath("LevelDefs/levelwithcollision.json");
 
@@ -87,11 +90,15 @@ void LevelCreatorBehaviourScript::createLevel2()
 		exit(1);
 	}
 
-	int cameraID = scene->addCamera();
-	scene->setActiveCamera(cameraID);
+	Camera* camera = new Camera;
+	camera->setTag("MainCamera");
+	camera->setActive(true);
 
-	scene->getActiveCamera().setWidth(16 * 30);
-	scene->getActiveCamera().setHeight(9 * 30);
+	camera->setTransform(Transform(Vector2(80, 96)));
+	camera->setWidth(16 * 30);
+	camera->setHeight(9 * 30);
+
+	scene->addGameObject(camera);
 
 	std::string path = mFsConverter.getResourcePath("LevelDefs/level2.json");
 
@@ -115,11 +122,15 @@ void LevelCreatorBehaviourScript::createLevel3()
 		exit(1);
 	}
 
-	int cameraID = scene->addCamera();
-	scene->setActiveCamera(cameraID);
+	Camera* camera = new Camera;
+	camera->setTag("MainCamera");
+	camera->setActive(true);
 
-	scene->getActiveCamera().setWidth(16 * 30);
-	scene->getActiveCamera().setHeight(9 * 30);
+	camera->setTransform(Transform(Vector2(80, 96)));
+	camera->setWidth(16 * 30);
+	camera->setHeight(9 * 30);
+
+	scene->addGameObject(camera);
 
 	std::string path = mFsConverter.getResourcePath("LevelDefs/level3.json");
 
@@ -130,6 +141,54 @@ void LevelCreatorBehaviourScript::createLevel3()
 	createLevel(scene, mTileMapData);
 	sceneManager.requestSceneChange("Level-3");
 	mPlayerPositionSet = false;
+}
+
+void LevelCreatorBehaviourScript::createDemoNetworkingLevel()
+{
+	EngineBravo& engine = EngineBravo::getInstance();
+	SceneManager& sceneManager = engine.getSceneManager();
+
+	Scene* scene = sceneManager.createScene("DemoNetworkingLevel");
+	if (scene == nullptr)
+	{
+		exit(1);
+	}
+
+	Camera* camera = new Camera;
+	camera->setTag("MainCamera");
+	camera->setActive(true);
+
+	int width;
+	int height;
+
+	if (engine.getNetworkManager().isServer())
+	{
+		width = 22 * 16;
+		height = 23 * 16;
+	}
+	else
+	{
+		width = 16 * 16;
+		height = 9 * 16;
+	}
+
+	// scene->getActiveCamera().setTransform(Transform(Vector2(11 * 16, 12 * 16)));
+	// scene->getActiveCamera().setWidth(width);
+	// scene->getActiveCamera().setHeight(height);
+	camera->setTransform(Transform(Vector2(11 * 16, 12 * 16)));
+	camera->setWidth(width);
+	camera->setHeight(height);
+
+	scene->addGameObject(camera);
+
+	std::string path = mFsConverter.getResourcePath("LevelDefs/networkDemoLevel.json");
+
+	TileMapParser tileMapParser(path);
+	tileMapParser.parse();
+	const TileMapData& tileMapData = tileMapParser.getTileMapData();
+
+	createLevel(scene, tileMapData);
+	sceneManager.requestSceneChange("DemoNetworkingLevel");
 }
 
 void LevelCreatorBehaviourScript::createPlayer(Scene* scene, const TileMapData& tileMapData)
@@ -148,8 +207,8 @@ void LevelCreatorBehaviourScript::setPlayerStartPosition(Scene* scene, const Til
 {
 	if (tileMapData.mMapObjects.empty())
 	{
-		//throw std::runtime_error("No map objects found in LevelCreatorBehaviourScript::setPlayerStartPosition");
-        return;
+		// throw std::runtime_error("No map objects found in LevelCreatorBehaviourScript::setPlayerStartPosition");
+		return;
 	}
 
 	for (const auto& mapObject : tileMapData.mMapObjects)

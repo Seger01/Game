@@ -4,27 +4,60 @@
 
 #include "Components/Sprite.h"
 #include "GameObject.h"
+#include "Text.h"
 
-class MainMenuButtonBehaviour : public IButtonBehaviourScript {
+class MainMenuButtonBehaviour : public IButtonBehaviourScript
+{
 public:
-    MainMenuButtonBehaviour() {}
-    ~MainMenuButtonBehaviour() {}
+	MainMenuButtonBehaviour() {}
 
-    std::unique_ptr<Component> clone() const override { return std::make_unique<MainMenuButtonBehaviour>(*this); }
+	~MainMenuButtonBehaviour() {}
 
-    void onButtonPressed() override {}
+	std::unique_ptr<Component> clone() const override { return std::make_unique<MainMenuButtonBehaviour>(*this); }
 
-    void onButtonReleased() override {}
+	void onButtonPressed() override {}
 
-    void onButtonHover() override {
-        for (auto& sprite : mGameObject->getComponents<Sprite>()) {
-            sprite->setColorFilter({255, 255, 255, 255});
-        }
-    }
+	void onButtonReleased() override {}
 
-    void onButtonUnhover() override {
-        for (auto& sprite : mGameObject->getComponents<Sprite>()) {
-            sprite->setColorFilter({255, 255, 255, 100});
-        }
-    }
+	void onButtonHover() override
+	{
+		for (auto& sprite : mGameObject->getComponents<Sprite>())
+		{
+			sprite->setColorFilter({255, 255, 255, 255});
+		}
+
+		for (GameObject* child : mGameObject->getChildren())
+		{
+			if (dynamic_cast<Text*>(child))
+			{
+				Text* textobj = dynamic_cast<Text*>(child);
+
+				Color textColor = textobj->getColor();
+				textColor.a = 255;
+
+				textobj->setColor(textColor);
+			}
+		}
+	}
+
+	void onButtonUnhover() override
+	{
+		for (auto& sprite : mGameObject->getComponents<Sprite>())
+		{
+			sprite->setColorFilter({255, 255, 255, 100});
+		}
+
+		for (GameObject* child : mGameObject->getChildren())
+		{
+			if (dynamic_cast<Text*>(child))
+			{
+				Text* textobj = dynamic_cast<Text*>(child);
+
+				Color textColor = textobj->getColor();
+				textColor.a = 150;
+
+				textobj->setColor(textColor);
+			}
+		}
+	}
 };

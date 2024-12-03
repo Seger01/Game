@@ -20,6 +20,7 @@ private:
     void onMultiplayerRelease();
     void onDemoRelease();
     void onExitRelease();
+    void onDemoMultiRelease();
 };
 
 #endif // MAINMENUBEHAVIOURSCRIPT_H

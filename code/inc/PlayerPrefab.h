@@ -7,6 +7,7 @@
 #include <NetworkTransform.h>
 #include <ParticleEmitter.h>
 #include <PlayerBehaviourScript.h>
+#include <PlayerNetworkBehaviourScript.h>
 #include <SpriteDefUtil.h>
 #include <Transform.h>
 #include <iostream>
@@ -19,6 +20,7 @@ public:
 private:
     static void setTransform(GameObject* gameObject);
     static void addPlayerBehaviourScript(GameObject* gameObject);
+    static void addNetworkBehaviourScript(GameObject* gameObject);
     static void setTag(GameObject* gameObject);
     static void addNetworkTransform(GameObject* gameObject);
     static void addAnimations(GameObject* gameObject);

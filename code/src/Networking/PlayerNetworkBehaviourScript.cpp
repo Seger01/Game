@@ -1,4 +1,4 @@
-#include "PlayerBehaviourScript.h"
+#include "PlayerNetworkBehaviourScript.h"
 
 #include <iostream>
 
@@ -16,7 +16,7 @@
 #include <SpriteDef.h>
 #include <SpriteDefUtil.h>
 
-std::string PlayerBehaviourScript::currentActiveAnimationTag()
+std::string PlayerNetworkBehaviourScript::currentActiveAnimationTag()
 {
 	for (auto animation : mGameObject->getComponents<Animation>())
 	{
@@ -28,7 +28,7 @@ std::string PlayerBehaviourScript::currentActiveAnimationTag()
 	return "";
 }
 
-void PlayerBehaviourScript::setFlipX(bool aState)
+void PlayerNetworkBehaviourScript::setFlipX(bool aState)
 {
 	if (mGameObject->hasComponent<Animation>())
 	{
@@ -46,7 +46,7 @@ void PlayerBehaviourScript::setFlipX(bool aState)
 	}
 }
 
-void PlayerBehaviourScript::setFlipY(bool aState)
+void PlayerNetworkBehaviourScript::setFlipY(bool aState)
 {
 	if (mGameObject->hasComponent<Animation>())
 	{
@@ -64,13 +64,15 @@ void PlayerBehaviourScript::setFlipY(bool aState)
 	}
 }
 
-void PlayerBehaviourScript::deactivateAllAnimations() {
-    for (auto animation : mGameObject->getComponents<Animation>()) {
-        animation->setActive(false);
-    }
+void PlayerNetworkBehaviourScript::deactivateAllAnimations()
+{
+	for (auto animation : mGameObject->getComponents<Animation>())
+	{
+		animation->setActive(false);
+	}
 }
 
-void PlayerBehaviourScript::setAnimationActive(std::string aAnimationTag, bool aState)
+void PlayerNetworkBehaviourScript::setAnimationActive(std::string aAnimationTag, bool aState)
 {
 	for (auto animation : mGameObject->getComponents<Animation>())
 	{
@@ -81,9 +83,15 @@ void PlayerBehaviourScript::setAnimationActive(std::string aAnimationTag, bool a
 	}
 }
 
-void PlayerBehaviourScript::onStart() {}
+void PlayerNetworkBehaviourScript::onStart()
+{
+	if (!isOwner())
+	{
+		destroy();
+	}
+}
 
-void PlayerBehaviourScript::handleAnimations()
+void PlayerNetworkBehaviourScript::handleAnimations()
 {
 	if (mGameObject->hasComponent<NetworkObject>())
 	{
@@ -187,7 +195,7 @@ void PlayerBehaviourScript::handleAnimations()
 	previousTransform = this->mGameObject->getTransform();
 }
 
-void PlayerBehaviourScript::handleMovement()
+void PlayerNetworkBehaviourScript::handleMovement()
 {
 	static const float movementSpeed = 50.0f;
 
@@ -241,7 +249,7 @@ void PlayerBehaviourScript::handleMovement()
 	this->mGameObject->setTransform(parentTransform);
 }
 
-void PlayerBehaviourScript::hanldeCameraMovement()
+void PlayerNetworkBehaviourScript::hanldeCameraMovement()
 {
 	if (mGameObject->hasComponent<NetworkObject>())
 	{
@@ -263,7 +271,7 @@ void PlayerBehaviourScript::hanldeCameraMovement()
 	currentCam->setTransform(playerTransform);
 }
 
-void PlayerBehaviourScript::fireBullet(Point mousePosition)
+void PlayerNetworkBehaviourScript::fireBullet(Point mousePosition)
 {
 	EngineBravo& engine = EngineBravo::getInstance();
 	SceneManager& sceneManager = engine.getSceneManager();
@@ -323,7 +331,7 @@ void PlayerBehaviourScript::fireBullet(Point mousePosition)
 	sceneManager.getCurrentScene()->addGameObject(bulletObject);
 }
 
-void PlayerBehaviourScript::onUpdate()
+void PlayerNetworkBehaviourScript::onUpdate()
 {
 	Input& input = Input::getInstance();
 
@@ -383,7 +391,7 @@ void PlayerBehaviourScript::onUpdate()
 	}
 }
 
-void PlayerBehaviourScript::onCollide(GameObject* aGameObject)
+void PlayerNetworkBehaviourScript::onCollide(GameObject* aGameObject)
 {
 	if (aGameObject != nullptr)
 	{
@@ -391,14 +399,3 @@ void PlayerBehaviourScript::onCollide(GameObject* aGameObject)
 		// std::endl;
 	}
 }
-
-
-float PlayerBehaviourScript::getHealth() { return mHealth; }
-float PlayerBehaviourScript::getMaxHealth() { return mMaxHealth; }
-int PlayerBehaviourScript::getECCount() { return mECCount; }
-int PlayerBehaviourScript::getBSCount() { return mBSCount; }
-
-void PlayerBehaviourScript::setHealth(float aHealth) { mHealth = aHealth; }
-void PlayerBehaviourScript::setMaxHealth(float aMaxHealth) { mMaxHealth = aMaxHealth; }
-void PlayerBehaviourScript::setECCount(int aECCount) { mECCount = aECCount; }
-void PlayerBehaviourScript::setBSCount(int aBSCount) { mBSCount = aBSCount; }
