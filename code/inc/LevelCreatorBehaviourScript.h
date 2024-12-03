@@ -21,6 +21,7 @@ private:
     void createLevel1();
     void createLevel2();
     void createLevel3();
+    void createDemoNetworkingLevel();
     void createPlayer(Scene* scene, const TileMapData& tileMapData);
     void setPlayerStartPosition(Scene* scene, const TileMapData& tileMapData);
     void createEnemy();

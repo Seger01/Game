@@ -5,6 +5,7 @@
 
 #include "Button.h"
 #include "Engine/EngineBravo.h"
+#include "LevelManagerBehaviourScript.h"
 #include "Network/NetworkClient.h"
 #include "Network/NetworkManager.h"
 #include "Text.h"
@@ -76,39 +77,22 @@ void NetworkSelectionBehaviourScript::onUpdate() {
     NetworkManager& networkManager = engine.getNetworkManager();
 
     if (networkManager.getRole() == NetworkRole::SERVER || networkManager.getRole() == NetworkRole::HOST) {
-        Scene* scene = sceneManager.createScene("initScene");
-        GameObject* tempObject = new GameObject;
-
-        tempObject->addComponent<InitBehaviourScript>();
-
-        scene->addGameObject(tempObject);
-
-        int cameraID = scene->addCamera();
-        scene->setActiveCamera(cameraID);
-
-        scene->getActiveCamera().setTransform(Transform(Vector2(80, 96)));
-        scene->getActiveCamera().setWidth(16 * 30);
-        scene->getActiveCamera().setHeight(9 * 30);
-
-        sceneManager.requestSceneChange("initScene");
+        for (GameObject* object :
+             EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("LevelManager")) {
+            if (object->hasComponent<LevelManagerBehaviourScript>()) {
+                object->getComponents<LevelManagerBehaviourScript>()[0]->beginDemoNetworkingGame();
+            }
+        }
     }
     if (networkManager.getRole() == NetworkRole::CLIENT) {
         if (networkManager.isConnected()) {
-            Scene* scene = sceneManager.createScene("initScene");
-            GameObject* tempObject = new GameObject;
-
-            tempObject->addComponent<InitBehaviourScript>();
-
-            scene->addGameObject(tempObject);
-
-            int cameraID = scene->addCamera();
-            scene->setActiveCamera(cameraID);
-
-            scene->getActiveCamera().setTransform(Transform(Vector2(80, 96)));
-            scene->getActiveCamera().setWidth(16 * 30);
-            scene->getActiveCamera().setHeight(9 * 30);
-
-            sceneManager.requestSceneChange("initScene");
+            for (
+                GameObject* object :
+                EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("LevelManager")) {
+                if (object->hasComponent<LevelManagerBehaviourScript>()) {
+                    object->getComponents<LevelManagerBehaviourScript>()[0]->beginDemoNetworkingGame();
+                }
+            }
         }
         NetworkClient& networkClient = engine.getNetworkManager().getClient();
         std::vector<std::string> serverAddresses = networkClient.getServerAddresses();
