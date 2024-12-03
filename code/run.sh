@@ -16,4 +16,4 @@ fi
 
 cd .. || exit 1
 
-./build/bin/Game
+./build/bin/BulletBravo
