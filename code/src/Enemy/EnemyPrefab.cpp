@@ -1,22 +1,38 @@
 #include "EnemyPrefab.h"
+#include "EnemyBehaviourScript.h"
+#include <Animation.h>
+#include <EngineBravo.h>
+#include <GameObject.h>
 #include <Sprite.h>
 #include <SpriteDef.h>
-#include <EngineBravo.h>
-#include <RigidBody.h>
-#include <BoxCollider.h>
-#include <Animation.h>
+#include <SpriteDefUtil.h>
+#include <Transform.h>
 
-SpriteDef enemySpriteDef = {"Dungeontileset/0x72_DungeonTilesetII_v1.7.png", Rect{182, 389, 20, 27}, 20, 27};
+const int enemySpriteWidth = 20;  // Width of each sprite
+const int enemySpriteHeight = 27; // Height of each sprite
+
+const Point enemyIdlePosition = {53, 389};
+SpriteDef firstFrameEnemyIdle = {
+    "Dungeontileset/0x72_DungeonTilesetII_v1.7.png",
+    Rect{enemyIdlePosition.x, enemyIdlePosition.y, enemySpriteWidth, enemySpriteHeight},
+    enemySpriteWidth, enemySpriteHeight};
+
+const Point enemyWalkingPosition = {22, 389};
+SpriteDef firstFrameEnemyWalking = {
+    "Dungeontileset/0x72_DungeonTilesetII_v1.7.png",
+    Rect{enemyWalkingPosition.x, enemyWalkingPosition.y, enemySpriteWidth, enemySpriteHeight},
+    enemySpriteWidth, enemySpriteHeight};
 
 EnemyPrefab::EnemyPrefab() {}
 
 GameObject* EnemyPrefab::createEnemyPrefab() {
     GameObject* enemy = new GameObject;
-    setTransform(enemy);
+    //setTransform(enemy);
     addSprite(enemy);
     addRigidBody(enemy);
     addCollider(enemy);
     addAnimations(enemy);
+    enemy->addComponent<EnemyBehaviourScript>(100.0f);
     return enemy;
 }
 
@@ -27,40 +43,67 @@ void EnemyPrefab::setTransform(GameObject* gameObject) {
 }
 
 void EnemyPrefab::addSprite(GameObject* gameObject) {
-    Sprite* sprite = EngineBravo::getInstance().getResourceManager().createSprite(enemySpriteDef);
-    sprite->setLayer(1);
+    EngineBravo& engine = EngineBravo::getInstance();
+    Sprite* sprite = engine.getResourceManager().createSprite(firstFrameEnemyIdle);
+    sprite->setLayer(3);
     gameObject->addComponent(sprite);
 }
 
 void EnemyPrefab::addRigidBody(GameObject* gameObject) {
     RigidBody* rigidBody = new RigidBody();
     rigidBody->setTransform(gameObject->getTransform());
-   // rigidBody->setHasGravity(true);
     rigidBody->setDensity(1.0f);
-   // rigidBody->setFriction(0.3f);
-   // rigidBody->setRestitution(0.2f);
-    rigidBody->setMass(1.0f);
-    //rigidBody->setGravityScale(10.0f);
-    rigidBody->setCanRotate(true);
     gameObject->addComponent(rigidBody);
 }
 
 void EnemyPrefab::addCollider(GameObject* gameObject) {
     BoxCollider* boxCollider = new BoxCollider();
-    boxCollider->setWidth(enemySpriteDef.width);
-    boxCollider->setHeight(enemySpriteDef.height);
+    boxCollider->setWidth(firstFrameEnemyIdle.width);
+    boxCollider->setHeight(firstFrameEnemyIdle.height);
     boxCollider->setTransform(gameObject->getTransform());
     gameObject->addComponent(boxCollider);
 }
 
 void EnemyPrefab::addAnimations(GameObject* gameObject) {
-    // Animation* animation = new Animation();
-    // animation->setTag("idle");
-    // animation->setFrameTime(0.1f);
-    // animation->setLoop(true);
-    // animation->addFrame(Rect{0, 0, 16, 16});
-    // animation->addFrame(Rect{16, 0, 16, 16});
-    // animation->addFrame(Rect{32, 0, 16, 16});
-    // animation->addFrame(Rect{48, 0, 16, 16});
-    // gameObject->addComponent(animation);
+    EngineBravo& engine = EngineBravo::getInstance();
+
+    Animation* enemyIdleAnimation = nullptr;
+    Animation* enemyWalkingAnimation = nullptr;
+
+    {
+        std::vector<SpriteDef> enemyIdleAnimationFrames =
+            SpriteDefUtil::extrapolateSpriteDef(firstFrameEnemyIdle, 4);
+
+        std::vector<SpriteDef> enemyAnimationIdle = {
+            enemyIdleAnimationFrames[0], enemyIdleAnimationFrames[1], enemyIdleAnimationFrames[2],
+            enemyIdleAnimationFrames[3]};
+
+        enemyIdleAnimation =
+            engine.getResourceManager().loadAnimation(enemyAnimationIdle, 100, true);
+    }
+
+    {
+        std::vector<SpriteDef> enemyWalkingAnimationFrames =
+            SpriteDefUtil::extrapolateSpriteDef(firstFrameEnemyWalking, 4);
+
+        std::vector<SpriteDef> enemyAnimationWalking = {
+            enemyWalkingAnimationFrames[0], enemyWalkingAnimationFrames[1], enemyWalkingAnimationFrames[2],
+            enemyWalkingAnimationFrames[3]};
+
+        enemyWalkingAnimation =
+            engine.getResourceManager().loadAnimation(enemyAnimationWalking, 100, true);
+    }
+
+    enemyIdleAnimation->setTag("enemyIdle");
+    enemyWalkingAnimation->setTag("enemyWalking");
+
+    gameObject->addComponent(enemyIdleAnimation);
+    gameObject->addComponent(enemyWalkingAnimation);
+
+    for (auto animation : gameObject->getComponents<Animation>()) {
+        animation->setActive(false);
+        animation->setLayer(2);
+    }
+
+    enemyIdleAnimation->setActive(true);
 }

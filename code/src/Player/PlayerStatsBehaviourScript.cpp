@@ -15,7 +15,7 @@ void PlayerStatsBehaviourScript::onStart() {
     EngineBravo& engine = EngineBravo::getInstance();
     SceneManager& sceneManager = engine.getSceneManager();
     Scene* scene = sceneManager.getCurrentScene();
-    Camera& camera = scene->getActiveCamera();
+   // Camera& camera = scene->getActiveCamera();
 
     Sprite* playerStatBackgroundSprite = engine.getResourceManager().createSprite(playerStatBackgroundDef);
     playerStatBackgroundSprite->setLayer(4);

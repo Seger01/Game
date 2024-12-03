@@ -1,5 +1,7 @@
 #include "DemoLevel2Behaviour.h"
 #include <EngineBravo.h>
+#include <Animation.h>
+#include <EnemyBehaviourScript.h>
 
 DemoLevel2Behaviour::DemoLevel2Behaviour() : mMovingUp(true), mInitialY(0.0f) {}
 
@@ -12,8 +14,19 @@ void DemoLevel2Behaviour::onStart() {
     GameObject* enemy = scene->getGameObjectsWithTag("EnemyMoving")[0];
     if (enemy != nullptr) {
         mInitialY = enemy->getTransform().position.y;
+        if (enemy->hasComponent<RigidBody>()) {
+            enemy->getComponents<RigidBody>()[0]->setActive(false);
+        }
     }
+
     rotateEnemy();
+
+    GameObject* enemyStatic = scene->getGameObjectsWithTag("EnemyStatic")[0];
+    if (enemyStatic != nullptr) {
+        if (enemyStatic->hasComponent<EnemyBehaviourScript>()) {
+            enemyStatic->getComponents<EnemyBehaviourScript>()[0]->deactivateAllAnimations();
+        }
+    }
 }
 
 void DemoLevel2Behaviour::onUpdate() {
@@ -35,17 +48,29 @@ void DemoLevel2Behaviour::moveEnemy() {
     }
 
     Transform transform = enemy->getTransform();
+    Animation* idleAnimation = enemy->getComponents<Animation>()[0];
+    Animation* walkingAnimation = enemy->getComponents<Animation>()[1];
+
     if (mMovingUp) {
         transform.position.y += 1.0f;
-        if (transform.position.y >= mInitialY + 20.0f) {
+        if (transform.position.y >= mInitialY + 10.0f) {
             mMovingUp = false;
         }
     } else {
         transform.position.y -= 1.0f;
-        if (transform.position.y <= mInitialY - 20.0f) {
+        if (transform.position.y <= mInitialY - 10.0f) {
             mMovingUp = true;
         }
     }
+
+    if (abs(transform.position.y - mInitialY) > 0.1f) {
+        idleAnimation->setActive(false);
+        walkingAnimation->setActive(true);
+    } else {
+        idleAnimation->setActive(true);
+        walkingAnimation->setActive(false);
+    }
+
     enemy->setTransform(transform);
 }
 
@@ -95,6 +120,6 @@ void DemoLevel2Behaviour::rotateEnemy() {
         return;
     }
     else {
-        rigidBody->addTorque(500.0f);
+        rigidBody->addTorque(5000.0f);
     }
 }
