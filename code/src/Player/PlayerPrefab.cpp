@@ -2,6 +2,7 @@
 
 #include "AudioBehaviourScript.h"
 #include <GameObject.h>
+#include <NetworkObject.h>
 
 const int spriteWidth = 16;  // Width of each sprite
 const int spriteHeight = 25; // Height of each sprite
@@ -47,9 +48,15 @@ GameObject* PlayerPrefabFactory::createPlayerPrefab() {
     GameObject* defaultPlayerPrefab = new GameObject;
     defaultPlayerPrefab->setName("Player");
     setTransform(defaultPlayerPrefab);
-    addPlayerBehaviourScript(defaultPlayerPrefab);
+    if (EngineBravo::getInstance().getNetworkManager().isNetworked()) {
+        defaultPlayerPrefab->addComponent<NetworkObject>();
+        addNetworkTransform(defaultPlayerPrefab);
+        addNetworkBehaviourScript(defaultPlayerPrefab);
+    } else {
+        addPlayerBehaviourScript(defaultPlayerPrefab);
+    }
+
     setTag(defaultPlayerPrefab);
-    addNetworkTransform(defaultPlayerPrefab);
     addAnimations(defaultPlayerPrefab);
     addParticleEmitter(defaultPlayerPrefab);
     addRigidBody(defaultPlayerPrefab);
@@ -68,6 +75,10 @@ void PlayerPrefabFactory::setTransform(GameObject* gameObject) {
 
 void PlayerPrefabFactory::addPlayerBehaviourScript(GameObject* gameObject) {
     gameObject->addComponent<PlayerBehaviourScript>();
+}
+
+void PlayerPrefabFactory::addNetworkBehaviourScript(GameObject* gameObject) {
+    gameObject->addComponent<PlayerNetworkBehaviourScript>();
 }
 
 void PlayerPrefabFactory::setTag(GameObject* gameObject) { gameObject->setTag("Player"); }

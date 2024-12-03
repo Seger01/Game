@@ -143,8 +143,6 @@ void LevelCreatorBehaviourScript::createDemoNetworkingLevel() {
     const TileMapData& tileMapData = tileMapParser.getTileMapData();
 
     createLevel(scene, tileMapData);
-    // createPlayer(scene, tileMapData);
-    // setPlayerStartPosition(scene, tileMapData);
     sceneManager.requestSceneChange("DemoNetworkingLevel");
 }
 

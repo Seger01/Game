@@ -8,6 +8,7 @@
 #include "LevelManagerBehaviourScript.h"
 #include "Network/NetworkClient.h"
 #include "Network/NetworkManager.h"
+#include "PlayerPrefab.h"
 #include "Text.h"
 
 void NetworkSelectionBehaviourScript::onStart() {
@@ -77,6 +78,7 @@ void NetworkSelectionBehaviourScript::onUpdate() {
     NetworkManager& networkManager = engine.getNetworkManager();
 
     if (networkManager.getRole() == NetworkRole::SERVER || networkManager.getRole() == NetworkRole::HOST) {
+        networkManager.setDefaultPlayerPrefab(PlayerPrefabFactory::createPlayerPrefab());
         for (GameObject* object :
              EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("LevelManager")) {
             if (object->hasComponent<LevelManagerBehaviourScript>()) {
@@ -86,6 +88,7 @@ void NetworkSelectionBehaviourScript::onUpdate() {
     }
     if (networkManager.getRole() == NetworkRole::CLIENT) {
         if (networkManager.isConnected()) {
+            networkManager.setDefaultPlayerPrefab(PlayerPrefabFactory::createPlayerPrefab());
             for (
                 GameObject* object :
                 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("LevelManager")) {
