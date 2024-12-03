@@ -143,47 +143,60 @@ void LevelCreatorBehaviourScript::createLevel3()
 	mPlayerPositionSet = false;
 }
 
-void LevelCreatorBehaviourScript::createDemoNetworkingLevel() {
-    EngineBravo& engine = EngineBravo::getInstance();
-    SceneManager& sceneManager = engine.getSceneManager();
+void LevelCreatorBehaviourScript::createDemoNetworkingLevel()
+{
+	EngineBravo& engine = EngineBravo::getInstance();
+	SceneManager& sceneManager = engine.getSceneManager();
 
-    Scene* scene = sceneManager.createScene("DemoNetworkingLevel");
-    if (scene == nullptr) {
-        exit(1);
-    }
+	Scene* scene = sceneManager.createScene("DemoNetworkingLevel");
+	if (scene == nullptr)
+	{
+		exit(1);
+	}
 
-    int cameraID = scene->addCamera();
-    scene->setActiveCamera(cameraID);
+	Camera* camera = new Camera;
+	camera->setTag("MainCamera");
+	camera->setActive(true);
 
-    int width;
-    int height;
+	int width;
+	int height;
 
-    if (engine.getNetworkManager().isServer()) {
-        width = 22 * 16;
-        height = 23 * 16;
-    } else {
-        width = 16 * 16;
-        height = 9 * 16;
-    }
+	if (engine.getNetworkManager().isServer())
+	{
+		width = 22 * 16;
+		height = 23 * 16;
+	}
+	else
+	{
+		width = 16 * 16;
+		height = 9 * 16;
+	}
 
-    scene->getActiveCamera().setTransform(Transform(Vector2(11 * 16, 12 * 16)));
-    scene->getActiveCamera().setWidth(width);
-    scene->getActiveCamera().setHeight(height);
+	// scene->getActiveCamera().setTransform(Transform(Vector2(11 * 16, 12 * 16)));
+	// scene->getActiveCamera().setWidth(width);
+	// scene->getActiveCamera().setHeight(height);
+	camera->setTransform(Transform(Vector2(11 * 16, 12 * 16)));
+	camera->setWidth(width);
+	camera->setHeight(height);
 
-    std::string path = mFsConverter.getResourcePath("LevelDefs/networkDemoLevel.json");
+	scene->addGameObject(camera);
 
-    TileMapParser tileMapParser(path);
-    tileMapParser.parse();
-    const TileMapData& tileMapData = tileMapParser.getTileMapData();
+	std::string path = mFsConverter.getResourcePath("LevelDefs/networkDemoLevel.json");
 
-    createLevel(scene, tileMapData);
-    sceneManager.requestSceneChange("DemoNetworkingLevel");
+	TileMapParser tileMapParser(path);
+	tileMapParser.parse();
+	const TileMapData& tileMapData = tileMapParser.getTileMapData();
+
+	createLevel(scene, tileMapData);
+	sceneManager.requestSceneChange("DemoNetworkingLevel");
 }
 
-void LevelCreatorBehaviourScript::createPlayer(Scene* scene, const TileMapData& tileMapData) {
-    if (scene == nullptr) {
-        std::runtime_error("Scene is null in LevelCreatorBehaviourScript::createPlayer");
-    }
+void LevelCreatorBehaviourScript::createPlayer(Scene* scene, const TileMapData& tileMapData)
+{
+	if (scene == nullptr)
+	{
+		std::runtime_error("Scene is null in LevelCreatorBehaviourScript::createPlayer");
+	}
 
 	GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
 
