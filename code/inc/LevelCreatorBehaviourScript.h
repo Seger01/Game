@@ -29,6 +29,8 @@ private:
 
 private:
     FSConverter mFsConverter;
+    bool mPlayerPositionSet = false;
+    TileMapData mTileMapData;
 };
 
 #endif

@@ -1,2 +1,2 @@
-# Game_project_template
-This repo is an example and starting point for creating a game with the Engine-BRAVO game engine.
+# Bullet Bravo
+This repo is the validation app and game for the engine bravo game engine.

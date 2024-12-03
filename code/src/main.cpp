@@ -8,29 +8,34 @@
 
 void init()
 {
-  EngineBravo::getInstance().initialize();
-  SceneManager &sceneManager = EngineBravo::getInstance().getSceneManager();
+	EngineBravo::getInstance().initialize();
+	SceneManager& sceneManager = EngineBravo::getInstance().getSceneManager();
 
-  Scene *scene = sceneManager.createScene("SplashScreenScene");
-  GameObject *initObject = new GameObject;
-  initObject->addComponent<SplashScreenBehaviourScript>();
+	Scene* scene = sceneManager.createScene("SplashScreenScene");
+	GameObject* initObject = new GameObject;
+	initObject->addComponent<SplashScreenBehaviourScript>();
 
-  scene->addGameObject(initObject);
+	scene->addGameObject(initObject);
 
-  int cameraID = scene->addCamera();
-  scene->setActiveCamera(cameraID);
+	Camera* camera = new Camera;
+	camera->setTag("MainCamera");
+	camera->setActive(true);
 
-  scene->getActiveCamera().setTransform(Transform(Vector2(100, 100)));
-  scene->getActiveCamera().setWidth(200);
-  scene->getActiveCamera().setHeight(200);
+	camera->setTransform(Transform(Vector2(100, 100)));
+	camera->setWidth(200);
+	camera->setHeight(200);
 
-  sceneManager.requestSceneChange("SplashScreenScene");
+	scene->addGameObject(camera);
 
-  EngineBravo::getInstance().run();
+	sceneManager.requestSceneChange("SplashScreenScene");
 
-  return;
+	EngineBravo::getInstance().run();
+
+	return;
 }
-int main() {
-  init();
-  return 0;
+
+int main()
+{
+	init();
+	return 0;
 }

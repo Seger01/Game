@@ -16,185 +16,200 @@
 SpriteDef buttonUpSpriteDef = {"Dungeontileset/0x72_DungeonTilesetII_v1.7.png", Rect{16, 208, 16, 16}, 16, 16};
 SpriteDef buttonDownSpriteDef = {"Dungeontileset/0x72_DungeonTilesetII_v1.7.png", Rect{32, 208, 16, 16}, 16, 16};
 
-void DemoManagerBehaviourScript::createFirstScene() {
-    EngineBravo& engine = EngineBravo::getInstance();
-    SceneManager& sceneManager = engine.getSceneManager();
+void DemoManagerBehaviourScript::createFirstScene()
+{
+	EngineBravo& engine = EngineBravo::getInstance();
+	SceneManager& sceneManager = engine.getSceneManager();
 
-    Scene* scene = sceneManager.createScene("DemoScene1");
-    if (scene == nullptr) {
-        exit(1);
-    }
+	Scene* scene = sceneManager.createScene("DemoScene1");
+	if (scene == nullptr)
+	{
+		exit(1);
+	}
 
-    int cameraID = scene->addCamera();
-    scene->setActiveCamera(cameraID);
+	Camera* camera = new Camera;
+	camera->setTag("MainCamera");
+	camera->setActive(true);
 
-    scene->getActiveCamera().setTransform(Transform(Vector2(80, 96)));
-    scene->getActiveCamera().setWidth(16 * 30);
-    scene->getActiveCamera().setHeight(9 * 30);
+	camera->setTransform(Transform(Vector2(80, 96)));
+	camera->setWidth(16 * 30);
+	camera->setHeight(9 * 30);
 
-    std::string path = FSConverter().getResourcePath("LevelDefs/demoLevel1.json");
+	scene->addGameObject(camera);
 
-    TileMapParser tileMapParser(path);
-    tileMapParser.parse();
-    const TileMapData& tileMapData = tileMapParser.getTileMapData();
+	std::string path = FSConverter().getResourcePath("LevelDefs/demoLevel1.json");
 
-    LevelCreatorBehaviourScript().createLevel(scene, tileMapData);
-    GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
+	TileMapParser tileMapParser(path);
+	tileMapParser.parse();
+	const TileMapData& tileMapData = tileMapParser.getTileMapData();
 
-    defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
+	LevelCreatorBehaviourScript().createLevel(scene, tileMapData);
+	GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
 
-    scene->addPersistentGameObject(defaultPlayerPrefab);
+	defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
 
-    GameObject* button = new GameObject;
-    button->setTransform(Transform(Vector2(208, 128)));
+	scene->addPersistentGameObject(defaultPlayerPrefab);
 
-    Sprite* buttonDownSprite = EngineBravo::getInstance().getResourceManager().createSprite(buttonDownSpriteDef);
-    buttonDownSprite->setLayer(1);
-    buttonDownSprite->setTag("ButtonDownSprite");
-    buttonDownSprite->setActive(false);
-    Sprite* buttonUpSprite = EngineBravo::getInstance().getResourceManager().createSprite(buttonUpSpriteDef);
-    buttonUpSprite->setLayer(1);
-    buttonUpSprite->setTag("ButtonUpSprite");
-    buttonDownSprite->setActive(true);
+	GameObject* button = new GameObject;
+	button->setTransform(Transform(Vector2(208, 128)));
 
-    button->addComponent(buttonDownSprite);
-    button->addComponent(buttonUpSprite);
+	Sprite* buttonDownSprite = EngineBravo::getInstance().getResourceManager().createSprite(buttonDownSpriteDef);
+	buttonDownSprite->setLayer(1);
+	buttonDownSprite->setTag("ButtonDownSprite");
+	buttonDownSprite->setActive(false);
+	Sprite* buttonUpSprite = EngineBravo::getInstance().getResourceManager().createSprite(buttonUpSpriteDef);
+	buttonUpSprite->setLayer(1);
+	buttonUpSprite->setTag("ButtonUpSprite");
+	buttonDownSprite->setActive(true);
 
-    button->addComponent<DemoButtonBehaviourScript>();
-    button->addComponent<RigidBody>();
+	button->addComponent(buttonDownSprite);
+	button->addComponent(buttonUpSprite);
 
-    BoxCollider* boxCollider = new BoxCollider();
-    boxCollider->setWidth(buttonUpSprite->getWidth());
-    boxCollider->setHeight(buttonUpSprite->getHeight());
-    boxCollider->setTrigger(true);
+	button->addComponent<DemoButtonBehaviourScript>();
+	button->addComponent<RigidBody>();
 
-    button->addComponent(boxCollider);
+	BoxCollider* boxCollider = new BoxCollider();
+	boxCollider->setWidth(buttonUpSprite->getWidth());
+	boxCollider->setHeight(buttonUpSprite->getHeight());
+	boxCollider->setTrigger(true);
 
-    scene->addGameObject(button);
+	button->addComponent(boxCollider);
 
-    GameObject* endOfLevelTrigger = new GameObject;
-    endOfLevelTrigger->setTransform(Transform(Vector2(260, 64)));
-    endOfLevelTrigger->setTag("EndOfLevelTrigger");
-    endOfLevelTrigger->addComponent<DemoEndOfLevelTriggerBehaviourScript>();
+	scene->addGameObject(button);
 
-    endOfLevelTrigger->addComponent<RigidBody>();
-    BoxCollider* endOfLevelTriggerCollider = new BoxCollider();
-    endOfLevelTriggerCollider->setWidth(16);
-    endOfLevelTriggerCollider->setHeight(16);
-    endOfLevelTriggerCollider->setTrigger(true);
-    endOfLevelTrigger->addComponent(endOfLevelTriggerCollider);
+	GameObject* endOfLevelTrigger = new GameObject;
+	endOfLevelTrigger->setTransform(Transform(Vector2(260, 64)));
+	endOfLevelTrigger->setTag("EndOfLevelTrigger");
+	endOfLevelTrigger->addComponent<DemoEndOfLevelTriggerBehaviourScript>();
 
-    scene->addGameObject(endOfLevelTrigger);
+	endOfLevelTrigger->addComponent<RigidBody>();
+	BoxCollider* endOfLevelTriggerCollider = new BoxCollider();
+	endOfLevelTriggerCollider->setWidth(16);
+	endOfLevelTriggerCollider->setHeight(16);
+	endOfLevelTriggerCollider->setTrigger(true);
+	endOfLevelTrigger->addComponent(endOfLevelTriggerCollider);
 
-    sceneManager.requestSceneChange("DemoScene1");
+	scene->addGameObject(endOfLevelTrigger);
+
+	sceneManager.requestSceneChange("DemoScene1");
 }
 
-void DemoManagerBehaviourScript::createSecondScene() {
-    EngineBravo& engine = EngineBravo::getInstance();
-    SceneManager& sceneManager = engine.getSceneManager();
+void DemoManagerBehaviourScript::createSecondScene()
+{
+	EngineBravo& engine = EngineBravo::getInstance();
+	SceneManager& sceneManager = engine.getSceneManager();
 
-    Scene* scene = sceneManager.createScene("DemoScene2");
-    if (scene == nullptr) {
-        exit(1);
-    }
+	Scene* scene = sceneManager.createScene("DemoScene2");
+	if (scene == nullptr)
+	{
+		exit(1);
+	}
 
-    // set starting pos for player in this scene
-    // GameObject* playerObject = sceneManager.getCurrentScene()->getGameObjectsWithTag("Player").at(0);
-    // playerObject->setTransform(Transform(Vector2(40, 40)));
-    GameObject* playerObject =
-        EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
-    // std::cout << "Setting player transform" << std::endl;
-    playerObject->setTransform(Transform(Vector2(40, 40)));
+	// set starting pos for player in this scene
+	// GameObject* playerObject = sceneManager.getCurrentScene()->getGameObjectsWithTag("Player").at(0);
+	// playerObject->setTransform(Transform(Vector2(40, 40)));
+	GameObject* playerObject =
+		EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
+	// std::cout << "Setting player transform" << std::endl;
+	playerObject->setTransform(Transform(Vector2(40, 40)));
 
-    int cameraID = scene->addCamera();
-    scene->setActiveCamera(cameraID);
+	Camera* camera = new Camera;
+	camera->setTag("MainCamera");
+	camera->setActive(true);
 
-    scene->getActiveCamera().setTransform(Transform(Vector2(80, 96)));
-    scene->getActiveCamera().setWidth(16 * 30);
-    scene->getActiveCamera().setHeight(9 * 30);
+	camera->setTransform(Transform(Vector2(80, 96)));
+	camera->setWidth(16 * 30);
+	camera->setHeight(9 * 30);
 
-    std::string path = FSConverter().getResourcePath("LevelDefs/demoLevel2.json");
+	scene->addGameObject(camera);
 
-    TileMapParser tileMapParser(path);
-    tileMapParser.parse();
-    const TileMapData& tileMapData = tileMapParser.getTileMapData();
+	std::string path = FSConverter().getResourcePath("LevelDefs/demoLevel2.json");
 
-    LevelCreatorBehaviourScript().createLevel(scene, tileMapData);
-    // GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
-    //
-    // defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
-    //
-    // scene->addPersistentGameObject(defaultPlayerPrefab);
+	TileMapParser tileMapParser(path);
+	tileMapParser.parse();
+	const TileMapData& tileMapData = tileMapParser.getTileMapData();
 
-    // GameObject* button = new GameObject;
-    // button->setTransform(Transform(Vector2(208, 128)));
-    //
-    // Sprite* buttonDownSprite = EngineBravo::getInstance().getResourceManager().createSprite(buttonDownSpriteDef);
-    // buttonDownSprite->setLayer(1);
-    // buttonDownSprite->setTag("ButtonDownSprite");
-    // buttonDownSprite->setActive(false);
-    // Sprite* buttonUpSprite = EngineBravo::getInstance().getResourceManager().createSprite(buttonUpSpriteDef);
-    // buttonUpSprite->setLayer(1);
-    // buttonUpSprite->setTag("ButtonUpSprite");
-    // buttonDownSprite->setActive(true);
-    //
-    // button->addComponent(buttonDownSprite);
-    // button->addComponent(buttonUpSprite);
-    //
-    // button->addComponent<DemoButtonBehaviourScript>();
-    // button->addComponent<RigidBody>();
-    //
-    // BoxCollider* boxCollider = new BoxCollider();
-    // boxCollider->setWidth(buttonUpSprite->getWidth());
-    // boxCollider->setHeight(buttonUpSprite->getHeight());
-    // boxCollider->setTrigger(true);
-    //
-    // button->addComponent(boxCollider);
-    //
-    // scene->addGameObject(button);
+	LevelCreatorBehaviourScript().createLevel(scene, tileMapData);
+	// GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
+	//
+	// defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
+	//
+	// scene->addPersistentGameObject(defaultPlayerPrefab);
 
-    GameObject* endOfLevelTrigger = new GameObject;
-    endOfLevelTrigger->setTransform(Transform(Vector2(125, 65)));
-    endOfLevelTrigger->setTag("EndOfLevelTrigger");
-    endOfLevelTrigger->addComponent<DemoEndOfLevelTriggerBehaviourScript>();
+	// GameObject* button = new GameObject;
+	// button->setTransform(Transform(Vector2(208, 128)));
+	//
+	// Sprite* buttonDownSprite = EngineBravo::getInstance().getResourceManager().createSprite(buttonDownSpriteDef);
+	// buttonDownSprite->setLayer(1);
+	// buttonDownSprite->setTag("ButtonDownSprite");
+	// buttonDownSprite->setActive(false);
+	// Sprite* buttonUpSprite = EngineBravo::getInstance().getResourceManager().createSprite(buttonUpSpriteDef);
+	// buttonUpSprite->setLayer(1);
+	// buttonUpSprite->setTag("ButtonUpSprite");
+	// buttonDownSprite->setActive(true);
+	//
+	// button->addComponent(buttonDownSprite);
+	// button->addComponent(buttonUpSprite);
+	//
+	// button->addComponent<DemoButtonBehaviourScript>();
+	// button->addComponent<RigidBody>();
+	//
+	// BoxCollider* boxCollider = new BoxCollider();
+	// boxCollider->setWidth(buttonUpSprite->getWidth());
+	// boxCollider->setHeight(buttonUpSprite->getHeight());
+	// boxCollider->setTrigger(true);
+	//
+	// button->addComponent(boxCollider);
+	//
+	// scene->addGameObject(button);
 
-    endOfLevelTrigger->addComponent<RigidBody>();
-    BoxCollider* endOfLevelTriggerCollider = new BoxCollider();
-    endOfLevelTriggerCollider->setWidth(16);
-    endOfLevelTriggerCollider->setHeight(16);
-    endOfLevelTriggerCollider->setTrigger(true);
-    endOfLevelTrigger->addComponent(endOfLevelTriggerCollider);
+	GameObject* endOfLevelTrigger = new GameObject;
+	endOfLevelTrigger->setTransform(Transform(Vector2(125, 65)));
+	endOfLevelTrigger->setTag("EndOfLevelTrigger");
+	endOfLevelTrigger->addComponent<DemoEndOfLevelTriggerBehaviourScript>();
 
-    scene->addGameObject(endOfLevelTrigger);
+	endOfLevelTrigger->addComponent<RigidBody>();
+	BoxCollider* endOfLevelTriggerCollider = new BoxCollider();
+	endOfLevelTriggerCollider->setWidth(16);
+	endOfLevelTriggerCollider->setHeight(16);
+	endOfLevelTriggerCollider->setTrigger(true);
+	endOfLevelTrigger->addComponent(endOfLevelTriggerCollider);
 
-    sceneManager.requestSceneChange("DemoScene2");
+	scene->addGameObject(endOfLevelTrigger);
+
+	sceneManager.requestSceneChange("DemoScene2");
 }
 
-void DemoManagerBehaviourScript::nextScene() {
-    mCurrentScene++;
-    switch (mCurrentScene) {
-    case 1:
-        createSecondScene();
-        break;
-    default:
-        break;
-    }
+void DemoManagerBehaviourScript::nextScene()
+{
+	mCurrentScene++;
+	switch (mCurrentScene)
+	{
+	case 1:
+		createSecondScene();
+		break;
+	default:
+		break;
+	}
 }
 
-void DemoManagerBehaviourScript::onStart() {
-    std::cout << "DemoInitBehaviourScript::onStart()" << std::endl;
+void DemoManagerBehaviourScript::onStart()
+{
+	std::cout << "DemoInitBehaviourScript::onStart()" << std::endl;
 
-    mCurrentScene = 0;
-    createFirstScene();
+	mCurrentScene = 0;
+	createFirstScene();
 }
 
-void DemoManagerBehaviourScript::onUpdate() {
-    Input& input = Input::getInstance();
+void DemoManagerBehaviourScript::onUpdate()
+{
+	Input& input = Input::getInstance();
 
-    if (input.GetKeyDown(Key::Key_Space)) {
-        GameObject* playerObject =
-            EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
-        std::cout << "Setting player transform" << std::endl;
-        playerObject->setTransform(Transform(Vector2(40, 40)));
-    }
+	if (input.GetKeyDown(Key::Key_Space))
+	{
+		GameObject* playerObject =
+			EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
+		std::cout << "Setting player transform" << std::endl;
+		playerObject->setTransform(Transform(Vector2(40, 40)));
+	}
 }
