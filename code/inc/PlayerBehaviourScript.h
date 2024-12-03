@@ -14,12 +14,20 @@ public:
 
     std::unique_ptr<Component> clone() const override { return std::make_unique<PlayerBehaviourScript>(*this); }
 
+    float getHealth();
+    void setHealth(float aHealth);
+    float getMaxHealth();
+    void setMaxHealth(float aMaxHealth);
+    int getECCount();
+    void setECCount(int aECCount);
+    int getBSCount();
+    void setBSCount(int aBSCount);
+
 private:
     std::string currentActiveAnimationTag();
 
     void setFlipX(bool aState);
     void setFlipY(bool aState);
-
     void toggleAnimaionEnabled();
     void setAnimationActive(std::string aAnimationTag, bool aState);
     void deactivateAllAnimations();
@@ -28,6 +36,12 @@ private:
     void handleMovement();
     void hanldeCameraMovement();
     void fireBullet(Point mousePosition);
+
+private:
+    int mECCount;
+    int mBSCount;
+    float mHealth;
+    float mMaxHealth;
 };
 
 #endif

@@ -6,7 +6,9 @@
 #include "LevelManagerBehaviourScript.h"
 #include "LevelManagerPrefab.h"
 #include "MainMenuPrefab.h"
+#include "DemoLevel2Behaviour.h"
 #include "PlayerPrefab.h"
+#include "EnemyPrefab.h"
 #include <EngineBravo.h>
 #include <GameObject.h>
 #include <Scene.h>
@@ -36,12 +38,12 @@ void DemoManagerBehaviourScript::createFirstScene() {
 
     TileMapParser tileMapParser(path);
     tileMapParser.parse();
-    const TileMapData& tileMapData = tileMapParser.getTileMapData();
+    mTileMapData = tileMapParser.getTileMapData();
 
-    LevelCreatorBehaviourScript().createLevel(scene, tileMapData);
+    LevelCreatorBehaviourScript().createLevel(scene, mTileMapData);
     GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
 
-    defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
+    //defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
 
     scene->addPersistentGameObject(defaultPlayerPrefab);
 
@@ -87,6 +89,8 @@ void DemoManagerBehaviourScript::createFirstScene() {
     scene->addGameObject(endOfLevelTrigger);
 
     sceneManager.requestSceneChange("DemoScene1");
+
+    mPlayerPositionSet = false;
 }
 
 void DemoManagerBehaviourScript::createSecondScene() {
@@ -104,7 +108,7 @@ void DemoManagerBehaviourScript::createSecondScene() {
     GameObject* playerObject =
         EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
     // std::cout << "Setting player transform" << std::endl;
-    playerObject->setTransform(Transform(Vector2(40, 40)));
+    //playerObject->setTransform(Transform(Vector2(40, 40)));
 
     int cameraID = scene->addCamera();
     scene->setActiveCamera(cameraID);
@@ -117,9 +121,9 @@ void DemoManagerBehaviourScript::createSecondScene() {
 
     TileMapParser tileMapParser(path);
     tileMapParser.parse();
-    const TileMapData& tileMapData = tileMapParser.getTileMapData();
+    mTileMapData = tileMapParser.getTileMapData();
 
-    LevelCreatorBehaviourScript().createLevel(scene, tileMapData);
+    LevelCreatorBehaviourScript().createLevel(scene, mTileMapData);
     // GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
     //
     // defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
@@ -167,7 +171,33 @@ void DemoManagerBehaviourScript::createSecondScene() {
 
     scene->addGameObject(endOfLevelTrigger);
 
+    GameObject* enemyMoving = EnemyPrefab().createEnemyPrefab();
+    GameObject* enemyStatic = EnemyPrefab().createEnemyPrefab();
+
+    enemyMoving->setTransform(Transform(Vector2(112, 112)));
+    enemyMoving->setTag("EnemyMoving");
+ 
+
+    enemyStatic->setTransform(Transform(Vector2(40, 84)));
+    enemyStatic->setTag("EnemyStatic");
+    if (enemyStatic->hasComponent<RigidBody>()) {
+        enemyStatic->getComponents<RigidBody>().at(0)->setCanRotate(true);
+    }
+    else {
+        std::cout << "Enemystatic does not have a RigidBody component" << std::endl;
+    }
+
+    scene->addGameObject(enemyMoving);
+    scene->addGameObject(enemyStatic);
+
+    GameObject* level2 = new GameObject;
+    level2->addComponent<DemoLevel2Behaviour>();
+
+    scene->addGameObject(level2);
+
     sceneManager.requestSceneChange("DemoScene2");
+
+    mPlayerPositionSet = false;
 }
 
 void DemoManagerBehaviourScript::nextScene() {
@@ -197,4 +227,24 @@ void DemoManagerBehaviourScript::onUpdate() {
         std::cout << "Setting player transform" << std::endl;
         playerObject->setTransform(Transform(Vector2(40, 40)));
     }
+
+    if (!mPlayerPositionSet)
+	{
+		EngineBravo& engine = EngineBravo::getInstance();
+		SceneManager& sceneManager = engine.getSceneManager();
+		Scene* currentScene = sceneManager.getCurrentScene();
+
+		if (currentScene != nullptr)
+		{
+			std::vector<GameObject*> persistentObjects = currentScene->getPersistentGameObjects();
+			auto playerIt = std::find_if(persistentObjects.begin(), persistentObjects.end(),
+										 [](GameObject* obj) { return obj->getTag() == "Player"; });
+
+			if (playerIt != persistentObjects.end())
+			{
+				LevelCreatorBehaviourScript().setPlayerStartPosition(currentScene, mTileMapData);
+				mPlayerPositionSet = true; // Set the flag to true
+			}
+		}
+	}
 }
