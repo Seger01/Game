@@ -10,20 +10,18 @@ void AudioBehaviourScript::onUpdate() {
     EngineBravo& engine = EngineBravo::getInstance();
     SceneManager& sceneManager = engine.getSceneManager();
 
-    if (sceneManager.getCurrentScene()->getName() == "Level-1") {
-        Input& input = Input::getInstance();
-        if (input.GetKeyDown(Key::Key_P)) {
-            mGameObject->getComponentsWithTag<AudioSource>("gun")[0]->play();
-        }
+    Input& input = Input::getInstance();
+    if (input.GetKeyDown(Key::Key_P)) {
+        mGameObject->getComponentsWithTag<AudioSource>("gun")[0]->play();
+    }
 
-        AudioManager& audioManager = EngineBravo::getInstance().getAudioManager();
-        AudioSource* step = mGameObject->getComponentsWithTag<AudioSource>("step")[0];
-        if ((input.GetKey(Key::Key_W) || input.GetKey(Key::Key_A) || input.GetKey(Key::Key_S) ||
-             input.GetKey(Key::Key_D)) &&
-            !audioManager.getFacade().isPlaying(step->getFileName())) {
+    AudioManager& audioManager = EngineBravo::getInstance().getAudioManager();
+    AudioSource* step = mGameObject->getComponentsWithTag<AudioSource>("step")[0];
+    if ((input.GetKey(Key::Key_W) || input.GetKey(Key::Key_A) || input.GetKey(Key::Key_S) ||
+         input.GetKey(Key::Key_D)) &&
+        !audioManager.getFacade().isPlaying(step->getFileName())) {
 
-            step->play();
-        }
+        step->play();
     }
 }
 
