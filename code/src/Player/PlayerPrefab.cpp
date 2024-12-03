@@ -49,13 +49,16 @@ GameObject* PlayerPrefabFactory::createPlayerPrefab()
 	GameObject* defaultPlayerPrefab = new GameObject;
 	defaultPlayerPrefab->setName("Player");
 	setTransform(defaultPlayerPrefab);
-	// if (EngineBravo::getInstance().getNetworkManager().isNetworked()) {
-	//     defaultPlayerPrefab->addComponent<NetworkObject>();
-	//     addNetworkTransform(defaultPlayerPrefab);
-	//     addNetworkBehaviourScript(defaultPlayerPrefab);
-	// } else {
-	addPlayerBehaviourScript(defaultPlayerPrefab);
-	// }
+	if (EngineBravo::getInstance().getNetworkManager().isNetworked())
+	{
+		defaultPlayerPrefab->addComponent<NetworkObject>();
+		addNetworkTransform(defaultPlayerPrefab);
+		addNetworkBehaviourScript(defaultPlayerPrefab);
+	}
+	else
+	{
+		addPlayerBehaviourScript(defaultPlayerPrefab);
+	}
 
 	setTag(defaultPlayerPrefab);
 	addAnimations(defaultPlayerPrefab);
