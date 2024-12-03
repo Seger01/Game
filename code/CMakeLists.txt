@@ -12,9 +12,12 @@ option(ENABLE_DEBUG "Enable debug mode" OFF)
 
 if(ENABLE_DEBUG)
     message(STATUS "Debug mode enabled")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
+    set(CMAKE_BUILD_TYPE Debug)
+    add_compile_options(-g -O0)
 else()
     message(STATUS "Debug mode disabled")
+    set(CMAKE_BUILD_TYPE Release)
+    add_compile_options(-O3)  # Optimization flag for Release build
 endif()
 
 # Disable the ENABLE_TESTGAME option for the Engine-Bravo library
