@@ -7,6 +7,8 @@
 
 #include <iostream>
 
+SplashScreenBehaviourScript::SplashScreenBehaviourScript() : splashScreenPrefab(*(SplashScreenPrefab::create())) {}
+
 void SplashScreenBehaviourScript::onStart()
 {
 	std::cout << "SplashScreenBehaviourScript::onStart()" << std::endl;
@@ -28,8 +30,8 @@ void SplashScreenBehaviourScript::onStart()
 	initScene->addGameObject(camera);
 
 	Scene* splashScreenScene = sceneManager.getCurrentScene();
-	splashScreenPrefab = SplashScreenPrefab::create();
-	splashScreenScene->addGameObject(splashScreenPrefab);
+	// splashScreenPrefab = SplashScreenPrefab::create();
+	splashScreenScene->addGameObject(&splashScreenPrefab);
 
 	startTime = std::chrono::system_clock::now();
 }
@@ -40,9 +42,10 @@ void SplashScreenBehaviourScript::onUpdate()
 	std::chrono::duration<double> elapsedTime = currentTime - startTime;
 	Input& input = Input::getInstance();
 
-    if (elapsedTime.count() > 2 || input.GetKeyDown(Key::Key_Space)) {
-        SceneManager& sceneManager = EngineBravo::getInstance().getSceneManager();
-        sceneManager.getCurrentScene()->requestGameObjectRemoval(splashScreenPrefab);
-        sceneManager.requestSceneChange("InitScene");
-    }
+	if (elapsedTime.count() > 2 || input.GetKeyDown(Key::Key_Space))
+	{
+		SceneManager& sceneManager = EngineBravo::getInstance().getSceneManager();
+		// sceneManager.getCurrentScene()->requestGameObjectRemoval(&splashScreenPrefab);
+		sceneManager.requestSceneChange("InitScene");
+	}
 }
