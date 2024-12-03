@@ -58,18 +58,19 @@ Button* MainMenuPrefabFactory::createDefaultButton(GameObject* gameObject, Scene
 	buttonTextObj->setParent(buttonObject);
 	buttonTextObj->setTag(buttonText);
 
-	Sprite* buttonSprite = engine.getResourceManager().createSprite(buttonSpriteDef);
-	buttonSprite->setLayer(1);
-	buttonObject->addComponent(buttonSprite);
-	int width = 0;
-	int height = 0;
-	engine.getRenderSystem().getTextSize(buttonTextObj->getFont(), buttonTextObj->getText(), width, height,
-										 buttonTextObj->getScale());
-	width += 2;
-	height += 2;
-	buttonSprite->setWidth(width);
-	buttonSprite->setHeight(height);
-	buttonSprite->setRelativePosition(Transform(Vector2(-1, -1)));
+    Sprite* buttonSprite = engine.getResourceManager().createSprite(buttonSpriteDef);
+    buttonSprite->setLayer(1);
+    buttonObject->addComponent(buttonSprite);
+    int width = 0;
+    int height = 0;
+    buttonSprite->setColorFilter({255, 255, 255, 100});
+    engine.getRenderSystem().getTextSize(buttonTextObj->getFont(), buttonTextObj->getText(), width, height,
+                                         buttonTextObj->getScale());
+    width += 2;
+    height += 2;
+    buttonSprite->setWidth(width);
+    buttonSprite->setHeight(height);
+    buttonSprite->setRelativePosition(Transform(Vector2(-1, -1)));
 
 	buttonObject->setWidth(width);
 	buttonObject->setHeight(height);

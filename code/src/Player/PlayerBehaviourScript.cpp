@@ -64,14 +64,10 @@ void PlayerBehaviourScript::setFlipY(bool aState)
 	}
 }
 
-ParticleEmitter* emitter = nullptr;
-
-void PlayerBehaviourScript::deactivateAllAnimations()
-{
-	for (auto animation : mGameObject->getComponents<Animation>())
-	{
-		animation->setActive(false);
-	}
+void PlayerBehaviourScript::deactivateAllAnimations() {
+    for (auto animation : mGameObject->getComponents<Animation>()) {
+        animation->setActive(false);
+    }
 }
 
 void PlayerBehaviourScript::setAnimationActive(std::string aAnimationTag, bool aState)

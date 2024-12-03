@@ -3,6 +3,7 @@
 #include "DemoManagerBehaviourScript.h"
 #include "EngineBravo.h"
 #include "LevelManagerBehaviourScript.h"
+#include "NetworkSelectionBehaviourScript.h"
 
 MainMenuBehaviourScript::MainMenuBehaviourScript() {}
 
@@ -28,6 +29,11 @@ void MainMenuBehaviourScript::onStart() {
          EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("ExitButton")) {
         Button* buttonObject = dynamic_cast<Button*>(button);
         buttonObject->setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onExitRelease, this));
+    }
+    for (GameObject* button :
+         EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("DemoMultiButton")) {
+        Button* buttonObject = dynamic_cast<Button*>(button);
+        buttonObject->setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onDemoMultiRelease, this));
     }
 }
 
@@ -60,3 +66,20 @@ void MainMenuBehaviourScript::onDemoRelease() {
 }
 
 void MainMenuBehaviourScript::onExitRelease() { std::cout << "adfljasdflkjafds to exit game" << std::endl; }
+
+void MainMenuBehaviourScript::onDemoMultiRelease() {
+    std::cout << "Wanted to play demo multiplayer" << std::endl;
+    Scene* scene = EngineBravo::getInstance().getSceneManager().createScene("networkSelectionScene");
+    GameObject* networkSelectionObject = new GameObject;
+    networkSelectionObject->addComponent<NetworkSelectionBehaviourScript>();
+    scene->addGameObject(networkSelectionObject);
+
+    int cameraID = scene->addCamera();
+    scene->setActiveCamera(cameraID);
+
+    scene->getActiveCamera().setTransform(Transform(Vector2(100, 100)));
+    scene->getActiveCamera().setWidth(200);
+    scene->getActiveCamera().setHeight(200);
+
+    EngineBravo::getInstance().getSceneManager().requestSceneChange("networkSelectionScene");
+}

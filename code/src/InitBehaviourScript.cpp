@@ -51,8 +51,12 @@ void InitBehaviourScript::createMainMenu()
 												menuStartY);
 	menuStartY += 20;
 
-	MainMenuPrefabFactory().createDefaultButton(MainMenuObject, scene, "Exit", "ExitButton", "Exit", menuStartX,
-												menuStartY);
+    MainMenuPrefabFactory().createDefaultButton(MainMenuObject, scene, "Demo Multiplayer", "DemoMultiButton",
+                                                "Demo Multiplayer", menuStartX, menuStartY);
+    menuStartY += 20;
+
+    MainMenuPrefabFactory().createDefaultButton(MainMenuObject, scene, "Exit", "ExitButton", "Exit", menuStartX,
+                                                menuStartY);
 
 	scene->addGameObject(MainMenuObject);
 	// int cameraID = scene->addCamera();

@@ -40,17 +40,9 @@ void SplashScreenBehaviourScript::onUpdate()
 	std::chrono::duration<double> elapsedTime = currentTime - startTime;
 	Input& input = Input::getInstance();
 
-	if (input.GetKeyDown(Key::Key_Space))
-	{
-		SceneManager& sceneManager = EngineBravo::getInstance().getSceneManager();
-		sceneManager.getCurrentScene()->requestGameObjectRemoval(splashScreenPrefab);
-		sceneManager.requestSceneChange("InitScene");
-	}
-
-	if (elapsedTime.count() > 2)
-	{
-		SceneManager& sceneManager = EngineBravo::getInstance().getSceneManager();
-		sceneManager.getCurrentScene()->requestGameObjectRemoval(splashScreenPrefab);
-		sceneManager.requestSceneChange("InitScene");
-	}
+    if (elapsedTime.count() > 2 || input.GetKeyDown(Key::Key_Space)) {
+        SceneManager& sceneManager = EngineBravo::getInstance().getSceneManager();
+        sceneManager.getCurrentScene()->requestGameObjectRemoval(splashScreenPrefab);
+        sceneManager.requestSceneChange("InitScene");
+    }
 }
