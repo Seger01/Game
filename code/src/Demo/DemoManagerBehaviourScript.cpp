@@ -132,9 +132,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 	// playerObject->setTransform(Transform(Vector2(40, 40)));
 	GameObject* playerObject =
 		EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
-
-	std::cout << "Setting player transform" << std::endl;
-	// playerObject->setTransform(Transform(Vector2(40, 40)));
+	playerObject->setTransform(Transform(Vector2(40, 40)));
 	//  playerObject->setTransform(Transform(Vector2(40, 40)));
 
 	Camera* camera = new Camera;
@@ -247,7 +245,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 
 	sceneManager.requestSceneChange("DemoScene2");
 
-	mPlayerPositionSet = false;
+	mPlayerPositionSet = true;
 
 	saveGame();
 }
