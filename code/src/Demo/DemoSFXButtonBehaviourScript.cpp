@@ -17,12 +17,20 @@ void DemoSFXButtonBehaviourScript::onCollide(GameObject* aGameObject)
 	EngineBravo& engine = EngineBravo::getInstance();
 	SceneManager& sceneManager = engine.getSceneManager();
 	Scene* scene = sceneManager.getCurrentScene();
+    AudioManager& audioManager = engine.getAudioManager();
 	if (!scene)
 		return;
 
 	if (mGameObject->getTag() == "ButtonSFX")
-	{
-		playSFX();
+	{   
+        if (audioManager.getFacade().isPlaying("Audio/gun1.wav"))
+        {
+            return;
+        }
+        else
+        {
+            playSFX();
+        }
 	}
 }
 
@@ -46,7 +54,7 @@ void DemoSFXButtonBehaviourScript::updateButtonState()
 				component->setActive(false);
 			}
 		}
-        
+
 	}
 	else
 	{
@@ -76,6 +84,6 @@ void DemoSFXButtonBehaviourScript::playSFX()
 		audioManager.loadSound(audio);
 	}
 
-
+    
 	audioManager.play(audio);
 }

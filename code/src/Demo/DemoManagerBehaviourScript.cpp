@@ -97,10 +97,10 @@ void DemoManagerBehaviourScript::createSecondScene()
 	// set starting pos for player in this scene
 	// GameObject* playerObject = sceneManager.getCurrentScene()->getGameObjectsWithTag("Player").at(0);
 	// playerObject->setTransform(Transform(Vector2(40, 40)));
-	GameObject* playerObject =
-		EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
+	//GameObject* playerObject =
+	//	EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
 
-	std::cout << "Setting player transform" << std::endl;
+	//std::cout << "Setting player transform" << std::endl;
 	//playerObject->setTransform(Transform(Vector2(40, 40)));
 	// playerObject->setTransform(Transform(Vector2(40, 40)));
 
@@ -121,6 +121,13 @@ void DemoManagerBehaviourScript::createSecondScene()
 	mTileMapData = tileMapParser.getTileMapData();
 
 	LevelCreatorBehaviourScript().createLevel(scene, mTileMapData);
+	GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
+
+	// defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
+
+	defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
+
+	scene->addPersistentGameObject(defaultPlayerPrefab);
 
 	//Add button for starting and stopping music
 	GameObject* buttonMusic = DemoButtonPrefab().createButtonPrefab();
@@ -154,7 +161,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 	//Add button for SFX
 	GameObject* buttonSFX = DemoButtonPrefab().createButtonPrefab();
 	buttonSFX->setTag("ButtonSFX");
-	buttonSFX->setTransform(Transform(Vector2(540, 194)));
+	buttonSFX->setTransform(Transform(Vector2(540, 56)));
 	buttonSFX->addComponent<DemoSFXButtonBehaviourScript>();
 
 	Text* textSFX = new Text("SFX", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.4, 0.4));
@@ -164,7 +171,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 
 	scene->addGameObject(textSFX);
 	scene->addGameObject(buttonSFX);
-	
+
 	//Add enemies
 	GameObject* enemyMoving = EnemyPrefab().createEnemyPrefab();
 	GameObject* enemyStatic = EnemyPrefab().createEnemyPrefab();
@@ -232,7 +239,8 @@ void DemoManagerBehaviourScript::onStart()
 	std::cout << "DemoInitBehaviourScript::onStart()" << std::endl;
 
 	mCurrentScene = 0;
-	createFirstScene();
+	//createFirstScene();
+	createSecondScene();
 }
 
 void DemoManagerBehaviourScript::onUpdate()
