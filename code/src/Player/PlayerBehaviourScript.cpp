@@ -341,14 +341,18 @@ void PlayerBehaviourScript::onUpdate()
 
 	if (input.GetKeyDown(Key::Key_C))
 	{
-		Configuration& config = EngineBravo::getInstance().getConfiguration();
-		config.setConfig(SHOW_COLLIDERS, !config.getConfig(SHOW_COLLIDERS));
+		Camera* mainCam =
+			EngineBravo::getInstance().getSceneManager().getCurrentScene()->getCameraWithTag("MainCamera");
+
+		mainCam->getDebugOverlayRef().renderColliders = !mainCam->getDebugOverlayRef().renderColliders;
 	}
 
 	if (input.GetKeyDown(Key::Key_F))
 	{
-		Configuration& config = EngineBravo::getInstance().getConfiguration();
-		config.setConfig(SHOW_FPS, !config.getConfig(SHOW_FPS));
+		Camera* mainCam =
+			EngineBravo::getInstance().getSceneManager().getCurrentScene()->getCameraWithTag("MainCamera");
+
+		mainCam->getDebugOverlayRef().showFPS = !mainCam->getDebugOverlayRef().showFPS;
 	}
 
 	if (input.GetMouseButtonDown(MouseButton::LEFT))

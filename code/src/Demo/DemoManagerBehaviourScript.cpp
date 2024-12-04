@@ -42,13 +42,16 @@ void DemoManagerBehaviourScript::createFirstScene()
 	Camera* miniMapCamera = new Camera;
 	miniMapCamera->setTag("MiniMapCamera");
 	miniMapCamera->setActive(true);
-	miniMapCamera->setViewport(FRect{0.5, 0.5, 0.5, 0.5});
-	miniMapCamera->getDebugOverlayRef().showFPS = true;
-	miniMapCamera->getDebugOverlayRef().renderCameraViewport = true;
+	miniMapCamera->setViewport(FRect{0.7, 0.7, 0.3, 0.3});
 
-	miniMapCamera->setTransform(Transform(Vector2(80, 96)));
-	miniMapCamera->setWidth(16 * 30);
-	miniMapCamera->setHeight(9 * 30);
+	miniMapCamera->getDebugOverlayRef().renderCameraViewport = true;
+	miniMapCamera->getDebugOverlayRef().renderColliders = true;
+
+	miniMapCamera->setBackgroundColor(Color(0, 0, 150, 100));
+
+	miniMapCamera->setTransform(Transform(Vector2(170, 96)));
+	miniMapCamera->setWidth(16 * 20);
+	miniMapCamera->setHeight(9 * 20);
 
 	scene->addGameObject(miniMapCamera);
 
