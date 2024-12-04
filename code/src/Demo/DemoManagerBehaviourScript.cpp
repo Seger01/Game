@@ -3,20 +3,23 @@
 #include "DemoEndOfLevelTriggerBehaviourScript.h"
 #include "DemoLevel2Behaviour.h"
 #include "EnemyPrefab.h"
+#include "DemoSFXButtonBehaviourScript.h"
 #include "Input.h"
 #include "LevelCreatorBehaviourScript.h"
 #include "LevelManagerBehaviourScript.h"
+#include "DemoMusicButtonBehaviourScript.h"
 #include "LevelManagerPrefab.h"
 #include "MainMenuPrefab.h"
+#include "DemoButtonPrefab.h"
 #include "PlayerPrefab.h"
 #include <EngineBravo.h>
 #include <GameObject.h>
 #include <Scene.h>
 #include <SceneManager.h>
 #include <iostream>
+#include <Text.h>
 
-SpriteDef buttonUpSpriteDef = {"Dungeontileset/0x72_DungeonTilesetII_v1.7.png", Rect{16, 208, 16, 16}, 16, 16};
-SpriteDef buttonDownSpriteDef = {"Dungeontileset/0x72_DungeonTilesetII_v1.7.png", Rect{32, 208, 16, 16}, 16, 16};
+
 
 void DemoManagerBehaviourScript::createFirstScene()
 {
@@ -54,30 +57,10 @@ void DemoManagerBehaviourScript::createFirstScene()
 
 	scene->addPersistentGameObject(defaultPlayerPrefab);
 
-	GameObject* button = new GameObject;
+	GameObject* button = DemoButtonPrefab().createButtonPrefab();
 	button->setTransform(Transform(Vector2(208, 128)));
 
-	Sprite* buttonDownSprite = EngineBravo::getInstance().getResourceManager().createSprite(buttonDownSpriteDef);
-	buttonDownSprite->setLayer(1);
-	buttonDownSprite->setTag("ButtonDownSprite");
-	buttonDownSprite->setActive(false);
-	Sprite* buttonUpSprite = EngineBravo::getInstance().getResourceManager().createSprite(buttonUpSpriteDef);
-	buttonUpSprite->setLayer(1);
-	buttonUpSprite->setTag("ButtonUpSprite");
-	buttonDownSprite->setActive(true);
-
-	button->addComponent(buttonDownSprite);
-	button->addComponent(buttonUpSprite);
-
 	button->addComponent<DemoButtonBehaviourScript>();
-	button->addComponent<RigidBody>();
-
-	BoxCollider* boxCollider = new BoxCollider();
-	boxCollider->setWidth(buttonUpSprite->getWidth());
-	boxCollider->setHeight(buttonUpSprite->getHeight());
-	boxCollider->setTrigger(true);
-
-	button->addComponent(boxCollider);
 
 	scene->addGameObject(button);
 
@@ -138,57 +121,51 @@ void DemoManagerBehaviourScript::createSecondScene()
 	mTileMapData = tileMapParser.getTileMapData();
 
 	LevelCreatorBehaviourScript().createLevel(scene, mTileMapData);
-	// GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
-	//
-	// defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
-	//
-	// scene->addPersistentGameObject(defaultPlayerPrefab);
 
-	// GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
-	//
-	// defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
-	//
-	// scene->addPersistentGameObject(defaultPlayerPrefab);
+	//Add button for starting and stopping music
+	GameObject* buttonMusic = DemoButtonPrefab().createButtonPrefab();
+	buttonMusic->setTag("ButtonStartStopMusic");
+	buttonMusic->setTransform(Transform(Vector2(540, 174)));
+	buttonMusic->addComponent<DemoMusicButtonBehaviourScript>();
 
-	// GameObject* button = new GameObject;
-	// button->setTransform(Transform(Vector2(208, 128)));
-	//
-	// Sprite* buttonDownSprite = EngineBravo::getInstance().getResourceManager().createSprite(buttonDownSpriteDef);
-	// buttonDownSprite->setLayer(1);
-	// buttonDownSprite->setTag("ButtonDownSprite");
-	// buttonDownSprite->setActive(false);
-	// Sprite* buttonUpSprite = EngineBravo::getInstance().getResourceManager().createSprite(buttonUpSpriteDef);
-	// buttonUpSprite->setLayer(1);
-	// buttonUpSprite->setTag("ButtonUpSprite");
-	// buttonDownSprite->setActive(true);
-	//
-	// button->addComponent(buttonDownSprite);
-	// button->addComponent(buttonUpSprite);
-	//
-	// button->addComponent<DemoButtonBehaviourScript>();
-	// button->addComponent<RigidBody>();
-	//
-	// BoxCollider* boxCollider = new BoxCollider();
-	// boxCollider->setWidth(buttonUpSprite->getWidth());
-	// boxCollider->setHeight(buttonUpSprite->getHeight());
-	// boxCollider->setTrigger(true);
-	//
-	// button->addComponent(boxCollider);
-	//
-	// scene->addGameObject(button);
+	Text* text = new Text("Play/Stop", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.4, 0.4));
+	text->setLayer(5);
+	text->setTag("ButtonStartStopMusicText");
+	text->setParent(buttonMusic);
 
-	GameObject* endOfLevelTrigger = new GameObject;
-	endOfLevelTrigger->setTransform(Transform(Vector2(125, 65)));
-	endOfLevelTrigger->setTag("EndOfLevelTrigger");
-	endOfLevelTrigger->addComponent<DemoEndOfLevelTriggerBehaviourScript>();
+	scene->addGameObject(text);
+	scene->addGameObject(buttonMusic);
 
-	endOfLevelTrigger->addComponent<RigidBody>();
-	BoxCollider* endOfLevelTriggerCollider = new BoxCollider();
-	endOfLevelTriggerCollider->setWidth(16);
-	endOfLevelTriggerCollider->setHeight(16);
-	endOfLevelTriggerCollider->setTrigger(true);
-	endOfLevelTrigger->addComponent(endOfLevelTriggerCollider);
+	//Add button for resetting music
+	GameObject* buttonResetMusic = DemoButtonPrefab().createButtonPrefab();
+	buttonResetMusic->setTransform(Transform(Vector2(620, 174)));
+	buttonResetMusic->addComponent<DemoMusicButtonBehaviourScript>();
+	buttonResetMusic->setTag("ButtonResetMusic");
 
+	Text* textReset = new Text("Reset", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.4, 0.4));
+	textReset->setLayer(5);
+	textReset->setTag("ButtonResetMusicText");
+	textReset->setParent(buttonResetMusic);
+
+	scene->addGameObject(textReset);
+	scene->addGameObject(buttonResetMusic);
+
+
+	//Add button for SFX
+	GameObject* buttonSFX = DemoButtonPrefab().createButtonPrefab();
+	buttonSFX->setTag("ButtonSFX");
+	buttonSFX->setTransform(Transform(Vector2(540, 194)));
+	buttonSFX->addComponent<DemoSFXButtonBehaviourScript>();
+
+	Text* textSFX = new Text("SFX", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.4, 0.4));
+	textSFX->setLayer(5);
+	textSFX->setTag("ButtonSFXText");
+	textSFX->setParent(buttonSFX);
+
+	scene->addGameObject(textSFX);
+	scene->addGameObject(buttonSFX);
+	
+	//Add enemies
 	GameObject* enemyMoving = EnemyPrefab().createEnemyPrefab();
 	GameObject* enemyStatic = EnemyPrefab().createEnemyPrefab();
 	GameObject* enemyWithCollider = EnemyPrefab().createEnemyPrefab();
@@ -272,7 +249,7 @@ void DemoManagerBehaviourScript::onUpdate()
 
 
 	handleSaveGame();
-	
+
 	if (!mPlayerPositionSet)
 	{
 		EngineBravo& engine = EngineBravo::getInstance();

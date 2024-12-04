@@ -15,6 +15,7 @@ private:
     void moveEnemy();
     void scaleEnemy();
     void rotateEnemy();
+    
 
 private:
     bool mMovingUp;
