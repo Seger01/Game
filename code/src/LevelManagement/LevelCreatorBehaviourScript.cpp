@@ -216,10 +216,10 @@ void LevelCreatorBehaviourScript::setPlayerStartPosition(Scene* scene, const Til
 		if (mapObject.properties.find("isPlayerSpawn") != mapObject.properties.end() &&
 			mapObject.properties.at("isPlayerSpawn") == "true")
 		{
-			std::cout << "Setting player position to " << mapObject.x << ", " << mapObject.y << std::endl;
+			// std::cout << "Setting player position to " << mapObject.x << ", " << mapObject.y << std::endl;
 
 			std::vector<GameObject*> persistentObjects = scene->getPersistentGameObjects();
-			std::cout << "Number of persistent objects: " << persistentObjects.size() << std::endl;
+			// std::cout << "Number of persistent objects: " << persistentObjects.size() << std::endl;
 
 			auto playerIt = std::find_if(persistentObjects.begin(), persistentObjects.end(),
 										 [](GameObject* obj) { return obj->getTag() == "Player"; });
@@ -234,7 +234,8 @@ void LevelCreatorBehaviourScript::setPlayerStartPosition(Scene* scene, const Til
 			transform.position.y = mapObject.y;
 
 			(*playerIt)->setTransform(transform);
-			std::cout << "Player position set to " << transform.position.x << ", " << transform.position.y << std::endl;
+			// std::cout << "Player position set to " << transform.position.x << ", " << transform.position.y <<
+			// std::endl;
 		}
 	}
 }
