@@ -3,6 +3,8 @@
 #include <Animation.h>
 #include <EngineBravo.h>
 #include <GameObject.h>
+#include <NetworkObject.h>
+#include <NetworkTransform.h>
 #include <Sprite.h>
 #include <SpriteDef.h>
 #include <SpriteDefUtil.h>
@@ -28,12 +30,21 @@ EnemyPrefab::EnemyPrefab() {}
 GameObject* EnemyPrefab::createEnemyPrefab() {
     GameObject* enemy = new GameObject;
     //setTransform(enemy);
-    addSprite(enemy);
-    addRigidBody(enemy);
-    addCollider(enemy);
-    addAnimations(enemy);
-    enemy->addComponent<EnemyBehaviourScript>(100.0f);
-    return enemy;
+	if (EngineBravo::getInstance().getNetworkManager().isNetworked())
+	{
+		enemy->addComponent<NetworkObject>();
+		enemy->addComponent<NetworkTransform>(true, true, false, false, false);
+		enemy->addComponent<EnemyNetworkBehaviourScript>();
+	}
+	else
+	{
+		enemy->addComponent<EnemyBehaviourScript>(100.0f);
+	}
+	addSprite(enemy);
+	addRigidBody(enemy);
+	addCollider(enemy);
+	addAnimations(enemy);
+	return enemy;
 }
 
 void EnemyPrefab::setTransform(GameObject* gameObject) {
