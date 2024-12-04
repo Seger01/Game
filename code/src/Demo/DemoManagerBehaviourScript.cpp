@@ -33,6 +33,8 @@ void DemoManagerBehaviourScript::createFirstScene()
 	camera->setTag("MainCamera");
 	camera->setActive(true);
 
+	camera->setRenderOrder(0);
+
 	camera->setTransform(Transform(Vector2(80, 96)));
 	camera->setWidth(16 * 30);
 	camera->setHeight(9 * 30);
@@ -42,6 +44,9 @@ void DemoManagerBehaviourScript::createFirstScene()
 	Camera* miniMapCamera = new Camera;
 	miniMapCamera->setTag("MiniMapCamera");
 	miniMapCamera->setActive(true);
+
+	miniMapCamera->setRenderOrder(1);
+
 	miniMapCamera->setViewport(FRect{0.7, 0.7, 0.3, 0.3});
 
 	miniMapCamera->getDebugOverlayRef().renderCameraViewport = true;
