@@ -64,10 +64,12 @@ void PlayerBehaviourScript::setFlipY(bool aState)
 	}
 }
 
-void PlayerBehaviourScript::deactivateAllAnimations() {
-    for (auto animation : mGameObject->getComponents<Animation>()) {
-        animation->setActive(false);
-    }
+void PlayerBehaviourScript::deactivateAllAnimations()
+{
+	for (auto animation : mGameObject->getComponents<Animation>())
+	{
+		animation->setActive(false);
+	}
 }
 
 void PlayerBehaviourScript::setAnimationActive(std::string aAnimationTag, bool aState)
@@ -189,7 +191,7 @@ void PlayerBehaviourScript::handleAnimations()
 
 void PlayerBehaviourScript::handleMovement()
 {
-	static const float movementSpeed = 50.0f;
+	static const float movementSpeed = 200.0f;
 
 	if (mGameObject->hasComponent<NetworkObject>())
 	{
@@ -224,19 +226,19 @@ void PlayerBehaviourScript::handleMovement()
 
 	if (input.GetKey(Key::Key_W))
 	{
-		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(0, -200));
+		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(0, -movementSpeed * Time::deltaTime));
 	}
 	if (input.GetKey(Key::Key_A))
 	{
-		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(-200, 0));
+		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(-movementSpeed * Time::deltaTime, 0));
 	}
 	if (input.GetKey(Key::Key_S))
 	{
-		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(0, 200));
+		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(0, movementSpeed * Time::deltaTime));
 	}
 	if (input.GetKey(Key::Key_D))
 	{
-		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(200, 0));
+		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(movementSpeed * Time::deltaTime, 0));
 	}
 	this->mGameObject->setTransform(parentTransform);
 }
@@ -392,13 +394,18 @@ void PlayerBehaviourScript::onCollide(GameObject* aGameObject)
 	}
 }
 
-
 float PlayerBehaviourScript::getHealth() { return mHealth; }
+
 float PlayerBehaviourScript::getMaxHealth() { return mMaxHealth; }
+
 int PlayerBehaviourScript::getECCount() { return mECCount; }
+
 int PlayerBehaviourScript::getBSCount() { return mBSCount; }
 
 void PlayerBehaviourScript::setHealth(float aHealth) { mHealth = aHealth; }
+
 void PlayerBehaviourScript::setMaxHealth(float aMaxHealth) { mMaxHealth = aMaxHealth; }
+
 void PlayerBehaviourScript::setECCount(int aECCount) { mECCount = aECCount; }
+
 void PlayerBehaviourScript::setBSCount(int aBSCount) { mBSCount = aBSCount; }
