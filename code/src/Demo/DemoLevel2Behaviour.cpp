@@ -51,12 +51,12 @@ void DemoLevel2Behaviour::moveEnemy() {
     Transform transform = enemy->getTransform();
 
     if (mMovingUp) {
-        transform.position.y += 0.5f;
+        transform.position.y += 10.0f * Time::deltaTime;
         if (transform.position.y >= mInitialY + 20.0f) {
             mMovingUp = false;
         }
     } else {
-        transform.position.y -= 0.5f;
+        transform.position.y -= 10.0f * Time::deltaTime;
         if (transform.position.y <= mInitialY - 20.0f) {
             mMovingUp = true;
         }
