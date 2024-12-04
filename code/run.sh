@@ -1,8 +1,10 @@
 #!/bin/bash
 
+mkdir build
+
 cd build || exit 1
 
-cmake ..
+cmake .. -DENABLE_DEBUG=ON
 if [ $? -ne 0 ]; then
     echo "CMake configuration failed."
     exit 1

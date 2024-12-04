@@ -53,24 +53,24 @@ Button* MainMenuPrefabFactory::createDefaultButton(GameObject* gameObject, Scene
 
 	buttonObject->addComponent<MainMenuButtonBehaviour>();
 	buttonObject->setParent(gameObject);
-	Text* buttonTextObj = new Text(text, "werkt niet", Color(255, 255, 255), Vector2(0, 0), Vector2(0.5, 0.5));
+	Text* buttonTextObj = new Text(text, "werkt niet", Color(255, 255, 255, 150), Vector2(0, 0), Vector2(0.5, 0.5));
 	buttonTextObj->setLayer(2);
 	buttonTextObj->setParent(buttonObject);
 	buttonTextObj->setTag(buttonText);
 
-    Sprite* buttonSprite = engine.getResourceManager().createSprite(buttonSpriteDef);
-    buttonSprite->setLayer(1);
-    buttonObject->addComponent(buttonSprite);
-    int width = 0;
-    int height = 0;
-    buttonSprite->setColorFilter({255, 255, 255, 100});
-    engine.getRenderSystem().getTextSize(buttonTextObj->getFont(), buttonTextObj->getText(), width, height,
-                                         buttonTextObj->getScale());
-    width += 2;
-    height += 2;
-    buttonSprite->setWidth(width);
-    buttonSprite->setHeight(height);
-    buttonSprite->setRelativePosition(Transform(Vector2(-1, -1)));
+	Sprite* buttonSprite = engine.getResourceManager().createSprite(buttonSpriteDef);
+	buttonSprite->setLayer(1);
+	buttonObject->addComponent(buttonSprite);
+	int width = 0;
+	int height = 0;
+	buttonSprite->setColorFilter({255, 255, 255, 100});
+	engine.getRenderSystem().getTextSize(buttonTextObj->getFont(), buttonTextObj->getText(), width, height,
+										 buttonTextObj->getScale());
+	width += 2;
+	height += 2;
+	buttonSprite->setWidth(width);
+	buttonSprite->setHeight(height);
+	buttonSprite->setRelativePosition(Transform(Vector2(-1, -1)));
 
 	buttonObject->setWidth(width);
 	buttonObject->setHeight(height);

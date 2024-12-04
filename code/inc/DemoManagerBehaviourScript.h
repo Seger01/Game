@@ -3,6 +3,7 @@
 
 #include <Components/IBehaviourScript.h>
 #include <GameObject.h>
+#include <TileMapParser.h>
 
 class DemoManagerBehaviourScript : public IBehaviourScript {
 public:
@@ -18,6 +19,8 @@ public:
 
 private:
     int mCurrentScene;
+    bool mPlayerPositionSet = false;
+    TileMapData mTileMapData;
 };
 
 #endif
