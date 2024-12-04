@@ -287,6 +287,7 @@ void LevelCreatorBehaviourScript::createLevel(Scene* scene, const TileMapData& t
 				roomObject->setName("RoomTrigger");
 				scene->addGameObject(roomObject);
 			}
+			
 			// Add a trigger for the level end
 			else if (type == "LevelEndTrigger")
 			{
@@ -333,6 +334,7 @@ void LevelCreatorBehaviourScript::createLevel(Scene* scene, const TileMapData& t
 	for (size_t layerIndex = 0; layerIndex < tileMapData.mLayers.size(); ++layerIndex)
 	{
 		bool isDoorsLayer = (tileMapData.mLayerNames[layerIndex] == "Doors");
+		bool isGraphLayer = (tileMapData.mLayerNames[layerIndex] == "Graph");
 		// Access rows within the layer by index
 		for (size_t rowIndex = 0; rowIndex < tileMapData.mLayers[layerIndex].size(); ++rowIndex)
 		{
@@ -359,13 +361,15 @@ void LevelCreatorBehaviourScript::createLevel(Scene* scene, const TileMapData& t
 						objectTransform.position.y = static_cast<int>(rowIndex * 16);
 						gameObject->setTransform(objectTransform);
 
-						// Add a Sprite component to the GameObject
-						Sprite* sprite = engine.getResourceManager().createSprite(spriteDef);
+						if (!isGraphLayer)
+						{
+							// Add a Sprite component to the GameObject
+							Sprite* sprite = engine.getResourceManager().createSprite(spriteDef);
 
-						sprite->setLayer(layerIndex);
+							sprite->setLayer(layerIndex);
 
-						gameObject->addComponent(sprite);
-
+							gameObject->addComponent(sprite);
+						}
 						// Add BoxCollider components to the GameObject
 						for (const auto& collider : tileInfo.mColliders)
 						{

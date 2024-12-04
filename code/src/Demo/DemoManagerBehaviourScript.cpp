@@ -12,6 +12,7 @@
 #include "MainMenuPrefab.h"
 #include "DemoButtonPrefab.h"
 #include "PlayerPrefab.h"
+#include <MapToGraph.h>
 #include <EngineBravo.h>
 #include <GameObject.h>
 #include <Scene.h>
@@ -121,6 +122,11 @@ void DemoManagerBehaviourScript::createSecondScene()
 	mTileMapData = tileMapParser.getTileMapData();
 
 	LevelCreatorBehaviourScript().createLevel(scene, mTileMapData);
+	
+	MapToGraph mapToGraph(mTileMapData);
+	mapToGraph.convertToGraph();
+	auto graph = mapToGraph.getAdjacencyList();
+	
 	GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
 
 	// defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
@@ -176,6 +182,8 @@ void DemoManagerBehaviourScript::createSecondScene()
 	GameObject* enemyMoving = EnemyPrefab().createEnemyPrefab();
 	GameObject* enemyStatic = EnemyPrefab().createEnemyPrefab();
 	GameObject* enemyWithCollider = EnemyPrefab().createEnemyPrefab();
+	GameObject* enemyWithPathfinding = EnemyPrefab().createEnemyPrefab();
+
 
 	enemyMoving->setTransform(Transform(Vector2(112, 112)));
 	enemyMoving->setTag("EnemyMoving");
@@ -185,6 +193,10 @@ void DemoManagerBehaviourScript::createSecondScene()
 
 	enemyWithCollider->setTransform(Transform(Vector2(320, 112)));
 	enemyWithCollider->setTag("EnemyWithCollider");
+
+	enemyWithPathfinding->setTransform(Transform(Vector2(560, 560)));
+	enemyWithPathfinding->setTag("EnemyWithPathfinding");
+
 
 	if (enemyStatic->hasComponent<RigidBody>())
 	{
@@ -208,6 +220,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 	scene->addGameObject(enemyMoving);
 	scene->addGameObject(enemyStatic);
 	scene->addGameObject(enemyWithCollider);
+	scene->addGameObject(enemyWithPathfinding);
 
 	GameObject* level2 = new GameObject;
 	level2->addComponent<DemoLevel2Behaviour>();
