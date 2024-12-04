@@ -270,6 +270,9 @@ void DemoManagerBehaviourScript::onUpdate()
 		playerObject->setTransform(Transform(Vector2(40, 40)));
 	}
 
+
+	handleSaveGame();
+	
 	if (!mPlayerPositionSet)
 	{
 		EngineBravo& engine = EngineBravo::getInstance();
@@ -291,6 +294,19 @@ void DemoManagerBehaviourScript::onUpdate()
 	}
 }
 
+void DemoManagerBehaviourScript::handleSaveGame() {
+	Input& input = Input::getInstance();
+
+	if (input.GetKeyDown(Key::Key_J)) {
+
+		saveGame();
+	}
+
+	if (input.GetKeyDown(Key::Key_K))
+	{
+		loadGame();
+	}
+}
 void DemoManagerBehaviourScript::saveGame()
 {
 	EngineBravo& engine = EngineBravo::getInstance();
@@ -319,16 +335,75 @@ void DemoManagerBehaviourScript::saveGame()
 	sg.addFloatField("PlayerScaleX", playerPos.scale.x);
 	sg.addFloatField("PlayerScaleY", playerPos.scale.y);
 
-	std::vector<GameObject*> enemies = currentScene->getGameObjectsWithTag("Enemy");
-	for (size_t i = 0; i < enemies.size(); ++i)
-	{
-		Transform enemyPos = enemies[i]->getTransform().position;
-		sg.addFloatField("Enemy" + std::to_string(i) + "X", enemyPos.position.x);
-		sg.addFloatField("Enemy" + std::to_string(i) + "Y", enemyPos.position.y);
-		sg.addFloatField("Enemy" + std::to_string(i) + "Rotation", enemyPos.rotation);
-		sg.addFloatField("Enemy" + std::to_string(i) + "ScaleX", enemyPos.scale.x);
-		sg.addFloatField("Enemy" + std::to_string(i) + "ScaleY", enemyPos.scale.y);
+	sg.store();
+}
+
+void DemoManagerBehaviourScript::loadGame()
+{
+	SaveGame sg{"saves/newSave.json"};
+
+	float playerX;
+	float playerY;
+	float playerRotation;
+	float playerScaleX;
+	float playerScaleY;
+
+	try {
+		playerX = sg.getFloatField("PlayerX").getValue();
+	}
+	catch (std::exception& e) {
+		std::cout << e.what() << std::endl;
 	}
 
-	sg.store();
+	try {
+		playerY = sg.getFloatField("PlayerY").getValue();
+	}
+	catch (std::exception& e) {
+		std::cout << e.what() << std::endl;
+	}
+
+	try {
+		playerRotation = sg.getFloatField("PlayerRotation").getValue();
+	}
+	catch (std::exception& e) {
+		std::cout << e.what() << std::endl;
+	}
+
+	try {
+		playerScaleX = sg.getFloatField("PlayerScaleX").getValue();
+	}
+	catch (std::exception& e) {
+		std::cout << e.what() << std::endl;
+	}
+
+	try {
+		playerScaleY = sg.getFloatField("PlayerScaleY").getValue();
+	}
+	catch (std::exception& e) {
+		std::cout << e.what() << std::endl;
+	}
+	
+	EngineBravo& engine = EngineBravo::getInstance();
+	SceneManager& sceneManager = engine.getSceneManager();
+	Scene* currentScene = sceneManager.getCurrentScene();
+
+	Transform playerPos;
+	if (currentScene != nullptr)
+	{
+		std::vector<GameObject*> persistentObjects = currentScene->getPersistentGameObjects();
+		auto playerIt = std::find_if(persistentObjects.begin(), persistentObjects.end(),
+									 [](GameObject* obj) { return obj->getTag() == "Player"; });
+
+		if (playerIt != persistentObjects.end())
+		{
+			Transform playerPos = (*playerIt)->getTransform();
+			playerPos.position.x = playerX;
+			playerPos.position.y = playerY;
+			playerPos.rotation = playerRotation;
+			playerPos.scale.x = playerScaleX;
+			playerPos.scale.y = playerScaleY;
+
+			(*playerIt)->setTransform(playerPos);
+		}
+	}
 }
