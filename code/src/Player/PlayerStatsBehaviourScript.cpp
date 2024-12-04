@@ -76,10 +76,18 @@ void PlayerStatsBehaviourScript::onStart() {
 }
 
 void PlayerStatsBehaviourScript::onUpdate() {
+    EngineBravo& engine = EngineBravo::getInstance();
+    SceneManager& sceneManager = engine.getSceneManager();
+    Scene* scene = sceneManager.getCurrentScene();
+
     if (mPlayerBehaviourScript == nullptr) {
         return;
     }
 
+    if (scene->getGameObjectsWithTag("Player").size() == 0) {
+        return;
+    }
+    
     float playerHealth = mPlayerBehaviourScript->getHealth();
     float playerMaxHealth = mPlayerBehaviourScript->getMaxHealth();
     int playerBSCount = mPlayerBehaviourScript->getBSCount();

@@ -35,6 +35,7 @@ void DemoLevel2Behaviour::onUpdate() {
 }
 
 void DemoLevel2Behaviour::onCollide(GameObject* aGameObject) {
+
 }
 
 void DemoLevel2Behaviour::moveEnemy() {
@@ -48,28 +49,20 @@ void DemoLevel2Behaviour::moveEnemy() {
     }
 
     Transform transform = enemy->getTransform();
-    Animation* idleAnimation = enemy->getComponents<Animation>()[0];
-    Animation* walkingAnimation = enemy->getComponents<Animation>()[1];
 
     if (mMovingUp) {
-        transform.position.y += 1.0f;
-        if (transform.position.y >= mInitialY + 10.0f) {
+        transform.position.y += 10.0f * Time::deltaTime;
+        if (transform.position.y >= mInitialY + 20.0f) {
             mMovingUp = false;
         }
     } else {
-        transform.position.y -= 1.0f;
-        if (transform.position.y <= mInitialY - 10.0f) {
+        transform.position.y -= 10.0f * Time::deltaTime;
+        if (transform.position.y <= mInitialY - 20.0f) {
             mMovingUp = true;
         }
     }
-
-    if (abs(transform.position.y - mInitialY) > 0.1f) {
-        idleAnimation->setActive(false);
-        walkingAnimation->setActive(true);
-    } else {
-        idleAnimation->setActive(true);
-        walkingAnimation->setActive(false);
-    }
+    enemy->getComponentsWithTag<Animation>("enemyWalking")[0]->setActive(true);
+    enemy->getComponentsWithTag<Sprite>("idleSprite")[0]->setActive(false);
 
     enemy->setTransform(transform);
 }
