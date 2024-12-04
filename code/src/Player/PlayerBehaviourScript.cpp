@@ -391,3 +391,14 @@ void PlayerBehaviourScript::onCollide(GameObject* aGameObject)
 		// std::endl;
 	}
 }
+
+
+float PlayerBehaviourScript::getHealth() { return mHealth; }
+float PlayerBehaviourScript::getMaxHealth() { return mMaxHealth; }
+int PlayerBehaviourScript::getECCount() { return mECCount; }
+int PlayerBehaviourScript::getBSCount() { return mBSCount; }
+
+void PlayerBehaviourScript::setHealth(float aHealth) { mHealth = aHealth; }
+void PlayerBehaviourScript::setMaxHealth(float aMaxHealth) { mMaxHealth = aMaxHealth; }
+void PlayerBehaviourScript::setECCount(int aECCount) { mECCount = aECCount; }
+void PlayerBehaviourScript::setBSCount(int aBSCount) { mBSCount = aBSCount; }

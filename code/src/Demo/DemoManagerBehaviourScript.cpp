@@ -6,7 +6,9 @@
 #include "LevelManagerBehaviourScript.h"
 #include "LevelManagerPrefab.h"
 #include "MainMenuPrefab.h"
+#include "DemoLevel2Behaviour.h"
 #include "PlayerPrefab.h"
+#include "EnemyPrefab.h"
 #include <EngineBravo.h>
 #include <GameObject.h>
 #include <Scene.h>
@@ -37,14 +39,16 @@ void DemoManagerBehaviourScript::createFirstScene()
 
 	scene->addGameObject(camera);
 
-	std::string path = FSConverter().getResourcePath("LevelDefs/demoLevel1.json");
+    FSConverter fsconverter;
+    std::string path = fsconverter.getResourcePath("LevelDefs/demoLevel1.json");
+    TileMapParser tileMapParser(path);
+    tileMapParser.parse();
+    mTileMapData = tileMapParser.getTileMapData();
 
-	TileMapParser tileMapParser(path);
-	tileMapParser.parse();
-	const TileMapData& tileMapData = tileMapParser.getTileMapData();
+    LevelCreatorBehaviourScript().createLevel(scene, mTileMapData);
+    GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
 
-	LevelCreatorBehaviourScript().createLevel(scene, tileMapData);
-	GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
+    //defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
 
 	defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
 
@@ -89,9 +93,11 @@ void DemoManagerBehaviourScript::createFirstScene()
 	endOfLevelTriggerCollider->setTrigger(true);
 	endOfLevelTrigger->addComponent(endOfLevelTriggerCollider);
 
-	scene->addGameObject(endOfLevelTrigger);
+    scene->addGameObject(endOfLevelTrigger);
+    
+    sceneManager.requestSceneChange("DemoScene1");
 
-	sceneManager.requestSceneChange("DemoScene1");
+    mPlayerPositionSet = false;
 }
 
 void DemoManagerBehaviourScript::createSecondScene()
@@ -105,13 +111,13 @@ void DemoManagerBehaviourScript::createSecondScene()
 		exit(1);
 	}
 
-	// set starting pos for player in this scene
-	// GameObject* playerObject = sceneManager.getCurrentScene()->getGameObjectsWithTag("Player").at(0);
-	// playerObject->setTransform(Transform(Vector2(40, 40)));
-	GameObject* playerObject =
-		EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
-	// std::cout << "Setting player transform" << std::endl;
-	playerObject->setTransform(Transform(Vector2(40, 40)));
+    // set starting pos for player in this scene
+    // GameObject* playerObject = sceneManager.getCurrentScene()->getGameObjectsWithTag("Player").at(0);
+    // playerObject->setTransform(Transform(Vector2(40, 40)));
+    GameObject* playerObject =
+        EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
+    // std::cout << "Setting player transform" << std::endl;
+    //playerObject->setTransform(Transform(Vector2(40, 40)));
 
 	Camera* camera = new Camera;
 	camera->setTag("MainCamera");
@@ -123,13 +129,19 @@ void DemoManagerBehaviourScript::createSecondScene()
 
 	scene->addGameObject(camera);
 
-	std::string path = FSConverter().getResourcePath("LevelDefs/demoLevel2.json");
+    FSConverter fsconverter;
+    std::string path = fsconverter.getResourcePath("LevelDefs/demoLevel2.json");
+    TileMapParser tileMapParser(path);
+    tileMapParser.parse();
+    mTileMapData = tileMapParser.getTileMapData();
 
-	TileMapParser tileMapParser(path);
-	tileMapParser.parse();
-	const TileMapData& tileMapData = tileMapParser.getTileMapData();
+    LevelCreatorBehaviourScript().createLevel(scene, mTileMapData);
+    // GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
+    //
+    // defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
+    //
+    // scene->addPersistentGameObject(defaultPlayerPrefab);
 
-	LevelCreatorBehaviourScript().createLevel(scene, tileMapData);
 	// GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
 	//
 	// defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
@@ -175,9 +187,33 @@ void DemoManagerBehaviourScript::createSecondScene()
 	endOfLevelTriggerCollider->setTrigger(true);
 	endOfLevelTrigger->addComponent(endOfLevelTriggerCollider);
 
-	scene->addGameObject(endOfLevelTrigger);
+    GameObject* enemyMoving = EnemyPrefab().createEnemyPrefab();
+    GameObject* enemyStatic = EnemyPrefab().createEnemyPrefab();
 
-	sceneManager.requestSceneChange("DemoScene2");
+    enemyMoving->setTransform(Transform(Vector2(112, 112)));
+    enemyMoving->setTag("EnemyMoving");
+ 
+
+    enemyStatic->setTransform(Transform(Vector2(40, 84)));
+    enemyStatic->setTag("EnemyStatic");
+    if (enemyStatic->hasComponent<RigidBody>()) {
+        enemyStatic->getComponents<RigidBody>().at(0)->setCanRotate(true);
+    }
+    else {
+        std::cout << "Enemystatic does not have a RigidBody component" << std::endl;
+    }
+
+    scene->addGameObject(enemyMoving);
+    scene->addGameObject(enemyStatic);
+
+    GameObject* level2 = new GameObject;
+    level2->addComponent<DemoLevel2Behaviour>();
+
+    scene->addGameObject(level2);
+
+    sceneManager.requestSceneChange("DemoScene2");
+
+    mPlayerPositionSet = false;
 }
 
 void DemoManagerBehaviourScript::nextScene()
@@ -205,11 +241,30 @@ void DemoManagerBehaviourScript::onUpdate()
 {
 	Input& input = Input::getInstance();
 
-	if (input.GetKeyDown(Key::Key_Space))
+    if (input.GetKeyDown(Key::Key_Space)) {
+        GameObject* playerObject =
+            EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
+        std::cout << "Setting player transform" << std::endl;
+        playerObject->setTransform(Transform(Vector2(40, 40)));
+    }
+
+    if (!mPlayerPositionSet)
 	{
-		GameObject* playerObject =
-			EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
-		std::cout << "Setting player transform" << std::endl;
-		playerObject->setTransform(Transform(Vector2(40, 40)));
+		EngineBravo& engine = EngineBravo::getInstance();
+		SceneManager& sceneManager = engine.getSceneManager();
+		Scene* currentScene = sceneManager.getCurrentScene();
+
+		if (currentScene != nullptr)
+		{
+			std::vector<GameObject*> persistentObjects = currentScene->getPersistentGameObjects();
+			auto playerIt = std::find_if(persistentObjects.begin(), persistentObjects.end(),
+										 [](GameObject* obj) { return obj->getTag() == "Player"; });
+
+			if (playerIt != persistentObjects.end())
+			{
+				LevelCreatorBehaviourScript().setPlayerStartPosition(currentScene, mTileMapData);
+				mPlayerPositionSet = true; // Set the flag to true
+			}
+		}
 	}
 }

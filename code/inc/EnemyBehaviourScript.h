@@ -13,12 +13,12 @@ public:
     void onCollide(GameObject* aGameObject) override;
 
     std::unique_ptr<Component> clone() const override { return std::make_unique<EnemyBehaviourScript>(*this); }
-private: 
-    void toggleAnimaionEnabled();
-    void setAnimationActive(std::string aAnimationTag, bool aState);
     void deactivateAllAnimations();
     void setFlipX(bool aState);
     void setFlipY(bool aState);
+private: 
+    void toggleAnimaionEnabled();
+    void setAnimationActive(std::string aAnimationTag, bool aState);
     void takeDamage(float aDamage);
     void onDeath();
 private :

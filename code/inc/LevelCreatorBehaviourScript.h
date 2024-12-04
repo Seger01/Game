@@ -13,7 +13,7 @@ public:
     void onUpdate() override;
 
     void createLevel(Scene* scene, const TileMapData& tileMapData);
-
+    void setPlayerStartPosition(Scene* scene, const TileMapData& tileMapData);
     std::unique_ptr<Component> clone() const override { return std::make_unique<LevelCreatorBehaviourScript>(*this); }
     friend class LevelManagerBehaviourScript;
 
@@ -23,7 +23,6 @@ private:
     void createLevel3();
     void createDemoNetworkingLevel();
     void createPlayer(Scene* scene, const TileMapData& tileMapData);
-    void setPlayerStartPosition(Scene* scene, const TileMapData& tileMapData);
     void createEnemy();
     void createBoss();
 

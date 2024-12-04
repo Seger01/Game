@@ -2,6 +2,7 @@
 #include "BulletBehaviourScript.h"
 #include "BSCoinPrefab.h"
 #include "ECCoinPrefab.h"
+#include <Animation.h>
 
 EnemyBehaviourScript::EnemyBehaviourScript(float aHealth) : mHealth(aHealth) {
 }
@@ -36,12 +37,43 @@ void EnemyBehaviourScript::setAnimationActive(std::string aAnimationTag, bool aS
 }
 
 void EnemyBehaviourScript::deactivateAllAnimations() {
+    for (auto animation : mGameObject->getComponents<Animation>()) {
+        animation->setActive(false);
+    }
 }
 
 void EnemyBehaviourScript::setFlipX(bool aState) {
+    if (mGameObject->hasComponent<Animation>())
+	{
+		for (auto animation : mGameObject->getComponents<Animation>())
+		{
+			animation->setFlipX(aState);
+		}
+	}
+	else if (mGameObject->hasComponent<Sprite>())
+	{
+		for (auto sprite : mGameObject->getComponents<Sprite>())
+		{
+			sprite->setFlipX(aState);
+		}
+	}
 }
 
 void EnemyBehaviourScript::setFlipY(bool aState) {
+	if (mGameObject->hasComponent<Animation>())
+	{
+		for (auto animation : mGameObject->getComponents<Animation>())
+		{
+			animation->setFlipY(aState);
+		}
+	}
+	else if (mGameObject->hasComponent<Sprite>())
+	{
+		for (auto sprite : mGameObject->getComponents<Sprite>())
+		{
+			sprite->setFlipY(aState);
+		}
+	}
 }
 
 void EnemyBehaviourScript::takeDamage(float aDamage) {
