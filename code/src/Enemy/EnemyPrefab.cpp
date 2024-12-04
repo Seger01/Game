@@ -1,5 +1,6 @@
 #include "EnemyPrefab.h"
 #include "EnemyBehaviourScript.h"
+#include "EnemyNetworkBehaviourScript.h"
 #include <Animation.h>
 #include <EngineBravo.h>
 #include <GameObject.h>
@@ -34,7 +35,7 @@ GameObject* EnemyPrefab::createEnemyPrefab() {
 	{
 		enemy->addComponent<NetworkObject>();
 		enemy->addComponent<NetworkTransform>(true, true, false, false, false);
-		enemy->addComponent<EnemyNetworkBehaviourScript>();
+		enemy->addComponent<EnemyNetworkBehaviourScript>(100.0f);
 	}
 	else
 	{

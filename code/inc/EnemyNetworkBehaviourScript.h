@@ -7,8 +7,8 @@
 class EnemyNetworkBehaviourScript : public INetworkBehaviour
 {
 public:
-    EnemyNetworkBehaviourScript(float aHealth);
-    ~EnemyNetworkBehaviourScript() {}
+	EnemyNetworkBehaviourScript(float aHealth = 100.0f);
+	~EnemyNetworkBehaviourScript() {}
     void onStart() override;
     void onUpdate() override;
     void onCollide(GameObject* aGameObject) override;

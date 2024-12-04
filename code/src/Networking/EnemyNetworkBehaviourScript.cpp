@@ -4,7 +4,10 @@
 #include "ECCoinPrefab.h"
 #include <Animation.h>
 
-EnemyNetworkBehaviourScript::EnemyNetworkBehaviourScript(float aHealth) : mHealth(aHealth) {}
+EnemyNetworkBehaviourScript::EnemyNetworkBehaviourScript(float aHealth)
+	: INetworkBehaviour("EnemyNetworkBehaviour"), mHealth(aHealth)
+{
+}
 
 void EnemyNetworkBehaviourScript::onStart() { mIsDead = false; }
 
