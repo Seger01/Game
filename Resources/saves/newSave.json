@@ -2,11 +2,19 @@
     "fields": [
         {
             "name": "PlayerX",
+<<<<<<< HEAD
             "value": 244.1702423095703
         },
         {
             "name": "PlayerY",
             "value": 63.279136657714844
+=======
+            "value": 244.58056640625
+        },
+        {
+            "name": "PlayerY",
+            "value": 60.41093444824219
+>>>>>>> AddingMiniMapDemo
         },
         {
             "name": "PlayerRotation",
