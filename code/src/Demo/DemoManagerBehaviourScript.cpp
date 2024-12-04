@@ -39,6 +39,19 @@ void DemoManagerBehaviourScript::createFirstScene()
 
 	scene->addGameObject(camera);
 
+	Camera* miniMapCamera = new Camera;
+	miniMapCamera->setTag("MiniMapCamera");
+	miniMapCamera->setActive(true);
+	miniMapCamera->setViewport(FRect{0.5, 0.5, 0.5, 0.5});
+	miniMapCamera->getDebugOverlayRef().showFPS = true;
+	miniMapCamera->getDebugOverlayRef().renderCameraViewport = true;
+
+	miniMapCamera->setTransform(Transform(Vector2(80, 96)));
+	miniMapCamera->setWidth(16 * 30);
+	miniMapCamera->setHeight(9 * 30);
+
+	scene->addGameObject(miniMapCamera);
+
 	FSConverter fsconverter;
 	std::string path = fsconverter.getResourcePath("LevelDefs/demoLevel1.json");
 	TileMapParser tileMapParser(path);
@@ -118,8 +131,8 @@ void DemoManagerBehaviourScript::createSecondScene()
 		EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
 
 	std::cout << "Setting player transform" << std::endl;
-	//playerObject->setTransform(Transform(Vector2(40, 40)));
 	// playerObject->setTransform(Transform(Vector2(40, 40)));
+	//  playerObject->setTransform(Transform(Vector2(40, 40)));
 
 	Camera* camera = new Camera;
 	camera->setTag("MainCamera");
@@ -220,7 +233,6 @@ void DemoManagerBehaviourScript::createSecondScene()
 		std::cout << "Enemystatic does not have a RigidBody component" << std::endl;
 	}
 
-
 	scene->addGameObject(enemyMoving);
 	scene->addGameObject(enemyStatic);
 	scene->addGameObject(enemyWithCollider);
@@ -233,7 +245,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 	sceneManager.requestSceneChange("DemoScene2");
 
 	mPlayerPositionSet = false;
-	
+
 	saveGame();
 }
 
@@ -309,7 +321,6 @@ void DemoManagerBehaviourScript::saveGame()
 			playerPos = (*playerIt)->getTransform().position;
 		}
 	}
-
 
 	SaveGame sg{"saves/newSave.json"};
 
