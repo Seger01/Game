@@ -117,7 +117,7 @@ void DemoManagerBehaviourScript::createSecondScene()
     GameObject* playerObject =
         EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
     // std::cout << "Setting player transform" << std::endl;
-    //playerObject->setTransform(Transform(Vector2(40, 40)));
+    playerObject->setTransform(Transform(Vector2(40, 40)));
 
 	Camera* camera = new Camera;
 	camera->setTag("MainCamera");
@@ -213,7 +213,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 
     sceneManager.requestSceneChange("DemoScene2");
 
-    mPlayerPositionSet = false;
+//    mPlayerPositionSet = false;
 }
 
 void DemoManagerBehaviourScript::nextScene()
@@ -248,23 +248,23 @@ void DemoManagerBehaviourScript::onUpdate()
         playerObject->setTransform(Transform(Vector2(40, 40)));
     }
 
-    if (!mPlayerPositionSet)
-	{
-		EngineBravo& engine = EngineBravo::getInstance();
-		SceneManager& sceneManager = engine.getSceneManager();
-		Scene* currentScene = sceneManager.getCurrentScene();
+    // if (!mPlayerPositionSet)
+	// {
+	// 	EngineBravo& engine = EngineBravo::getInstance();
+	// 	SceneManager& sceneManager = engine.getSceneManager();
+	// 	Scene* currentScene = sceneManager.getCurrentScene();
 
-		if (currentScene != nullptr)
-		{
-			std::vector<GameObject*> persistentObjects = currentScene->getPersistentGameObjects();
-			auto playerIt = std::find_if(persistentObjects.begin(), persistentObjects.end(),
-										 [](GameObject* obj) { return obj->getTag() == "Player"; });
+	// 	if (currentScene != nullptr)
+	// 	{
+	// 		std::vector<GameObject*> persistentObjects = currentScene->getPersistentGameObjects();
+	// 		auto playerIt = std::find_if(persistentObjects.begin(), persistentObjects.end(),
+	// 									 [](GameObject* obj) { return obj->getTag() == "Player"; });
 
-			if (playerIt != persistentObjects.end())
-			{
-				LevelCreatorBehaviourScript().setPlayerStartPosition(currentScene, mTileMapData);
-				mPlayerPositionSet = true; // Set the flag to true
-			}
-		}
-	}
+	// 		if (playerIt != persistentObjects.end())
+	// 		{
+	// 			LevelCreatorBehaviourScript().setPlayerStartPosition(currentScene, mTileMapData);
+	// 			mPlayerPositionSet = true; // Set the flag to true
+	// 		}
+	// 	}
+	// }
 }
