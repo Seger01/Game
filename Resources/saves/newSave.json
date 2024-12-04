@@ -1,0 +1,24 @@
+{
+    "fields": [
+        {
+            "name": "PlayerX",
+            "value": 255.9318389892578
+        },
+        {
+            "name": "PlayerY",
+            "value": 91.05181121826172
+        },
+        {
+            "name": "PlayerRotation",
+            "value": 0.0
+        },
+        {
+            "name": "PlayerScaleX",
+            "value": 0.0
+        },
+        {
+            "name": "PlayerScaleY",
+            "value": 0.0
+        }
+    ]
+}

@@ -118,7 +118,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 		EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
 
 	std::cout << "Setting player transform" << std::endl;
-	playerObject->setTransform(Transform(Vector2(40, 40)));
+	//playerObject->setTransform(Transform(Vector2(40, 40)));
 	// playerObject->setTransform(Transform(Vector2(40, 40)));
 
 	Camera* camera = new Camera;
@@ -191,12 +191,17 @@ void DemoManagerBehaviourScript::createSecondScene()
 
 	GameObject* enemyMoving = EnemyPrefab().createEnemyPrefab();
 	GameObject* enemyStatic = EnemyPrefab().createEnemyPrefab();
+	GameObject* enemyWithCollider = EnemyPrefab().createEnemyPrefab();
 
 	enemyMoving->setTransform(Transform(Vector2(112, 112)));
 	enemyMoving->setTag("EnemyMoving");
 
 	enemyStatic->setTransform(Transform(Vector2(40, 84)));
 	enemyStatic->setTag("EnemyStatic");
+
+	enemyWithCollider->setTransform(Transform(Vector2(320, 112)));
+	enemyWithCollider->setTag("EnemyWithCollider");
+
 	if (enemyStatic->hasComponent<RigidBody>())
 	{
 		enemyStatic->getComponents<RigidBody>().at(0)->setCanRotate(true);
@@ -206,8 +211,19 @@ void DemoManagerBehaviourScript::createSecondScene()
 		std::cout << "Enemystatic does not have a RigidBody component" << std::endl;
 	}
 
+	if (enemyWithCollider->hasComponent<RigidBody>())
+	{
+		enemyWithCollider->getComponents<RigidBody>().at(0)->setCanRotate(true);
+	}
+	else
+	{
+		std::cout << "Enemystatic does not have a RigidBody component" << std::endl;
+	}
+
+
 	scene->addGameObject(enemyMoving);
 	scene->addGameObject(enemyStatic);
+	scene->addGameObject(enemyWithCollider);
 
 	GameObject* level2 = new GameObject;
 	level2->addComponent<DemoLevel2Behaviour>();
@@ -217,6 +233,8 @@ void DemoManagerBehaviourScript::createSecondScene()
 	sceneManager.requestSceneChange("DemoScene2");
 
 	mPlayerPositionSet = false;
+	
+	saveGame();
 }
 
 void DemoManagerBehaviourScript::nextScene()
@@ -266,9 +284,51 @@ void DemoManagerBehaviourScript::onUpdate()
 
 			if (playerIt != persistentObjects.end())
 			{
-				// LevelCreatorBehaviourScript().setPlayerStartPosition(currentScene, mTileMapData);
+				LevelCreatorBehaviourScript().setPlayerStartPosition(currentScene, mTileMapData);
 				mPlayerPositionSet = true; // Set the flag to true
 			}
 		}
 	}
+}
+
+void DemoManagerBehaviourScript::saveGame()
+{
+	EngineBravo& engine = EngineBravo::getInstance();
+	SceneManager& sceneManager = engine.getSceneManager();
+	Scene* currentScene = sceneManager.getCurrentScene();
+
+	Transform playerPos;
+	if (currentScene != nullptr)
+	{
+		std::vector<GameObject*> persistentObjects = currentScene->getPersistentGameObjects();
+		auto playerIt = std::find_if(persistentObjects.begin(), persistentObjects.end(),
+									 [](GameObject* obj) { return obj->getTag() == "Player"; });
+
+		if (playerIt != persistentObjects.end())
+		{
+			playerPos = (*playerIt)->getTransform().position;
+		}
+	}
+
+
+	SaveGame sg{"saves/newSave.json"};
+
+	sg.addFloatField("PlayerX", playerPos.position.x);
+	sg.addFloatField("PlayerY", playerPos.position.y);
+	sg.addFloatField("PlayerRotation", playerPos.rotation);
+	sg.addFloatField("PlayerScaleX", playerPos.scale.x);
+	sg.addFloatField("PlayerScaleY", playerPos.scale.y);
+
+	std::vector<GameObject*> enemies = currentScene->getGameObjectsWithTag("Enemy");
+	for (size_t i = 0; i < enemies.size(); ++i)
+	{
+		Transform enemyPos = enemies[i]->getTransform().position;
+		sg.addFloatField("Enemy" + std::to_string(i) + "X", enemyPos.position.x);
+		sg.addFloatField("Enemy" + std::to_string(i) + "Y", enemyPos.position.y);
+		sg.addFloatField("Enemy" + std::to_string(i) + "Rotation", enemyPos.rotation);
+		sg.addFloatField("Enemy" + std::to_string(i) + "ScaleX", enemyPos.scale.x);
+		sg.addFloatField("Enemy" + std::to_string(i) + "ScaleY", enemyPos.scale.y);
+	}
+
+	sg.store();
 }

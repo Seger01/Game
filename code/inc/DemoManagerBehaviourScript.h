@@ -12,7 +12,7 @@ public:
 
     void createFirstScene();
     void createSecondScene();
-
+    void saveGame();
     void nextScene();
 
     std::unique_ptr<Component> clone() const override { return std::make_unique<DemoManagerBehaviourScript>(*this); }

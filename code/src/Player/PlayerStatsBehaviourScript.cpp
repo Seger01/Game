@@ -85,10 +85,14 @@ void PlayerStatsBehaviourScript::onUpdate() {
         return;
     }
 
-    if (scene->getGameObjectsWithTag("Player").size() == 0) {
+    GameObject* playerObject = scene->getGameObjectsWithTag("Player")[0];
+    if (playerObject == nullptr) {
         return;
     }
 
+    if (playerObject->getComponentsWithTag<PlayerBehaviourScript>("PlayerBehaviourScript").size() == 0) {
+        return;
+    }
     float playerHealth = mPlayerBehaviourScript->getHealth();
     float playerMaxHealth = mPlayerBehaviourScript->getMaxHealth();
     int playerBSCount = mPlayerBehaviourScript->getBSCount();

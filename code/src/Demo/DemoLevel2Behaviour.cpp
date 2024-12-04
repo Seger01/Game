@@ -26,6 +26,9 @@ void DemoLevel2Behaviour::onStart() {
     if (enemyStatic != nullptr) {
         if (enemyStatic->hasComponent<EnemyBehaviourScript>()) {
             enemyStatic->getComponents<EnemyBehaviourScript>()[0]->deactivateAllAnimations();
+            if (enemy->hasComponent<RigidBody>()) {
+                enemy->getComponents<RigidBody>()[0]->setActive(false);
+            }
         }
     }
 }
