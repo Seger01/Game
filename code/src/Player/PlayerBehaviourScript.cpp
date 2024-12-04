@@ -191,7 +191,7 @@ void PlayerBehaviourScript::handleAnimations()
 
 void PlayerBehaviourScript::handleMovement()
 {
-	static const float movementSpeed = 200.0f;
+	static const float movementSpeed = 10000.0f;
 
 	if (mGameObject->hasComponent<NetworkObject>())
 	{

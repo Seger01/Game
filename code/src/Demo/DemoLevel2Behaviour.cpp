@@ -2,6 +2,7 @@
 #include <EngineBravo.h>
 #include <Animation.h>
 #include <EnemyBehaviourScript.h>
+#include <Input.h>
 
 DemoLevel2Behaviour::DemoLevel2Behaviour() : mMovingUp(true), mInitialY(0.0f) {}
 
@@ -19,7 +20,7 @@ void DemoLevel2Behaviour::onStart() {
         }
     }
 
-    rotateEnemy();
+    //rotateEnemy();
 
     GameObject* enemyStatic = scene->getGameObjectsWithTag("EnemyStatic")[0];
     if (enemyStatic != nullptr) {
@@ -32,6 +33,7 @@ void DemoLevel2Behaviour::onStart() {
 void DemoLevel2Behaviour::onUpdate() {
     moveEnemy();
     //scaleEnemy();
+    rotateEnemy();
 }
 
 void DemoLevel2Behaviour::onCollide(GameObject* aGameObject) {
@@ -41,6 +43,15 @@ void DemoLevel2Behaviour::onCollide(GameObject* aGameObject) {
 void DemoLevel2Behaviour::moveEnemy() {
     EngineBravo& engine = EngineBravo::getInstance();
     Scene* scene = engine.getSceneManager().getCurrentScene();
+    Input& input = Input::getInstance();
+
+    if (input.GetKeyDown(Key::Key_PageUp)) {
+        Time::timeDilation = Time::timeDilation + 0.1f;
+    }
+
+    if (input.GetKeyDown(Key::Key_PageDown)) {
+        Time::timeDilation = Time::timeDilation - 0.1f;
+    }
 
     GameObject* enemy = scene->getGameObjectsWithTag("EnemyMoving")[0];
     if (enemy == nullptr) {
@@ -106,13 +117,12 @@ void DemoLevel2Behaviour::rotateEnemy() {
         std::cout << "Enemy not found" << std::endl;
         return;
     }
-
-    RigidBody* rigidBody = enemy->getComponents<RigidBody>()[0];
-    if (rigidBody == nullptr) {
-        std::cout << "RigidBody not found" << std::endl;
-        return;
-    }
-    else {
-        rigidBody->addTorque(5000.0f);
-    }
+    Transform transform = enemy->getTransform();
+    std::cout << "Initial rotatation: " << transform.rotation << std::endl;
+    //transform.rotate(1000.0f * Time::deltaTime);
+    transform.rotate(1.0f);
+    std::cout << "Rotatation after update: " << transform.rotation << std::endl;
+    enemy->setTransform(transform);
+    std::cout << "Rotatation after update: " << enemy->getTransform().rotation << std::endl;
+    //std::cout << "Deltatime: " << Time::deltaTime << std::endl;
 }
