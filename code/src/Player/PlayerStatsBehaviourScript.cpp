@@ -52,6 +52,7 @@ void PlayerStatsBehaviourScript::onStart() {
 
     mBSCountText = new Text("0", "Arial", Color(255, 255, 255), Vector2(0, 0), Vector2(1, 1)); // Adjust position and scale as needed
     mBSCountText->setLayer(5);
+    mBSCountText->setTag("playerBSCountText");
     mBSCountText->setParent(mGameObject);
 
     mGameObject->addComponent(playerStatBackgroundSprite);
@@ -87,7 +88,7 @@ void PlayerStatsBehaviourScript::onUpdate() {
     if (scene->getGameObjectsWithTag("Player").size() == 0) {
         return;
     }
-    
+
     float playerHealth = mPlayerBehaviourScript->getHealth();
     float playerMaxHealth = mPlayerBehaviourScript->getMaxHealth();
     int playerBSCount = mPlayerBehaviourScript->getBSCount();
@@ -117,10 +118,10 @@ void PlayerStatsBehaviourScript::onUpdate() {
         playerHealth = playerMaxHealth;
     }
 
-    if (mBSCountText != nullptr) {
-        mBSCountText->setText(std::to_string(0));
+    if (scene->getGameObjectsWithTag("playerBSCountText").size() > 0) {
+        GameObject* gameObject = scene->getGameObjectsWithTag("playerBSCountText")[0];
+        dynamic_cast<Text*>(gameObject)->setText(std::to_string(playerBSCount));
     }
-    
 }
 
 void PlayerStatsBehaviourScript::onCollide(GameObject* aGameObject) {

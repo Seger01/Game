@@ -118,11 +118,6 @@ void DemoLevel2Behaviour::rotateEnemy() {
         return;
     }
     Transform transform = enemy->getTransform();
-    std::cout << "Initial rotatation: " << transform.rotation << std::endl;
-    //transform.rotate(1000.0f * Time::deltaTime);
-    transform.rotate(1.0f);
-    std::cout << "Rotatation after update: " << transform.rotation << std::endl;
+    transform.rotate(100.0f * Time::deltaTime);
     enemy->setTransform(transform);
-    std::cout << "Rotatation after update: " << enemy->getTransform().rotation << std::endl;
-    //std::cout << "Deltatime: " << Time::deltaTime << std::endl;
 }
