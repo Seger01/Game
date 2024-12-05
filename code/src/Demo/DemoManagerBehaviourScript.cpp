@@ -38,11 +38,34 @@ void DemoManagerBehaviourScript::createFirstScene()
 	camera->setTag("MainCamera");
 	camera->setActive(true);
 
+	camera->setBackgroundColor(Color(0, 0, 0));
+
+	camera->setRenderOrder(0);
+
 	camera->setTransform(Transform(Vector2(80, 96)));
 	camera->setWidth(16 * 30);
 	camera->setHeight(9 * 30);
 
 	scene->addGameObject(camera);
+
+	Camera* miniMapCamera = new Camera;
+	miniMapCamera->setTag("MiniMapCamera");
+	miniMapCamera->setActive(true);
+
+	miniMapCamera->setRenderOrder(1);
+
+	miniMapCamera->setViewport(FRect{0.7, 0.7, 0.3, 0.3});
+
+	miniMapCamera->getDebugOverlayRef().renderCameraViewport = true;
+	miniMapCamera->getDebugOverlayRef().renderColliders = true;
+
+	miniMapCamera->setBackgroundColor(Color(0, 0, 150, 100));
+
+	miniMapCamera->setTransform(Transform(Vector2(170, 96)));
+	miniMapCamera->setWidth(16 * 20);
+	miniMapCamera->setHeight(9 * 20);
+
+	scene->addGameObject(miniMapCamera);
 
 	FSConverter fsconverter;
 	std::string path = fsconverter.getResourcePath("LevelDefs/demoLevel1.json");
@@ -99,12 +122,10 @@ void DemoManagerBehaviourScript::createSecondScene()
 	// set starting pos for player in this scene
 	// GameObject* playerObject = sceneManager.getCurrentScene()->getGameObjectsWithTag("Player").at(0);
 	// playerObject->setTransform(Transform(Vector2(40, 40)));
-	//GameObject* playerObject =
-	//	EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
-
-	//std::cout << "Setting player transform" << std::endl;
-	//playerObject->setTransform(Transform(Vector2(40, 40)));
-	// playerObject->setTransform(Transform(Vector2(40, 40)));
+	GameObject* playerObject =
+		EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
+	playerObject->setTransform(Transform(Vector2(40, 40)));
+	//  playerObject->setTransform(Transform(Vector2(40, 40)));
 
 	Camera* camera = new Camera;
 	camera->setTag("MainCamera");
@@ -209,7 +230,6 @@ void DemoManagerBehaviourScript::createSecondScene()
 		std::cout << "Enemystatic does not have a RigidBody component" << std::endl;
 	}
 
-
 	scene->addGameObject(enemyMoving);
 	scene->addGameObject(enemyStatic);
 	scene->addGameObject(enemyWithCollider);
@@ -224,8 +244,8 @@ void DemoManagerBehaviourScript::createSecondScene()
 
 	sceneManager.requestSceneChange("DemoScene2");
 
-	mPlayerPositionSet = false;
-	
+	mPlayerPositionSet = true;
+
 	saveGame();
 }
 
@@ -318,7 +338,6 @@ void DemoManagerBehaviourScript::saveGame()
 			playerPos = (*playerIt)->getTransform().position;
 		}
 	}
-
 
 	SaveGame sg{"saves/newSave.json"};
 

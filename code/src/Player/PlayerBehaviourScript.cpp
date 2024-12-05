@@ -265,6 +265,22 @@ void PlayerBehaviourScript::hanldeCameraMovement()
 	currentCam->setTransform(playerTransform);
 }
 
+void PlayerBehaviourScript::handleAspectRatioTest()
+{
+	Input& input = Input::getInstance();
+
+	if (input.GetKeyDown(Key::Key_I))
+	{
+		EngineBravo& engine = EngineBravo::getInstance();
+		engine.getRenderSystem().setAspectRatio(Point(16, 9));
+	}
+	if (input.GetKeyDown(Key::Key_O))
+	{
+		EngineBravo& engine = EngineBravo::getInstance();
+		engine.getRenderSystem().setAspectRatio(Point(1, 1));
+	}
+}
+
 void PlayerBehaviourScript::fireBullet(Point mousePosition)
 {
 	EngineBravo& engine = EngineBravo::getInstance();
@@ -329,26 +345,26 @@ void PlayerBehaviourScript::onUpdate()
 {
 	Input& input = Input::getInstance();
 
-	// std::cout << "Player Position: " << mGameObject->getTransform().position.x << ", "
-	//           << mGameObject->getTransform().position.y << std::endl;
-	//
-	// std::cout << "Tag: " << mGameObject->getTag() << std::endl;
-
 	handleMovement();
 	handleAnimations();
+	handleAspectRatioTest();
 
 	hanldeCameraMovement();
 
 	if (input.GetKeyDown(Key::Key_C))
 	{
-		Configuration& config = EngineBravo::getInstance().getConfiguration();
-		config.setConfig(SHOW_COLLIDERS, !config.getConfig(SHOW_COLLIDERS));
+		Camera* mainCam =
+			EngineBravo::getInstance().getSceneManager().getCurrentScene()->getCameraWithTag("MainCamera");
+
+		mainCam->getDebugOverlayRef().renderColliders = !mainCam->getDebugOverlayRef().renderColliders;
 	}
 
 	if (input.GetKeyDown(Key::Key_F))
 	{
-		Configuration& config = EngineBravo::getInstance().getConfiguration();
-		config.setConfig(SHOW_FPS, !config.getConfig(SHOW_FPS));
+		Camera* mainCam =
+			EngineBravo::getInstance().getSceneManager().getCurrentScene()->getCameraWithTag("MainCamera");
+
+		mainCam->getDebugOverlayRef().showFPS = !mainCam->getDebugOverlayRef().showFPS;
 	}
 
 	if (input.GetMouseButtonDown(MouseButton::LEFT))
