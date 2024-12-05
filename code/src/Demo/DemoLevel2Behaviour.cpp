@@ -3,8 +3,7 @@
 #include <Animation.h>
 #include <EnemyBehaviourScript.h>
 #include <Input.h>
-
-DemoLevel2Behaviour::DemoLevel2Behaviour() : mMovingUp(true), mInitialY(0.0f) {}
+#include <cmath>
 
 void DemoLevel2Behaviour::onStart() {
     mGameObject->setTag("DemoLevel2");
@@ -20,8 +19,6 @@ void DemoLevel2Behaviour::onStart() {
         }
     }
 
-    //rotateEnemy();
-
     GameObject* enemyStatic = scene->getGameObjectsWithTag("EnemyStatic")[0];
     if (enemyStatic != nullptr) {
         if (enemyStatic->hasComponent<EnemyBehaviourScript>()) {
@@ -31,17 +28,22 @@ void DemoLevel2Behaviour::onStart() {
             }
         }
     }
+
+    GameObject* enemyWithPathfinding = scene->getGameObjectsWithTag("EnemyWithPathfinding")[0];
+    if (enemyWithPathfinding != nullptr) {
+        if (enemyWithPathfinding->hasComponent<RigidBody>()) {
+            enemyWithPathfinding->getComponents<RigidBody>()[0]->setActive(false);
+        }
+    }
 }
 
 void DemoLevel2Behaviour::onUpdate() {
+    moveWithPathfinding();
     moveEnemy();
-    //scaleEnemy();
     rotateEnemy();
 }
 
-void DemoLevel2Behaviour::onCollide(GameObject* aGameObject) {
-
-}
+void DemoLevel2Behaviour::onCollide(GameObject* aGameObject) {}
 
 void DemoLevel2Behaviour::moveEnemy() {
     EngineBravo& engine = EngineBravo::getInstance();
@@ -123,4 +125,73 @@ void DemoLevel2Behaviour::rotateEnemy() {
     Transform transform = enemy->getTransform();
     transform.rotate(100.0f * Time::deltaTime);
     enemy->setTransform(transform);
+}
+
+int DemoLevel2Behaviour::getGridPosition(const Vector2& position) const {
+    int x = static_cast<int>(position.x) / 16;
+    int y = static_cast<int>(position.y) / 16;
+    return y * mMapWidth + x;
+}
+
+
+float vectorLength(const Vector2& vec) {
+    return std::sqrt(vec.x * vec.x + vec.y * vec.y);
+}
+
+Vector2 normalizeVector(const Vector2& vec) {
+    float length = vectorLength(vec);
+    if (length != 0) {
+        return Vector2(vec.x / length, vec.y / length);
+    }
+    return vec;
+}
+
+void DemoLevel2Behaviour::moveWithPathfinding() {
+    EngineBravo& engine = EngineBravo::getInstance();
+    Scene* scene = engine.getSceneManager().getCurrentScene();
+
+    GameObject* enemy = scene->getGameObjectsWithTag("EnemyWithPathfinding")[0];
+    if (enemy == nullptr) {
+        std::cout << "Enemy not found" << std::endl;
+        return;
+    }
+
+    GameObject* player = scene->getGameObjectsWithTag("Player")[0];
+    if (player == nullptr) {
+        std::cout << "Player not found" << std::endl;
+        return;
+    }
+
+    int enemyPosition = getGridPosition(enemy->getTransform().position);
+    int playerPosition = getGridPosition(player->getTransform().position);
+
+    if (mPath.empty() || mCurrentPathIndex >= mPath.size()) {
+        mPath = mPathfinding->findPath(enemyPosition, playerPosition);
+        mCurrentPathIndex = 0;
+    }
+
+    if (!mPath.empty() && mCurrentPathIndex < mPath.size() - 1) {
+        int nextPosition = mPath[mCurrentPathIndex + 1];
+        int nextX = nextPosition % mMapWidth;
+        int nextY = nextPosition / mMapWidth;
+
+        Transform transform = enemy->getTransform();
+        Vector2 currentPosition = transform.position;
+        Vector2 targetPosition(nextX * 16, nextY * 16);
+
+        Vector2 direction = targetPosition - currentPosition;
+        direction = normalizeVector(direction);
+
+        float speed = 50.0f;
+        Vector2 movement = direction * speed * Time::deltaTime;
+
+        if (vectorLength(targetPosition - currentPosition) <= vectorLength(movement)) {
+            transform.position = targetPosition;
+            mCurrentPathIndex++;
+        } else {
+            transform.position += movement;
+        }
+
+        enemy->setTransform(transform);
+    }
 }

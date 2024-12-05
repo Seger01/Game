@@ -8,6 +8,7 @@
 #include "LevelCreatorBehaviourScript.h"
 #include "LevelManagerBehaviourScript.h"
 #include "DemoMusicButtonBehaviourScript.h"
+#include "Pathfinding.h"
 #include "LevelManagerPrefab.h"
 #include "MainMenuPrefab.h"
 #include "DemoButtonPrefab.h"
@@ -126,14 +127,6 @@ void DemoManagerBehaviourScript::createSecondScene()
 	MapToGraph mapToGraph(mTileMapData);
 	mapToGraph.convertToGraph();
 	auto graph = mapToGraph.getAdjacencyList();
-	
-	GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
-
-	// defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
-
-	defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
-
-	scene->addPersistentGameObject(defaultPlayerPrefab);
 
 	//Add button for starting and stopping music
 	GameObject* buttonMusic = DemoButtonPrefab().createButtonPrefab();
@@ -222,8 +215,10 @@ void DemoManagerBehaviourScript::createSecondScene()
 	scene->addGameObject(enemyWithCollider);
 	scene->addGameObject(enemyWithPathfinding);
 
+	std::unique_ptr<Pathfinding> pathfinding = std::make_unique<Pathfinding>(graph, 50, 50);
+
 	GameObject* level2 = new GameObject;
-	level2->addComponent<DemoLevel2Behaviour>();
+	level2->addComponent<DemoLevel2Behaviour>(std::move(pathfinding), 50, 50);
 
 	scene->addGameObject(level2);
 
@@ -252,8 +247,8 @@ void DemoManagerBehaviourScript::onStart()
 	std::cout << "DemoInitBehaviourScript::onStart()" << std::endl;
 
 	mCurrentScene = 0;
-	//createFirstScene();
-	createSecondScene();
+	createFirstScene();
+	//createSecondScene();
 }
 
 void DemoManagerBehaviourScript::onUpdate()
