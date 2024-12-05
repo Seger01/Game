@@ -33,6 +33,8 @@ void DemoManagerBehaviourScript::createFirstScene()
 	camera->setTag("MainCamera");
 	camera->setActive(true);
 
+	camera->setBackgroundColor(Color(0, 0, 0));
+
 	camera->setRenderOrder(0);
 
 	camera->setTransform(Transform(Vector2(80, 96)));

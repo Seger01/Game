@@ -265,6 +265,22 @@ void PlayerBehaviourScript::hanldeCameraMovement()
 	currentCam->setTransform(playerTransform);
 }
 
+void PlayerBehaviourScript::handleAspectRatioTest()
+{
+	Input& input = Input::getInstance();
+
+	if (input.GetKeyDown(Key::Key_I))
+	{
+		EngineBravo& engine = EngineBravo::getInstance();
+		engine.getRenderSystem().setAspectRatio(Point(16, 9));
+	}
+	if (input.GetKeyDown(Key::Key_O))
+	{
+		EngineBravo& engine = EngineBravo::getInstance();
+		engine.getRenderSystem().setAspectRatio(Point(1, 1));
+	}
+}
+
 void PlayerBehaviourScript::fireBullet(Point mousePosition)
 {
 	EngineBravo& engine = EngineBravo::getInstance();
@@ -329,13 +345,9 @@ void PlayerBehaviourScript::onUpdate()
 {
 	Input& input = Input::getInstance();
 
-	// std::cout << "Player Position: " << mGameObject->getTransform().position.x << ", "
-	//           << mGameObject->getTransform().position.y << std::endl;
-	//
-	// std::cout << "Tag: " << mGameObject->getTag() << std::endl;
-
 	handleMovement();
 	handleAnimations();
+	handleAspectRatioTest();
 
 	hanldeCameraMovement();
 
