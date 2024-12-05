@@ -25,6 +25,7 @@ private:
     int getGridPosition(const Vector2& position) const;
     bool isValidPosition(int position) const;
 
+
 private:
     bool mMovingUp;
     float mInitialY;
@@ -33,4 +34,6 @@ private:
     int mMapHeight;
     std::vector<int> mPath;
     size_t mCurrentPathIndex;
+    float mPathUpdateTime;
+    Vector2 mPreviousPlayerPosition;
 };

@@ -32,9 +32,11 @@ void DemoLevel2Behaviour::onStart() {
     GameObject* enemyWithPathfinding = scene->getGameObjectsWithTag("EnemyWithPathfinding")[0];
     if (enemyWithPathfinding != nullptr) {
         if (enemyWithPathfinding->hasComponent<RigidBody>()) {
-            enemyWithPathfinding->getComponents<RigidBody>()[0]->setActive(false);
+            enemyWithPathfinding->getComponents<RigidBody>()[0]->setActive(true);
         }
     }
+
+    mPreviousPlayerPosition = Vector2(0, 0);
 }
 
 void DemoLevel2Behaviour::onUpdate() {
@@ -133,6 +135,9 @@ int DemoLevel2Behaviour::getGridPosition(const Vector2& position) const {
     return y * mMapWidth + x;
 }
 
+bool DemoLevel2Behaviour::isValidPosition(int position) const {
+    return mPathfinding->getAdjacencyList().find(position) != mPathfinding->getAdjacencyList().end();
+}
 
 float vectorLength(const Vector2& vec) {
     return std::sqrt(vec.x * vec.x + vec.y * vec.y);
@@ -162,16 +167,29 @@ void DemoLevel2Behaviour::moveWithPathfinding() {
         return;
     }
 
+    Vector2 playerPosition = player->getTransform().position;
     int enemyPosition = getGridPosition(enemy->getTransform().position);
-    int playerPosition = getGridPosition(player->getTransform().position);
+    int playerGridPosition = getGridPosition(playerPosition);
 
-    if (mPath.empty() || mCurrentPathIndex >= mPath.size()) {
-        mPath = mPathfinding->findPath(enemyPosition, playerPosition);
+    // Recalculate path if the player has moved significantly or after a certain time interval
+    float distanceToPreviousPosition = vectorLength(playerPosition - mPreviousPlayerPosition);
+    mPathUpdateTime += Time::deltaTime;
+
+    if (distanceToPreviousPosition > 16.0f || mPathUpdateTime > 1.0f) {
+        mPath = mPathfinding->findPath(enemyPosition, playerGridPosition);
         mCurrentPathIndex = 0;
+        mPreviousPlayerPosition = playerPosition;
+        mPathUpdateTime = 0.0f;
     }
 
     if (!mPath.empty() && mCurrentPathIndex < mPath.size() - 1) {
         int nextPosition = mPath[mCurrentPathIndex + 1];
+
+        if (!isValidPosition(nextPosition)) {
+            std::cout << "Next position is not valid on the graph" << std::endl;
+            return;
+        }
+
         int nextX = nextPosition % mMapWidth;
         int nextY = nextPosition / mMapWidth;
 
@@ -182,7 +200,7 @@ void DemoLevel2Behaviour::moveWithPathfinding() {
         Vector2 direction = targetPosition - currentPosition;
         direction = normalizeVector(direction);
 
-        float speed = 50.0f;
+        float speed = 25.0f;
         Vector2 movement = direction * speed * Time::deltaTime;
 
         if (vectorLength(targetPosition - currentPosition) <= vectorLength(movement)) {
