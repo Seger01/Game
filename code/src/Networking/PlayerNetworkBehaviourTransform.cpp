@@ -19,7 +19,6 @@ void PlayerNetworkBehaviourTransform::onUpdate()
 {
 	if (isOwner())
 	{
-		std::cout << "Adress of NetworkVariable in onUpdate: " << &mTransformSerialize << std::endl;
 		mTransformSerialize.getValue().setPosition(mGameObject->getTransform().position); // Set the network variable
 	}
 	else
