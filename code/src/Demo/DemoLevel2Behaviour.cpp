@@ -176,64 +176,6 @@ Vector2 normalizeVector(const Vector2& vec)
 	return vec;
 }
 
-void DemoLevel2Behaviour::moveWithPathfinding()
-{
-	EngineBravo& engine = EngineBravo::getInstance();
-	Scene* scene = engine.getSceneManager().getCurrentScene();
-
-	GameObject* enemy = scene->getGameObjectsWithTag("EnemyWithPathfinding")[0];
-	if (enemy == nullptr)
-	{
-		std::cout << "Enemy not found" << std::endl;
-		return;
-	}
-
-	GameObject* player = scene->getGameObjectsWithTag("Player")[0];
-	if (player == nullptr)
-	{
-		std::cout << "Player not found" << std::endl;
-		return;
-	}
-
-	int enemyPosition = getGridPosition(enemy->getTransform().position);
-	int playerPosition = getGridPosition(player->getTransform().position);
-
-	if (mPath.empty() || mCurrentPathIndex >= mPath.size())
-	{
-		mPath = mPathfinding->findPath(enemyPosition, playerPosition);
-		mCurrentPathIndex = 0;
-	}
-
-	if (!mPath.empty() && mCurrentPathIndex < mPath.size() - 1)
-	{
-		int nextPosition = mPath[mCurrentPathIndex + 1];
-		int nextX = nextPosition % mMapWidth;
-		int nextY = nextPosition / mMapWidth;
-
-		Transform transform = enemy->getTransform();
-		Vector2 currentPosition = transform.position;
-		Vector2 targetPosition(nextX * 16, nextY * 16);
-
-		Vector2 direction = targetPosition - currentPosition;
-		direction = normalizeVector(direction);
-
-		float speed = 50.0f;
-		Vector2 movement = direction * speed * Time::deltaTime;
-
-		if (vectorLength(targetPosition - currentPosition) <= vectorLength(movement))
-		{
-			transform.position = targetPosition;
-			mCurrentPathIndex++;
-		}
-		else
-		{
-			transform.position += movement;
-		}
-
-		enemy->setTransform(transform);
-	}
-}
-
 void DemoLevel2Behaviour::moveWithPathfinding() {
     EngineBravo& engine = EngineBravo::getInstance();
     Scene* scene = engine.getSceneManager().getCurrentScene();
