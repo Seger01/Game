@@ -1,27 +1,25 @@
 #include "DemoManagerBehaviourScript.h"
 #include "DemoButtonBehaviourScript.h"
+#include "DemoButtonPrefab.h"
 #include "DemoEndOfLevelTriggerBehaviourScript.h"
 #include "DemoLevel2Behaviour.h"
-#include "EnemyPrefab.h"
+#include "DemoMusicButtonBehaviourScript.h"
 #include "DemoSFXButtonBehaviourScript.h"
+#include "EnemyPrefab.h"
 #include "Input.h"
 #include "LevelCreatorBehaviourScript.h"
 #include "LevelManagerBehaviourScript.h"
-#include "DemoMusicButtonBehaviourScript.h"
-#include "Pathfinding.h"
 #include "LevelManagerPrefab.h"
 #include "MainMenuPrefab.h"
-#include "DemoButtonPrefab.h"
+#include "Pathfinding.h"
 #include "PlayerPrefab.h"
-#include <MapToGraph.h>
 #include <EngineBravo.h>
 #include <GameObject.h>
+#include <MapToGraph.h>
 #include <Scene.h>
 #include <SceneManager.h>
-#include <iostream>
 #include <Text.h>
-
-
+#include <iostream>
 
 void DemoManagerBehaviourScript::createFirstScene()
 {
@@ -144,12 +142,12 @@ void DemoManagerBehaviourScript::createSecondScene()
 	mTileMapData = tileMapParser.getTileMapData();
 
 	LevelCreatorBehaviourScript().createLevel(scene, mTileMapData);
-	
+
 	MapToGraph mapToGraph(mTileMapData);
 	mapToGraph.convertToGraph();
 	auto graph = mapToGraph.getAdjacencyList();
 
-	//Add button for starting and stopping music
+	// Add button for starting and stopping music
 	GameObject* buttonMusic = DemoButtonPrefab().createButtonPrefab();
 	buttonMusic->setTag("ButtonStartStopMusic");
 	buttonMusic->setTransform(Transform(Vector2(540, 174)));
@@ -163,7 +161,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 	scene->addGameObject(text);
 	scene->addGameObject(buttonMusic);
 
-	//Add button for resetting music
+	// Add button for resetting music
 	GameObject* buttonResetMusic = DemoButtonPrefab().createButtonPrefab();
 	buttonResetMusic->setTransform(Transform(Vector2(620, 174)));
 	buttonResetMusic->addComponent<DemoMusicButtonBehaviourScript>();
@@ -177,8 +175,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 	scene->addGameObject(textReset);
 	scene->addGameObject(buttonResetMusic);
 
-
-	//Add button for SFX
+	// Add button for SFX
 	GameObject* buttonSFX = DemoButtonPrefab().createButtonPrefab();
 	buttonSFX->setTag("ButtonSFX");
 	buttonSFX->setTransform(Transform(Vector2(540, 56)));
@@ -192,25 +189,31 @@ void DemoManagerBehaviourScript::createSecondScene()
 	scene->addGameObject(textSFX);
 	scene->addGameObject(buttonSFX);
 
-	//Add enemies
+	// Add enemies
 	GameObject* enemyMoving = EnemyPrefab().createEnemyPrefab();
 	GameObject* enemyStatic = EnemyPrefab().createEnemyPrefab();
 	GameObject* enemyWithCollider = EnemyPrefab().createEnemyPrefab();
 	GameObject* enemyWithPathfinding = EnemyPrefab().createEnemyPrefab();
 
-
-	enemyMoving->setTransform(Transform(Vector2(112, 112)));
+	enemyMoving->setTransform(Transform(Vector2(100, 112)));
 	enemyMoving->setTag("EnemyMoving");
+	if (enemyMoving->hasComponent<RigidBody>())
+		enemyMoving->removeComponent(enemyMoving->getComponents<RigidBody>()[0]);
+	if (enemyMoving->hasComponent<BoxCollider>())
+		enemyMoving->removeComponent(enemyMoving->getComponents<BoxCollider>()[0]);
 
 	enemyStatic->setTransform(Transform(Vector2(40, 84)));
 	enemyStatic->setTag("EnemyStatic");
+	if (enemyStatic->hasComponent<RigidBody>())
+		enemyStatic->removeComponent(enemyStatic->getComponents<RigidBody>()[0]);
+	if (enemyStatic->hasComponent<BoxCollider>())
+		enemyStatic->removeComponent(enemyStatic->getComponents<BoxCollider>()[0]);
 
 	enemyWithCollider->setTransform(Transform(Vector2(320, 112)));
 	enemyWithCollider->setTag("EnemyWithCollider");
 
 	enemyWithPathfinding->setTransform(Transform(Vector2(560, 560)));
 	enemyWithPathfinding->setTag("EnemyWithPathfinding");
-
 
 	if (enemyStatic->hasComponent<RigidBody>())
 	{
@@ -268,7 +271,7 @@ void DemoManagerBehaviourScript::onStart()
 
 	mCurrentScene = 0;
 	createFirstScene();
-	//createSecondScene();
+	// createSecondScene();
 }
 
 void DemoManagerBehaviourScript::onUpdate()
@@ -282,7 +285,6 @@ void DemoManagerBehaviourScript::onUpdate()
 		std::cout << "Setting player transform" << std::endl;
 		playerObject->setTransform(Transform(Vector2(40, 40)));
 	}
-
 
 	handleSaveGame();
 
@@ -307,10 +309,12 @@ void DemoManagerBehaviourScript::onUpdate()
 	}
 }
 
-void DemoManagerBehaviourScript::handleSaveGame() {
+void DemoManagerBehaviourScript::handleSaveGame()
+{
 	Input& input = Input::getInstance();
 
-	if (input.GetKeyDown(Key::Key_J)) {
+	if (input.GetKeyDown(Key::Key_J))
+	{
 
 		saveGame();
 	}
@@ -320,6 +324,7 @@ void DemoManagerBehaviourScript::handleSaveGame() {
 		loadGame();
 	}
 }
+
 void DemoManagerBehaviourScript::saveGame()
 {
 	EngineBravo& engine = EngineBravo::getInstance();
@@ -360,41 +365,51 @@ void DemoManagerBehaviourScript::loadGame()
 	float playerScaleX;
 	float playerScaleY;
 
-	try {
+	try
+	{
 		playerX = sg.getFloatField("PlayerX").getValue();
 	}
-	catch (std::exception& e) {
+	catch (std::exception& e)
+	{
 		std::cout << e.what() << std::endl;
 	}
 
-	try {
+	try
+	{
 		playerY = sg.getFloatField("PlayerY").getValue();
 	}
-	catch (std::exception& e) {
+	catch (std::exception& e)
+	{
 		std::cout << e.what() << std::endl;
 	}
 
-	try {
+	try
+	{
 		playerRotation = sg.getFloatField("PlayerRotation").getValue();
 	}
-	catch (std::exception& e) {
+	catch (std::exception& e)
+	{
 		std::cout << e.what() << std::endl;
 	}
 
-	try {
+	try
+	{
 		playerScaleX = sg.getFloatField("PlayerScaleX").getValue();
 	}
-	catch (std::exception& e) {
+	catch (std::exception& e)
+	{
 		std::cout << e.what() << std::endl;
 	}
 
-	try {
+	try
+	{
 		playerScaleY = sg.getFloatField("PlayerScaleY").getValue();
 	}
-	catch (std::exception& e) {
+	catch (std::exception& e)
+	{
 		std::cout << e.what() << std::endl;
 	}
-	
+
 	EngineBravo& engine = EngineBravo::getInstance();
 	SceneManager& sceneManager = engine.getSceneManager();
 	Scene* currentScene = sceneManager.getCurrentScene();
