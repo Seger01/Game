@@ -107,12 +107,16 @@ void DemoPhysicsButtonBehaviourScript::spawnBox() {
     RigidBody* rigidBody = new RigidBody;
     rigidBody->setTransform(box->getTransform());
     rigidBody->setDensity(1.0f);
+    rigidBody->setRestitution(0.8f);
+    rigidBody->addForce(Vector2(0, -1000));
+    rigidBody->setActive(true);
     box->addComponent(rigidBody);
 
     BoxCollider* boxCollider = new BoxCollider;
     boxCollider->setWidth(sprite->getWidth());
     boxCollider->setHeight(sprite->getHeight());
     boxCollider->setTransform(box->getTransform());
+    boxCollider->setTrigger(false);
     box->addComponent(boxCollider);
 
 
@@ -138,11 +142,15 @@ void DemoPhysicsButtonBehaviourScript::spawnCircle() {
     RigidBody* rigidBody = new RigidBody;
     rigidBody->setTransform(circle->getTransform());
     rigidBody->setDensity(1.0f);
+    rigidBody->setRestitution(0.8f);
+    rigidBody->addForce(Vector2(0, -1000));
+    rigidBody->setActive(true);
     circle->addComponent(rigidBody);
 
     CircleCollider* circleCollider = new CircleCollider;
     circleCollider->setRadius(sprite->getWidth() / 2);
     circleCollider->setTransform(circle->getTransform());
+    circleCollider->setTrigger(false);
     circle->addComponent(circleCollider);
 
     scene->addGameObject(circle);
