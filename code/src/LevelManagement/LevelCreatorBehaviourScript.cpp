@@ -406,9 +406,6 @@ void LevelCreatorBehaviourScript::createLevel(Scene* scene, const TileMapData& t
 						{
 							gameObject->setTag("Door");
 						}
-						else {
-							gameObject->setTag(tileMapData.mLayerNames[layerIndex]);
-						}
 						scene->addGameObject(gameObject);
 					}
 					else

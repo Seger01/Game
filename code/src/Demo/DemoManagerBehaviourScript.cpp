@@ -153,8 +153,8 @@ void DemoManagerBehaviourScript::createSecondScene()
 	mapToGraph.convertToGraph();
 	std::unordered_map<int, std::vector<int>> graph = mapToGraph.getAdjacencyList();
 
-	int mapWidth = 50;
-	int mapHeight = 50;
+	int mapWidth = 75;
+	int mapHeight = 75;
 
 	// Add button for starting and stopping music
 	GameObject* buttonMusic = DemoButtonPrefab().createButtonPrefab();
@@ -190,13 +190,50 @@ void DemoManagerBehaviourScript::createSecondScene()
 	buttonSFX->setTransform(Transform(Vector2(540, 56)));
 	buttonSFX->addComponent<DemoSFXButtonBehaviourScript>();
 
-	Text* textSFX = new Text("SFX", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.4, 0.4));
+	Text* textSFX = new Text("SFX", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.2, 0.2));
 	textSFX->setLayer(5);
 	textSFX->setTag("ButtonSFXText");
 	textSFX->setParent(buttonSFX);
 
 	scene->addGameObject(textSFX);
 	scene->addGameObject(buttonSFX);
+
+	//Add buttons for physics objects
+	GameObject* button1 = DemoButtonPrefab().createButtonPrefab();
+    button1->setTransform(Transform(Vector2(288, 432)));
+    button1->setTag("ButtonBox");
+
+    Text* text1 = new Text("Box object", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.2, 0.2));
+    text1->setLayer(5);
+    text1->setTag("ButtonBoxText");
+    text1->setParent(button1);
+
+    scene->addGameObject(text1);
+    scene->addGameObject(button1);
+
+    GameObject* button2 = DemoButtonPrefab().createButtonPrefab();
+    button2->setTransform(Transform(Vector2(288, 512)));
+    button2->setTag("ButtonCircle");
+
+    Text* text2 = new Text("Circle object", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.2, 0.2));
+    text2->setLayer(5);
+    text2->setTag("Button2Text");
+    text2->setParent(button2);
+
+    scene->addGameObject(text2);
+    scene->addGameObject(button2);
+
+    GameObject* button3 = DemoButtonPrefab().createButtonPrefab();
+    button3->setTransform(Transform(Vector2(288, 608)));
+    button3->setTag("Button3");
+
+    Text* text3 = new Text("Button3", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.2, 0.2));
+    text3->setLayer(5);
+    text3->setTag("Button3Text");
+    text3->setParent(button3);
+
+    scene->addGameObject(text3);
+    scene->addGameObject(button3);
 
 	// Add enemies
 	GameObject* enemyMoving = EnemyPrefab().createEnemyPrefab();

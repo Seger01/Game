@@ -245,7 +245,7 @@ void EnemyBehaviourScript::moveWithPathfinding() {
         rigidbody->addForce(force);
         
         // Check if we've reached the next path point
-        if (distanceToTarget <= 4.0f) {
+        if (distanceToTarget <= 16.0f) {
             mCurrentPathIndex++;
             
             //If very close to target, snap to exact position
