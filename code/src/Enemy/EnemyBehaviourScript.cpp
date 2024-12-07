@@ -2,6 +2,7 @@
 #include "BulletBehaviourScript.h"
 #include "BSCoinPrefab.h"
 #include "ECCoinPrefab.h"
+#include <RigidBody.h>
 #include <Animation.h>
 #include <GameObject.h>
 #include <EngineBravo.h>
@@ -169,66 +170,92 @@ Vector2 EnemyBehaviourScript::normalizeVector(const Vector2& vec)
 void EnemyBehaviourScript::moveWithPathfinding() {
     EngineBravo& engine = EngineBravo::getInstance();
     Scene* scene = engine.getSceneManager().getCurrentScene();
-
     GameObject* enemy = mGameObject;
+    
     if (enemy == nullptr) {
         std::cout << "Enemy not found" << std::endl;
         return;
     }
-
+    
     GameObject* player = scene->getGameObjectsWithTag("Player")[0];
     if (player == nullptr) {
         std::cout << "Player not found" << std::endl;
         return;
     }
-
+    
     Vector2 playerPosition = player->getTransform().position;
     int enemyPosition = getGridPosition(enemy->getTransform().position);
     int playerGridPosition = getGridPosition(playerPosition);
-
-    if (enemyPosition == -1 || playerGridPosition == -1 || !isValidPosition(enemyPosition) || !isValidPosition(playerGridPosition)) {
+    
+    if (enemyPosition == -1 || playerGridPosition == -1 ||
+        !isValidPosition(enemyPosition) || !isValidPosition(playerGridPosition)) {
         return;
     }
-
+    
     // Recalculate path if the player has moved significantly or after a certain time interval
     float distanceToPreviousPosition = vectorLength(playerPosition - mPreviousPlayerPosition);
     mPathUpdateTime += Time::deltaTime;
-
+    
     if (distanceToPreviousPosition > 16.0f || mPathUpdateTime > 1.0f) {
         mPath = mPathfinding->findPath(enemyPosition, playerGridPosition);
         mCurrentPathIndex = 0;
         mPreviousPlayerPosition = playerPosition;
         mPathUpdateTime = 0.0f;
     }
-
+    
     if (!mPath.empty() && mCurrentPathIndex < mPath.size() - 1) {
         int nextPosition = mPath[mCurrentPathIndex + 1];
-
         if (!isValidPosition(nextPosition)) {
             return;
         }
-
+        
         int nextX = nextPosition % mMapWidth;
         int nextY = nextPosition / mMapWidth;
-
-        Transform transform = enemy->getTransform();
-        Vector2 currentPosition = transform.position;
+        
+        Vector2 currentPosition = enemy->getTransform().position;
         Vector2 targetPosition(nextX * 16, nextY * 16);
-
-        Vector2 direction = targetPosition - currentPosition;
-        direction = normalizeVector(direction);
-
-        float speed = 25.0f;
-        Vector2 movement = direction * speed * Time::deltaTime;
-
-        if (vectorLength(targetPosition - currentPosition) <= vectorLength(movement)) {
-            transform.position = targetPosition;
-            mCurrentPathIndex++;
-        } else {
-            transform.position += movement;
+        
+        // Get Rigidbody component
+        if (enemy->hasComponent<RigidBody>() == false) {
+            return;
         }
-
-        enemy->setTransform(transform);
+        
+        RigidBody* rigidbody = enemy->getComponents<RigidBody>()[0];
+        
+        // Compute direction and distance
+        Vector2 direction = targetPosition - currentPosition;
+        float distanceToTarget = vectorLength(direction);
+        
+        // Normalize direction
+        direction = normalizeVector(direction);
+        
+        // Compute force with proportional control
+        float maxForce = 10000.0f;  // Maximum force to apply
+        float arrivalThreshold = 4.0f;  // Distance to start slowing
+        
+        // Proportional force - slow down as we approach the target
+        float forceMagnitude = maxForce;
+        if (distanceToTarget < arrivalThreshold) {
+            // Linearly reduce force as we get closer
+            forceMagnitude = maxForce * (distanceToTarget / arrivalThreshold);
+        }
+        
+        // Apply force
+        Vector2 force = direction * forceMagnitude * Time::deltaTime;
+        rigidbody->addForce(force);
+        
+        // Check if we've reached the next path point
+        if (distanceToTarget <= 4.0f) {
+            mCurrentPathIndex++;
+            
+            //If very close to target, snap to exact position
+            if (distanceToTarget <= 1.0f) {
+               // enemy->getTransform().position = targetPosition;
+                Transform enemyTransform = enemy->getTransform();
+                enemyTransform.position = targetPosition;
+                enemy->setTransform(enemyTransform);
+            }
+        }
     }
 }
 

@@ -231,9 +231,10 @@ void DemoManagerBehaviourScript::createSecondScene()
 		enemyWithPathfinding->getComponents<EnemyBehaviourScript>()[0]->setMapWidth(mapWidth);
 		enemyWithPathfinding->getComponents<EnemyBehaviourScript>()[0]->setMapHeight(mapHeight);
 	}
-	else
+	
+	if (enemyWithPathfinding->hasComponent<RigidBody>())
 	{
-		std::cout << "EnemyWithPathfinding does not have EnemyBehaviourScript" << std::endl;
+		enemyWithPathfinding->getComponents<RigidBody>()[0]->setLinearDamping(0.5f);
 	}
 
 	if (enemyStatic->hasComponent<RigidBody>())
