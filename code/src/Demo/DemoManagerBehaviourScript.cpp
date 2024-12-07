@@ -21,6 +21,8 @@
 #include <Text.h>
 #include <iostream>
 #include "EnemyBehaviourScript.h"
+#include "DemoPhysicsButtonBehaviourScript.h"
+#include "DemoParticlesButtonBehaviourScript.h"
 
 void DemoManagerBehaviourScript::createFirstScene()
 {
@@ -202,6 +204,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 	GameObject* button1 = DemoButtonPrefab().createButtonPrefab();
     button1->setTransform(Transform(Vector2(288, 432)));
     button1->setTag("ButtonBox");
+	button1->addComponent<DemoPhysicsButtonBehaviourScript>();
 
     Text* text1 = new Text("Box object", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.2, 0.2));
     text1->setLayer(5);
@@ -214,6 +217,7 @@ void DemoManagerBehaviourScript::createSecondScene()
     GameObject* button2 = DemoButtonPrefab().createButtonPrefab();
     button2->setTransform(Transform(Vector2(288, 512)));
     button2->setTag("ButtonCircle");
+	button2->addComponent<DemoPhysicsButtonBehaviourScript>();
 
     Text* text2 = new Text("Circle object", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.2, 0.2));
     text2->setLayer(5);
@@ -234,6 +238,21 @@ void DemoManagerBehaviourScript::createSecondScene()
 
     scene->addGameObject(text3);
     scene->addGameObject(button3);
+
+
+	// Add button for particle effects
+	GameObject* buttonPar = DemoButtonPrefab().createButtonPrefab();
+	buttonPar->setTag("ButtonPar");
+	buttonPar->setTransform(Transform(Vector2(336, 816)));
+	buttonPar->addComponent<DemoParticlesButtonBehaviourScript>();
+
+	Text* textPar = new Text("Fireworks", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.2, 0.2));
+	textPar->setLayer(5);
+	textPar->setTag("ButtonParText");
+	textPar->setParent(buttonPar);
+
+	scene->addGameObject(textPar);
+	scene->addGameObject(buttonPar);
 
 	// Add enemies
 	GameObject* enemyMoving = EnemyPrefab().createEnemyPrefab();
