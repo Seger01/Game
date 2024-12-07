@@ -3,15 +3,38 @@
 #include "BSCoinPrefab.h"
 #include "ECCoinPrefab.h"
 #include <Animation.h>
+#include <GameObject.h>
+#include <EngineBravo.h>
+#include <SceneManager.h>
+#include <iostream>
+#include <Sprite.h>
+#include <Time.h>
 
-EnemyBehaviourScript::EnemyBehaviourScript(float aHealth) : mHealth(aHealth) {
+// EnemyBehaviourScript::EnemyBehaviourScript(std::unique_ptr<Pathfinding>&& aPathfinding, int aMapWidth, int aMapHeight)
+//     : mHealth(100.0f), mIsDead(false), mPathfinding(std::move(aPathfinding)), mMapWidth(aMapWidth), mMapHeight(aMapHeight), mCurrentPathIndex(0) {
+//     // Debug statements to verify map dimensions
+//     std::cout << "EnemyBehaviourScript initialized with Map Width: " << mMapWidth << ", Map Height: " << mMapHeight << std::endl;
+// }
+
+EnemyBehaviourScript::EnemyBehaviourScript(float aHealth)
+    : mHealth(aHealth) {
+}
+
+EnemyBehaviourScript::EnemyBehaviourScript(const EnemyBehaviourScript& other)
+    : mHealth(other.mHealth), mIsDead(other.mIsDead), mMapWidth(other.mMapWidth), mMapHeight(other.mMapHeight),
+      mCurrentPathIndex(other.mCurrentPathIndex), mPathUpdateTime(other.mPathUpdateTime), mPreviousPlayerPosition(other.mPreviousPlayerPosition) {
+    if (other.mPathfinding) {
+        mPathfinding = std::make_unique<Pathfinding>(*other.mPathfinding);
+    }
 }
 
 void EnemyBehaviourScript::onStart() {
     mIsDead = false;
+    mPreviousPlayerPosition = Vector2(0, 0);
 }
 
 void EnemyBehaviourScript::onUpdate() {
+
 }
 
 void EnemyBehaviourScript::onCollide(GameObject* aGameObject) {
@@ -111,4 +134,124 @@ void EnemyBehaviourScript::onDeath()
     else {
         std::cerr << "Error: mGameObject is already null!" << std::endl;
     }
+}
+
+int EnemyBehaviourScript::getGridPosition(const Vector2& position) const {
+    int gridX = static_cast<int>(position.x) / 16;
+    int gridY = static_cast<int>(position.y) / 16;
+
+    // Ensure gridX and gridY are within valid bounds
+    if (gridX < 0 || gridX >= mMapWidth || gridY < 0 || gridY >= mMapHeight) {
+        return -1; // Return an invalid position
+    }
+
+    int gridPosition = gridY * mMapWidth + gridX;
+
+    return gridPosition;
+}
+
+bool EnemyBehaviourScript::isValidPosition(int position) const {
+    return mPathfinding->getAdjacencyList().find(position) != mPathfinding->getAdjacencyList().end();
+}
+
+float EnemyBehaviourScript::vectorLength(const Vector2& vec) { return std::sqrt(vec.x * vec.x + vec.y * vec.y); }
+
+Vector2 EnemyBehaviourScript::normalizeVector(const Vector2& vec)
+{
+	float length = vectorLength(vec);
+	if (length != 0)
+	{
+		return Vector2(vec.x / length, vec.y / length);
+	}
+	return vec;
+}
+
+void EnemyBehaviourScript::moveWithPathfinding() {
+    EngineBravo& engine = EngineBravo::getInstance();
+    Scene* scene = engine.getSceneManager().getCurrentScene();
+
+    GameObject* enemy = mGameObject;
+    if (enemy == nullptr) {
+        std::cout << "Enemy not found" << std::endl;
+        return;
+    }
+
+    GameObject* player = scene->getGameObjectsWithTag("Player")[0];
+    if (player == nullptr) {
+        std::cout << "Player not found" << std::endl;
+        return;
+    }
+
+    Vector2 playerPosition = player->getTransform().position;
+    int enemyPosition = getGridPosition(enemy->getTransform().position);
+    int playerGridPosition = getGridPosition(playerPosition);
+
+    if (enemyPosition == -1 || playerGridPosition == -1 || !isValidPosition(enemyPosition) || !isValidPosition(playerGridPosition)) {
+        return;
+    }
+
+    // Recalculate path if the player has moved significantly or after a certain time interval
+    float distanceToPreviousPosition = vectorLength(playerPosition - mPreviousPlayerPosition);
+    mPathUpdateTime += Time::deltaTime;
+
+    if (distanceToPreviousPosition > 16.0f || mPathUpdateTime > 1.0f) {
+        mPath = mPathfinding->findPath(enemyPosition, playerGridPosition);
+        mCurrentPathIndex = 0;
+        mPreviousPlayerPosition = playerPosition;
+        mPathUpdateTime = 0.0f;
+    }
+
+    if (!mPath.empty() && mCurrentPathIndex < mPath.size() - 1) {
+        int nextPosition = mPath[mCurrentPathIndex + 1];
+
+        if (!isValidPosition(nextPosition)) {
+            return;
+        }
+
+        int nextX = nextPosition % mMapWidth;
+        int nextY = nextPosition / mMapWidth;
+
+        Transform transform = enemy->getTransform();
+        Vector2 currentPosition = transform.position;
+        Vector2 targetPosition(nextX * 16, nextY * 16);
+
+        Vector2 direction = targetPosition - currentPosition;
+        direction = normalizeVector(direction);
+
+        float speed = 25.0f;
+        Vector2 movement = direction * speed * Time::deltaTime;
+
+        if (vectorLength(targetPosition - currentPosition) <= vectorLength(movement)) {
+            transform.position = targetPosition;
+            mCurrentPathIndex++;
+        } else {
+            transform.position += movement;
+        }
+
+        enemy->setTransform(transform);
+    }
+}
+
+void EnemyBehaviourScript::setPathfinding(std::unique_ptr<Pathfinding>&& aPathfinding) {
+    mPathfinding = std::move(aPathfinding);
+}
+
+void EnemyBehaviourScript::setMapWidth(int aMapWidth) {
+    mMapWidth = aMapWidth;
+}
+
+void EnemyBehaviourScript::setMapHeight(int aMapHeight) {
+    mMapHeight = aMapHeight;
+}
+
+int EnemyBehaviourScript::getMapWidth() const {
+    return mMapWidth;
+}
+
+int EnemyBehaviourScript::getMapHeight() const {
+    return mMapHeight;
+}
+
+std::unique_ptr<Pathfinding> EnemyBehaviourScript::getPathfinding() const {
+    return std::make_unique<Pathfinding>(*mPathfinding);
 }

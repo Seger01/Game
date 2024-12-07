@@ -20,6 +20,7 @@
 #include <SceneManager.h>
 #include <Text.h>
 #include <iostream>
+#include "EnemyBehaviourScript.h"
 
 void DemoManagerBehaviourScript::createFirstScene()
 {
@@ -122,6 +123,11 @@ void DemoManagerBehaviourScript::createSecondScene()
 	// playerObject->setTransform(Transform(Vector2(40, 40)));
 	GameObject* playerObject =
 		EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
+	if (playerObject == nullptr)
+	{
+		std::cout << "Player not found" << std::endl;
+		return;
+	}
 	playerObject->setTransform(Transform(Vector2(40, 40)));
 	//  playerObject->setTransform(Transform(Vector2(40, 40)));
 
@@ -145,7 +151,10 @@ void DemoManagerBehaviourScript::createSecondScene()
 
 	MapToGraph mapToGraph(mTileMapData);
 	mapToGraph.convertToGraph();
-	auto graph = mapToGraph.getAdjacencyList();
+	std::unordered_map<int, std::vector<int>> graph = mapToGraph.getAdjacencyList();
+
+	int mapWidth = 50;
+	int mapHeight = 50;
 
 	// Add button for starting and stopping music
 	GameObject* buttonMusic = DemoButtonPrefab().createButtonPrefab();
@@ -214,6 +223,18 @@ void DemoManagerBehaviourScript::createSecondScene()
 
 	enemyWithPathfinding->setTransform(Transform(Vector2(560, 560)));
 	enemyWithPathfinding->setTag("EnemyWithPathfinding");
+	std::unique_ptr<Pathfinding> pathfinding = std::make_unique<Pathfinding>(graph, mapWidth, mapHeight);
+
+	if (enemyWithPathfinding->hasComponent<EnemyBehaviourScript>())
+	{
+		enemyWithPathfinding->getComponents<EnemyBehaviourScript>()[0]->setPathfinding(std::move(pathfinding));
+		enemyWithPathfinding->getComponents<EnemyBehaviourScript>()[0]->setMapWidth(mapWidth);
+		enemyWithPathfinding->getComponents<EnemyBehaviourScript>()[0]->setMapHeight(mapHeight);
+	}
+	else
+	{
+		std::cout << "EnemyWithPathfinding does not have EnemyBehaviourScript" << std::endl;
+	}
 
 	if (enemyStatic->hasComponent<RigidBody>())
 	{
@@ -238,10 +259,9 @@ void DemoManagerBehaviourScript::createSecondScene()
 	scene->addGameObject(enemyWithCollider);
 	scene->addGameObject(enemyWithPathfinding);
 
-	std::unique_ptr<Pathfinding> pathfinding = std::make_unique<Pathfinding>(graph, 50, 50);
 
 	GameObject* level2 = new GameObject;
-	level2->addComponent<DemoLevel2Behaviour>(std::move(pathfinding), 50, 50);
+	level2->addComponent<DemoLevel2Behaviour>();
 
 	scene->addGameObject(level2);
 
@@ -249,7 +269,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 
 	mPlayerPositionSet = true;
 
-	saveGame();
+	//saveGame();
 }
 
 void DemoManagerBehaviourScript::nextScene()
