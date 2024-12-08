@@ -28,7 +28,6 @@ void DemoPhysicsButtonBehaviourScript::onStart() {
 }
 
 void DemoPhysicsButtonBehaviourScript::onUpdate() {
-
 }
 
 void DemoPhysicsButtonBehaviourScript::onCollide(GameObject* aGameObject) {
@@ -45,7 +44,6 @@ void DemoPhysicsButtonBehaviourScript::updateButtonState() {
         if (mGameObject->getTag() == "ButtonBox") {
             std::cout << "Spawning Box" << std::endl;
             spawnBox();
-
         }
         else if (mGameObject->getTag() == "ButtonCircle") {
             std::cout << "Spawning Circle" << std::endl;
@@ -93,7 +91,7 @@ void DemoPhysicsButtonBehaviourScript::spawnBox() {
     SceneManager& sceneManager = engine.getSceneManager();
     Scene* scene = sceneManager.getCurrentScene();
 
-    GameObject* box = new GameObject;
+    GameObject* box = new GameObject();
     box->setTag("Box");
     box->setName("Box");
     Transform transform;
@@ -104,21 +102,17 @@ void DemoPhysicsButtonBehaviourScript::spawnBox() {
     sprite->setLayer(3);
     box->addComponent(sprite);
 
-    RigidBody* rigidBody = new RigidBody;
-    rigidBody->setTransform(box->getTransform());
+    RigidBody* rigidBody = new RigidBody();
     rigidBody->setDensity(1.0f);
-    rigidBody->setRestitution(0.8f);
-    rigidBody->addForce(Vector2(0, -1000));
-    rigidBody->setActive(true);
+    rigidBody->setRestitution(1.0f);
+    rigidBody->addForce(Vector2(-200, -1000));
     box->addComponent(rigidBody);
 
-    BoxCollider* boxCollider = new BoxCollider;
+    BoxCollider* boxCollider = new BoxCollider();
     boxCollider->setWidth(sprite->getWidth());
     boxCollider->setHeight(sprite->getHeight());
-    boxCollider->setTransform(box->getTransform());
     boxCollider->setTrigger(false);
     box->addComponent(boxCollider);
-
 
     scene->addGameObject(box);
 }
@@ -139,22 +133,20 @@ void DemoPhysicsButtonBehaviourScript::spawnCircle() {
     sprite->setLayer(3);
     circle->addComponent(sprite);
 
-    RigidBody* rigidBody = new RigidBody;
-    rigidBody->setTransform(circle->getTransform());
+    RigidBody* rigidBody = new RigidBody();
     rigidBody->setDensity(1.0f);
-    rigidBody->setRestitution(0.8f);
-    rigidBody->addForce(Vector2(0, -1000));
-    rigidBody->setActive(true);
+    rigidBody->setRestitution(1.0f);
+    rigidBody->addForce(Vector2(-200, -1000));
     circle->addComponent(rigidBody);
 
-    CircleCollider* circleCollider = new CircleCollider;
+    CircleCollider* circleCollider = new CircleCollider();
     circleCollider->setRadius(sprite->getWidth() / 2);
-    circleCollider->setTransform(circle->getTransform());
     circleCollider->setTrigger(false);
     circle->addComponent(circleCollider);
 
     scene->addGameObject(circle);
 }
+
 
 void DemoPhysicsButtonBehaviourScript::removeBox() {
     EngineBravo& engine = EngineBravo::getInstance();
@@ -163,7 +155,6 @@ void DemoPhysicsButtonBehaviourScript::removeBox() {
     if (scene->getGameObjectsWithTag("Box").size() > 0) {
         scene->requestGameObjectRemoval(scene->getGameObjectsWithTag("Box")[0]);
     }
-
 }
 
 void DemoPhysicsButtonBehaviourScript::removeCircle() {
