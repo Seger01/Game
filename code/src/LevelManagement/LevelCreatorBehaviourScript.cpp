@@ -1,5 +1,6 @@
 #include "LevelCreatorBehaviourScript.h"
 #include "CanvasBehaviourScript.h"
+#include "EnemyPrefab.h"
 #include <BoxCollider.h>
 #include <EngineBravo.h>
 #include <FSConverter.h>
@@ -188,6 +189,11 @@ void LevelCreatorBehaviourScript::createDemoNetworkingLevel()
 	const TileMapData& tileMapData = tileMapParser.getTileMapData();
 
 	createLevel(scene, tileMapData);
+	EnemyPrefab enemyPrefab;
+	GameObject* enemy = enemyPrefab.createEnemyPrefab();
+	enemy->setTransform(Transform(Vector2(128, 112)));
+	scene->addGameObject(enemy);
+
 	sceneManager.requestSceneChange("DemoNetworkingLevel");
 }
 
@@ -288,7 +294,7 @@ void LevelCreatorBehaviourScript::createLevel(Scene* scene, const TileMapData& t
 				roomObject->setName("RoomTrigger");
 				scene->addGameObject(roomObject);
 			}
-			
+
 			// Add a trigger for the level end
 			else if (type == "LevelEndTrigger")
 			{
