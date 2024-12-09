@@ -16,16 +16,17 @@ EnemyNetworkBehaviourForces::EnemyNetworkBehaviourForces(const EnemyNetworkBehav
 
 void EnemyNetworkBehaviourForces::onUpdate()
 {
-	// mGameObject->getComponents<RigidBody>()[0]->getForcesBuffer();
-	// if (isOwner())
-	// {
-	// 	mForcesSerialize.getValue().setPosition(mGameObject->getTransform().position); // Set the network variable
-	// 	mForcesSerialize.getValue().setRotation(mGameObject->getTransform().rotation); // Set the network variable
-	// }
-	// else
-	// {
-	// 	Transform transform(mForcesSerialize.getValue().getPosition());
-	// 	transform.rotation = mForcesSerialize.getValue().getRotation();
-	// 	mGameObject->setTransform(transform); // Read the network variable
-	// }
+	std::vector<Vector2> forces = mGameObject->getComponents<RigidBody>()[0]->getForcesBuffer();
+
+	if (isOwner())
+	{
+		mForcesSerialize.getValue().setForces(forces); // Set the network variable
+	}
+	else
+	{
+		for (const auto& force : mForcesSerialize.getValue().getForces())
+		{
+			mGameObject->getComponents<RigidBody>()[0]->addForce(force); // Read the network variable
+		}
+	}
 }

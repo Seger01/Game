@@ -193,6 +193,10 @@ void LevelCreatorBehaviourScript::createDemoNetworkingLevel()
 	GameObject* enemy = enemyPrefab.createEnemyPrefab();
 	enemy->setTransform(Transform(Vector2(128, 112)));
 	scene->addGameObject(enemy);
+	if (engine.getNetworkManager().isServer())
+	{
+		enemy->getComponent<NetworkObject>()->setOwner(true);
+	}
 
 	sceneManager.requestSceneChange("DemoNetworkingLevel");
 }
