@@ -18,6 +18,11 @@ public:
     std::unique_ptr<Component> clone() const override { return std::make_unique<DemoManagerBehaviourScript>(*this); }
 
 private:
+    void saveGame();
+    void loadGame();
+    void handleSaveGame();
+    
+private:
     int mCurrentScene;
     bool mPlayerPositionSet = false;
     TileMapData mTileMapData;

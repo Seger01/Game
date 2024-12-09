@@ -64,10 +64,12 @@ void PlayerBehaviourScript::setFlipY(bool aState)
 	}
 }
 
-void PlayerBehaviourScript::deactivateAllAnimations() {
-    for (auto animation : mGameObject->getComponents<Animation>()) {
-        animation->setActive(false);
-    }
+void PlayerBehaviourScript::deactivateAllAnimations()
+{
+	for (auto animation : mGameObject->getComponents<Animation>())
+	{
+		animation->setActive(false);
+	}
 }
 
 void PlayerBehaviourScript::setAnimationActive(std::string aAnimationTag, bool aState)
@@ -189,7 +191,7 @@ void PlayerBehaviourScript::handleAnimations()
 
 void PlayerBehaviourScript::handleMovement()
 {
-	static const float movementSpeed = 50.0f;
+	static const float movementSpeed = 10000.0f;
 
 	if (mGameObject->hasComponent<NetworkObject>())
 	{
@@ -224,19 +226,19 @@ void PlayerBehaviourScript::handleMovement()
 
 	if (input.GetKey(Key::Key_W))
 	{
-		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(0, -200));
+		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(0, -movementSpeed * Time::deltaTime));
 	}
 	if (input.GetKey(Key::Key_A))
 	{
-		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(-200, 0));
+		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(-movementSpeed * Time::deltaTime, 0));
 	}
 	if (input.GetKey(Key::Key_S))
 	{
-		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(0, 200));
+		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(0, movementSpeed * Time::deltaTime));
 	}
 	if (input.GetKey(Key::Key_D))
 	{
-		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(200, 0));
+		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(movementSpeed * Time::deltaTime, 0));
 	}
 	this->mGameObject->setTransform(parentTransform);
 }
@@ -261,6 +263,29 @@ void PlayerBehaviourScript::hanldeCameraMovement()
 	Transform playerTransform = this->mGameObject->getTransform();
 
 	currentCam->setTransform(playerTransform);
+
+	Input& input = Input::getInstance();
+
+	if (input.GetKeyDown(Key::Key_M))
+	{
+		currentCam->startShake(0.5f, 2.0f);
+	}
+}
+
+void PlayerBehaviourScript::handleAspectRatioTest()
+{
+	Input& input = Input::getInstance();
+
+	if (input.GetKeyDown(Key::Key_I))
+	{
+		EngineBravo& engine = EngineBravo::getInstance();
+		engine.getRenderSystem().setAspectRatio(Point(16, 9));
+	}
+	if (input.GetKeyDown(Key::Key_O))
+	{
+		EngineBravo& engine = EngineBravo::getInstance();
+		engine.getRenderSystem().setAspectRatio(Point(1, 1));
+	}
 }
 
 void PlayerBehaviourScript::fireBullet(Point mousePosition)
@@ -327,26 +352,26 @@ void PlayerBehaviourScript::onUpdate()
 {
 	Input& input = Input::getInstance();
 
-	// std::cout << "Player Position: " << mGameObject->getTransform().position.x << ", "
-	//           << mGameObject->getTransform().position.y << std::endl;
-	//
-	// std::cout << "Tag: " << mGameObject->getTag() << std::endl;
-
 	handleMovement();
 	handleAnimations();
+	handleAspectRatioTest();
 
 	hanldeCameraMovement();
 
 	if (input.GetKeyDown(Key::Key_C))
 	{
-		Configuration& config = EngineBravo::getInstance().getConfiguration();
-		config.setConfig(SHOW_COLLIDERS, !config.getConfig(SHOW_COLLIDERS));
+		Camera* mainCam =
+			EngineBravo::getInstance().getSceneManager().getCurrentScene()->getCameraWithTag("MainCamera");
+
+		mainCam->getDebugOverlayRef().renderColliders = !mainCam->getDebugOverlayRef().renderColliders;
 	}
 
 	if (input.GetKeyDown(Key::Key_F))
 	{
-		Configuration& config = EngineBravo::getInstance().getConfiguration();
-		config.setConfig(SHOW_FPS, !config.getConfig(SHOW_FPS));
+		Camera* mainCam =
+			EngineBravo::getInstance().getSceneManager().getCurrentScene()->getCameraWithTag("MainCamera");
+
+		mainCam->getDebugOverlayRef().showFPS = !mainCam->getDebugOverlayRef().showFPS;
 	}
 
 	if (input.GetMouseButtonDown(MouseButton::LEFT))
@@ -392,13 +417,18 @@ void PlayerBehaviourScript::onCollide(GameObject* aGameObject)
 	}
 }
 
-
 float PlayerBehaviourScript::getHealth() { return mHealth; }
+
 float PlayerBehaviourScript::getMaxHealth() { return mMaxHealth; }
+
 int PlayerBehaviourScript::getECCount() { return mECCount; }
+
 int PlayerBehaviourScript::getBSCount() { return mBSCount; }
 
 void PlayerBehaviourScript::setHealth(float aHealth) { mHealth = aHealth; }
+
 void PlayerBehaviourScript::setMaxHealth(float aMaxHealth) { mMaxHealth = aMaxHealth; }
+
 void PlayerBehaviourScript::setECCount(int aECCount) { mECCount = aECCount; }
+
 void PlayerBehaviourScript::setBSCount(int aBSCount) { mBSCount = aBSCount; }
