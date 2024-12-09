@@ -10,12 +10,7 @@
 #include <iostream>
 #include <Sprite.h>
 #include <Time.h>
-
-// EnemyBehaviourScript::EnemyBehaviourScript(std::unique_ptr<Pathfinding>&& aPathfinding, int aMapWidth, int aMapHeight)
-//     : mHealth(100.0f), mIsDead(false), mPathfinding(std::move(aPathfinding)), mMapWidth(aMapWidth), mMapHeight(aMapHeight), mCurrentPathIndex(0) {
-//     // Debug statements to verify map dimensions
-//     std::cout << "EnemyBehaviourScript initialized with Map Width: " << mMapWidth << ", Map Height: " << mMapHeight << std::endl;
-// }
+#include <Input.h>
 
 EnemyBehaviourScript::EnemyBehaviourScript(float aHealth)
     : mHealth(aHealth) {
@@ -32,10 +27,46 @@ EnemyBehaviourScript::EnemyBehaviourScript(const EnemyBehaviourScript& other)
 void EnemyBehaviourScript::onStart() {
     mIsDead = false;
     mPreviousPlayerPosition = Vector2(0, 0);
+    mPathMarkerSpriteDef = {
+        "Dungeontileset/0x72_DungeonTilesetII_v1.7.png",
+        Rect{289, 320, 16, 16},
+        16, 16
+    };
+    mGraphNodeSpriteDef = {
+        "Dungeontileset/0x72_DungeonTilesetII_v1.7.png",
+        Rect{288, 369, 15, 14},
+        15, 14
+    };
 }
 
 void EnemyBehaviourScript::onUpdate() {
+    if (mPathfinding == nullptr) {
+        return;
+    }
 
+    Input& input = Input::getInstance();
+
+    if (input.GetKeyDown(Key::Key_V)) {
+        drawPath = !drawPath;
+    }
+
+    if (input.GetKeyDown(Key::Key_G)) {
+        drawGraph = !drawGraph;
+    }
+
+    if (drawPath) {
+        visualizePath(mPath);
+    }
+    else {
+        removePathVisualization();
+    }
+
+    if (drawGraph) {
+        visualizeGraph();
+    }
+    else {
+        removeGraphVisualization();
+    }
 }
 
 void EnemyBehaviourScript::onCollide(GameObject* aGameObject) {
@@ -167,97 +198,129 @@ Vector2 EnemyBehaviourScript::normalizeVector(const Vector2& vec)
 	return vec;
 }
 
+void EnemyBehaviourScript::visualizePath(const std::vector<int>& path) {
+    removePathVisualization();
+    EngineBravo& engine = EngineBravo::getInstance();
+    Scene* scene = engine.getSceneManager().getCurrentScene();
+
+    // Create new path visualization
+    for (int position : path) {
+        int x = position % mMapWidth;
+        int y = position / mMapWidth;
+
+        GameObject* marker = new GameObject();
+        marker->setTag("PathMarker");
+        Transform transform;
+        transform.position = Vector2(x * 16, y * 16);
+        marker->setTransform(transform);
+
+        Sprite* sprite = engine.getResourceManager().createSprite(mPathMarkerSpriteDef);
+        sprite->setLayer(2);
+        marker->addComponent(sprite);
+
+        scene->addGameObject(marker);
+    }
+
+}
+
+void EnemyBehaviourScript::removePathVisualization() {
+    EngineBravo& engine = EngineBravo::getInstance();
+    Scene* scene = engine.getSceneManager().getCurrentScene();
+
+    std::vector<GameObject*> pathMarkers = scene->getGameObjectsWithTag("PathMarker");
+    std::cout << "Removing " << pathMarkers.size() << " path markers" << std::endl;
+    for (GameObject* marker : pathMarkers) {
+        scene->requestGameObjectRemoval(marker);
+    }
+}
+
+void EnemyBehaviourScript::visualizeGraph() {
+    removeGraphVisualization();
+    EngineBravo& engine = EngineBravo::getInstance();
+    Scene* scene = engine.getSceneManager().getCurrentScene();
+
+    for (auto node : mPathfinding->getAdjacencyList()) {
+        int position = node.first;
+        int x = position % mMapWidth;
+        int y = position / mMapWidth;
+
+        GameObject* marker = new GameObject();
+        marker->setTag("GraphNode");
+        Transform transform;
+        transform.position = Vector2(x * 16, y * 16);
+        marker->setTransform(transform);
+
+        Sprite* sprite = engine.getResourceManager().createSprite(mGraphNodeSpriteDef);
+        sprite->setLayer(1);
+        marker->addComponent(sprite);
+
+        scene->addGameObject(marker);
+    }
+}
+
+void EnemyBehaviourScript::removeGraphVisualization() {
+    EngineBravo& engine = EngineBravo::getInstance();
+    Scene* scene = engine.getSceneManager().getCurrentScene();
+
+    std::vector<GameObject*> graphNodes = scene->getGameObjectsWithTag("GraphNode");
+    for (GameObject* marker : graphNodes) {
+        scene->requestGameObjectRemoval(marker);
+    }
+}
+
 void EnemyBehaviourScript::moveWithPathfinding() {
     EngineBravo& engine = EngineBravo::getInstance();
     Scene* scene = engine.getSceneManager().getCurrentScene();
     GameObject* enemy = mGameObject;
-    
     if (enemy == nullptr) {
         std::cout << "Enemy not found" << std::endl;
         return;
     }
-    
     GameObject* player = scene->getGameObjectsWithTag("Player")[0];
     if (player == nullptr) {
         std::cout << "Player not found" << std::endl;
         return;
     }
-    
     Vector2 playerPosition = player->getTransform().position;
     int enemyPosition = getGridPosition(enemy->getTransform().position);
     int playerGridPosition = getGridPosition(playerPosition);
-    
-    if (enemyPosition == -1 || playerGridPosition == -1 ||
-        !isValidPosition(enemyPosition) || !isValidPosition(playerGridPosition)) {
+    if (enemyPosition == -1 || playerGridPosition == -1 || !isValidPosition(enemyPosition) || !isValidPosition(playerGridPosition)) {
         return;
     }
-    
+
     // Recalculate path if the player has moved significantly or after a certain time interval
     float distanceToPreviousPosition = vectorLength(playerPosition - mPreviousPlayerPosition);
     mPathUpdateTime += Time::deltaTime;
-    
     if (distanceToPreviousPosition > 16.0f || mPathUpdateTime > 1.0f) {
         mPath = mPathfinding->findPath(enemyPosition, playerGridPosition);
         mCurrentPathIndex = 0;
         mPreviousPlayerPosition = playerPosition;
         mPathUpdateTime = 0.0f;
     }
-    
     if (!mPath.empty() && mCurrentPathIndex < mPath.size() - 1) {
         int nextPosition = mPath[mCurrentPathIndex + 1];
         if (!isValidPosition(nextPosition)) {
             return;
         }
-        
         int nextX = nextPosition % mMapWidth;
         int nextY = nextPosition / mMapWidth;
-        
-        Vector2 currentPosition = enemy->getTransform().position;
+        Transform transform = enemy->getTransform();
+        Vector2 currentPosition = transform.position;
         Vector2 targetPosition(nextX * 16, nextY * 16);
-        
-        // Get Rigidbody component
-        if (enemy->hasComponent<RigidBody>() == false) {
-            return;
-        }
-        
-        RigidBody* rigidbody = enemy->getComponents<RigidBody>()[0];
-        
-        // Compute direction and distance
         Vector2 direction = targetPosition - currentPosition;
-        float distanceToTarget = vectorLength(direction);
-        
-        // Normalize direction
         direction = normalizeVector(direction);
-        
-        // Compute force with proportional control
-        float maxForce = 10000.0f;  // Maximum force to apply
-        float arrivalThreshold = 4.0f;  // Distance to start slowing
-        
-        // Proportional force - slow down as we approach the target
-        float forceMagnitude = maxForce;
-        if (distanceToTarget < arrivalThreshold) {
-            // Linearly reduce force as we get closer
-            forceMagnitude = maxForce * (distanceToTarget / arrivalThreshold);
-        }
-        
-        // Apply force
-        Vector2 force = direction * forceMagnitude * Time::deltaTime;
-        rigidbody->addForce(force);
-        
-        // Check if we've reached the next path point
-        if (distanceToTarget <= 16.0f) {
+        float speed = 1000.0f * Time::deltaTime;
+        Vector2 movement = direction * speed * Time::deltaTime;
+        if (vectorLength(targetPosition - currentPosition) <= vectorLength(movement)) {
+            transform.position = targetPosition;
             mCurrentPathIndex++;
-            
-            //If very close to target, snap to exact position
-            if (distanceToTarget <= 1.0f) {
-               // enemy->getTransform().position = targetPosition;
-                Transform enemyTransform = enemy->getTransform();
-                enemyTransform.position = targetPosition;
-                enemy->setTransform(enemyTransform);
-            }
+        } else {
+            transform.position += movement;
         }
+        enemy->setTransform(transform);
     }
 }
+
 
 void EnemyBehaviourScript::setPathfinding(std::unique_ptr<Pathfinding>&& aPathfinding) {
     mPathfinding = std::move(aPathfinding);

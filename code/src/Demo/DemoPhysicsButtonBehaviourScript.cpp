@@ -105,11 +105,11 @@ void DemoPhysicsButtonBehaviourScript::spawnBox() {
     RigidBody* rigidBody = new RigidBody();
     rigidBody->setDensity(1.0f);
     rigidBody->setRestitution(1.0f);
-    rigidBody->addForce(Vector2(-200, -1000));
+    rigidBody->addForce(Vector2(-2000, -10000));
     box->addComponent(rigidBody);
 
     BoxCollider* boxCollider = new BoxCollider();
-    boxCollider->setWidth(sprite->getWidth());
+    boxCollider->setWidth(sprite->getWidth() + 1);
     boxCollider->setHeight(sprite->getHeight());
     boxCollider->setTrigger(false);
     box->addComponent(boxCollider);
