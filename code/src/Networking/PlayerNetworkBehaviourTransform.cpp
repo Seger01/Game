@@ -4,15 +4,13 @@
 REGISTER_NETWORK_SERIALIZABLE(transformSerializable);
 
 PlayerNetworkBehaviourTransform::PlayerNetworkBehaviourTransform()
-	: INetworkBehaviour("PlayerNetworkBehaviourTransform")
+	: mTransformSerialize{this}, INetworkBehaviour("PlayerNetworkBehaviourTransform")
 {
 }
 
 PlayerNetworkBehaviourTransform::PlayerNetworkBehaviourTransform(const PlayerNetworkBehaviourTransform& other)
-	: INetworkBehaviour(other)
+	: INetworkBehaviour(other), mTransformSerialize{this}
 {
-	mNetworkVariables.clear();
-	mNetworkVariables.push_back(mTransformSerialize);
 }
 
 void PlayerNetworkBehaviourTransform::onUpdate()

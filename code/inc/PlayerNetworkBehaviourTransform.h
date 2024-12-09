@@ -73,7 +73,7 @@ public:
 	}
 
 private:
-	NetworkVariable<transformSerializable> mTransformSerialize{this};
+	NetworkVariable<transformSerializable> mTransformSerialize;
 };
 
 #endif

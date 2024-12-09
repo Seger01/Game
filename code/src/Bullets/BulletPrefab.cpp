@@ -9,7 +9,7 @@ BulletPrefabFactory::BulletPrefabFactory() {
     std::string bulletSpritePath = fsConverter.getResourcePath("enterthegungeon_bullets.png");
     mBulletSpriteDef = {
         bulletSpritePath,
-        Rect{mBulletSpritePosition.x, mBulletSpritePosition.y, mBulletWidth, mBulletHeight}, mBulletWidth, mBulletHeight};
+        Rect{mBulletSpritePosition.x, mBulletSpritePosition.y, static_cast<int>(mBulletWidth), static_cast<int>(mBulletHeight)}, mBulletWidth, mBulletHeight};
 }
 
 GameObject* BulletPrefabFactory::createBulletPrefab(GameObject& shooter) {
