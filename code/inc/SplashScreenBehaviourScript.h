@@ -7,20 +7,17 @@
 class SplashScreenBehaviourScript : public IBehaviourScript
 {
 public:
-    SplashScreenBehaviourScript() = default;
-    virtual ~SplashScreenBehaviourScript() = default;
+	SplashScreenBehaviourScript();
+	virtual ~SplashScreenBehaviourScript() = default;
 
-    void onStart() override;
-    void onUpdate() override;
+	void onStart() override;
+	void onUpdate() override;
 
-    std::unique_ptr<Component> clone() const override
-    {
-        return std::make_unique<SplashScreenBehaviourScript>(*this);
-    }
+	std::unique_ptr<Component> clone() const override { return std::make_unique<SplashScreenBehaviourScript>(*this); }
 
 private:
-    std::chrono::time_point<std::chrono::system_clock> startTime;
-    GameObject *splashScreenPrefab;
+	std::chrono::time_point<std::chrono::system_clock> startTime;
+	GameObject& splashScreenPrefab;
 };
 
 #endif // SPLASH_SCREEN_BEHAVIOUR_SCRIPT_H
