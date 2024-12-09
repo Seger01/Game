@@ -20,6 +20,9 @@
 #include <SceneManager.h>
 #include <Text.h>
 #include <iostream>
+#include "EnemyBehaviourScript.h"
+#include "DemoPhysicsButtonBehaviourScript.h"
+#include "DemoParticlesButtonBehaviourScript.h"
 
 void DemoManagerBehaviourScript::createFirstScene()
 {
@@ -122,6 +125,11 @@ void DemoManagerBehaviourScript::createSecondScene()
 	// playerObject->setTransform(Transform(Vector2(40, 40)));
 	GameObject* playerObject =
 		EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
+	if (playerObject == nullptr)
+	{
+		std::cout << "Player not found" << std::endl;
+		return;
+	}
 	playerObject->setTransform(Transform(Vector2(40, 40)));
 	//  playerObject->setTransform(Transform(Vector2(40, 40)));
 
@@ -145,7 +153,10 @@ void DemoManagerBehaviourScript::createSecondScene()
 
 	MapToGraph mapToGraph(mTileMapData);
 	mapToGraph.convertToGraph();
-	auto graph = mapToGraph.getAdjacencyList();
+	std::unordered_map<int, std::vector<int>> graph = mapToGraph.getAdjacencyList();
+
+	int mapWidth = 75;
+	int mapHeight = 75;
 
 	// Add button for starting and stopping music
 	GameObject* buttonMusic = DemoButtonPrefab().createButtonPrefab();
@@ -181,13 +192,67 @@ void DemoManagerBehaviourScript::createSecondScene()
 	buttonSFX->setTransform(Transform(Vector2(540, 56)));
 	buttonSFX->addComponent<DemoSFXButtonBehaviourScript>();
 
-	Text* textSFX = new Text("SFX", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.4, 0.4));
+	Text* textSFX = new Text("SFX", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.2, 0.2));
 	textSFX->setLayer(5);
 	textSFX->setTag("ButtonSFXText");
 	textSFX->setParent(buttonSFX);
 
 	scene->addGameObject(textSFX);
 	scene->addGameObject(buttonSFX);
+
+	//Add buttons for physics objects
+	GameObject* button1 = DemoButtonPrefab().createButtonPrefab();
+    button1->setTransform(Transform(Vector2(288, 432)));
+    button1->setTag("ButtonBox");
+	button1->addComponent<DemoPhysicsButtonBehaviourScript>();
+
+    Text* text1 = new Text("Box object", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.2, 0.2));
+    text1->setLayer(5);
+    text1->setTag("ButtonBoxText");
+    text1->setParent(button1);
+
+    scene->addGameObject(text1);
+    scene->addGameObject(button1);
+
+    GameObject* button2 = DemoButtonPrefab().createButtonPrefab();
+    button2->setTransform(Transform(Vector2(288, 512)));
+    button2->setTag("ButtonCircle");
+	button2->addComponent<DemoPhysicsButtonBehaviourScript>();
+
+    Text* text2 = new Text("Circle object", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.2, 0.2));
+    text2->setLayer(5);
+    text2->setTag("Button2Text");
+    text2->setParent(button2);
+
+    scene->addGameObject(text2);
+    scene->addGameObject(button2);
+
+    GameObject* button3 = DemoButtonPrefab().createButtonPrefab();
+    button3->setTransform(Transform(Vector2(288, 608)));
+    button3->setTag("Button3");
+
+    Text* text3 = new Text("Button3", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.2, 0.2));
+    text3->setLayer(5);
+    text3->setTag("Button3Text");
+    text3->setParent(button3);
+
+    scene->addGameObject(text3);
+    scene->addGameObject(button3);
+
+
+	// Add button for particle effects
+	GameObject* buttonPar = DemoButtonPrefab().createButtonPrefab();
+	buttonPar->setTag("ButtonPar");
+	buttonPar->setTransform(Transform(Vector2(336, 816)));
+	buttonPar->addComponent<DemoParticlesButtonBehaviourScript>();
+
+	Text* textPar = new Text("Fireworks", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.2, 0.2));
+	textPar->setLayer(5);
+	textPar->setTag("ButtonParText");
+	textPar->setParent(buttonPar);
+
+	scene->addGameObject(textPar);
+	scene->addGameObject(buttonPar);
 
 	// Add enemies
 	GameObject* enemyMoving = EnemyPrefab().createEnemyPrefab();
@@ -214,6 +279,19 @@ void DemoManagerBehaviourScript::createSecondScene()
 
 	enemyWithPathfinding->setTransform(Transform(Vector2(560, 560)));
 	enemyWithPathfinding->setTag("EnemyWithPathfinding");
+	std::unique_ptr<Pathfinding> pathfinding = std::make_unique<Pathfinding>(graph, mapWidth, mapHeight);
+
+	if (enemyWithPathfinding->hasComponent<EnemyBehaviourScript>())
+	{
+		enemyWithPathfinding->getComponents<EnemyBehaviourScript>()[0]->setPathfinding(std::move(pathfinding));
+		enemyWithPathfinding->getComponents<EnemyBehaviourScript>()[0]->setMapWidth(mapWidth);
+		enemyWithPathfinding->getComponents<EnemyBehaviourScript>()[0]->setMapHeight(mapHeight);
+	}
+	
+	if (enemyWithPathfinding->hasComponent<RigidBody>())
+	{
+		enemyWithPathfinding->getComponents<RigidBody>()[0]->setLinearDamping(0.5f);
+	}
 
 	if (enemyStatic->hasComponent<RigidBody>())
 	{
@@ -238,10 +316,9 @@ void DemoManagerBehaviourScript::createSecondScene()
 	scene->addGameObject(enemyWithCollider);
 	scene->addGameObject(enemyWithPathfinding);
 
-	std::unique_ptr<Pathfinding> pathfinding = std::make_unique<Pathfinding>(graph, 50, 50);
 
 	GameObject* level2 = new GameObject;
-	level2->addComponent<DemoLevel2Behaviour>(std::move(pathfinding), 50, 50);
+	level2->addComponent<DemoLevel2Behaviour>();
 
 	scene->addGameObject(level2);
 
@@ -249,7 +326,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 
 	mPlayerPositionSet = true;
 
-	saveGame();
+	//saveGame();
 }
 
 void DemoManagerBehaviourScript::nextScene()
