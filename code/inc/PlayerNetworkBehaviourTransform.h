@@ -12,18 +12,18 @@ public:
 	transformSerializable()
 	{
 		mPosition = Vector2(0, 0);
-		std::cout << "Constructor of transformSerializable" << std::endl;
+		mRotation = 0;
 	}
 
 	transformSerializable(const transformSerializable& other)
 	{
 		mPosition = other.mPosition;
-		std::cout << "Copy constructor of transformSerializable" << std::endl;
+		mRotation = other.mRotation;
 	}
 
 	bool operator==(const transformSerializable& other) const
 	{
-		return mPosition.x == other.mPosition.x && mPosition.y == other.mPosition.y;
+		return mPosition.x == other.mPosition.x && mPosition.y == other.mPosition.y && mRotation == other.mRotation;
 	}
 
 	bool operator!=(const transformSerializable& other) const { return !(*this == other); }
@@ -32,25 +32,27 @@ public:
 	{
 		stream.Write(mPosition.x);
 		stream.Write(mPosition.y);
-		// std::cout << "pointer of playerNetworkBehaviourTransform within the serialize " << this << std::endl;
+		stream.Write(mRotation);
 	}
 
 	void deserialize(SLNet::BitStream& stream) override
 	{
 		stream.Read(mPosition.x);
 		stream.Read(mPosition.y);
+		stream.Read(mRotation);
 	}
 
-	void setPosition(Vector2 position)
-	{
-		mPosition = position;
-		// std::cout << "pointer of playerNetworkBehaviourTransform within the setter " << this << std::endl;
-	}
+	void setPosition(Vector2 position) { mPosition = position; }
 
 	Vector2 getPosition() const { return mPosition; }
 
+	void setRotation(float rotation) { mRotation = rotation; }
+
+	float getRotation() const { return mRotation; }
+
 private:
 	Vector2 mPosition;
+	float mRotation;
 };
 
 class PlayerNetworkBehaviourTransform : public INetworkBehaviour
