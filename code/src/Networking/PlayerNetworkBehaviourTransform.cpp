@@ -22,8 +22,11 @@ void PlayerNetworkBehaviourTransform::onUpdate()
 	}
 	else
 	{
-		Transform transform(mTransformSerialize.getValue().getPosition());
-		transform.rotation = mTransformSerialize.getValue().getRotation();
-		mGameObject->setTransform(transform); // Read the network variable
+		Transform networkTransform(mTransformSerialize.getValue().getPosition());
+		networkTransform.rotation = mTransformSerialize.getValue().getRotation();
+		Transform localTransform(mGameObject->getTransform());
+		Transform avgTransform;
+		avgTransform = (networkTransform + localTransform) / 2;
+		mGameObject->setTransform(avgTransform); // Read the network variable
 	}
 }
