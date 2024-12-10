@@ -21,13 +21,6 @@ public:
 		mRotation = other.mRotation;
 	}
 
-	bool operator==(const transformSerializable& other) const
-	{
-		return mPosition.x == other.mPosition.x && mPosition.y == other.mPosition.y && mRotation == other.mRotation;
-	}
-
-	bool operator!=(const transformSerializable& other) const { return !(*this == other); }
-
 	void serialize(SLNet::BitStream& stream) const override
 	{
 		stream.Write(mPosition.x);
