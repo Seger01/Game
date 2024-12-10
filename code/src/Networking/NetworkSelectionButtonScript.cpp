@@ -1,7 +1,9 @@
 #include "NetworkSelectionButtonScript.h"
 #include "Button.h"
 #include "Engine/EngineBravo.h"
+#include "LevelManagerBehaviourScript.h"
 #include "Network/NetworkManager.h"
+#include "PlayerPrefab.h"
 #include "Text.h"
 
 #include <iostream>
@@ -29,6 +31,15 @@ void NetworkSelectionButtonScript::onButtonPressed()
 			{
 				networkManager.setRole(NetworkRole::SERVER);
 				networkManager.startNetwork();
+			}
+			networkManager.setDefaultPlayerPrefab(PlayerPrefabFactory::createPlayerPrefab());
+			for (GameObject* object :
+				 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("LevelManager"))
+			{
+				if (object->hasComponent<LevelManagerBehaviourScript>())
+				{
+					object->getComponents<LevelManagerBehaviourScript>()[0]->beginDemoNetworkingGame();
+				}
 			}
 			setButtonsVisibility();
 		}

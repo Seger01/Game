@@ -9,6 +9,7 @@
 #include "MainMenuPrefab.h"
 #include "Network/NetworkClient.h"
 #include "Network/NetworkManager.h"
+#include "NetworkManager.h"
 #include "PlayerPrefab.h"
 #include "Text.h"
 
@@ -40,6 +41,26 @@ void NetworkSelectionBehaviourScript::onStart()
 	// Text* searchButtonText = searchButton->getComponents<Text>()[0];
 	// searchButtonText->setActive(false);
 	scene->addGameObject(MainMenuObject);
+
+	// TODO: add callbacks for button clicks. (See MainMenuBehaviourScript for example)
+	for (GameObject* button :
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("ServerButton"))
+	{
+		Button* buttonObject = dynamic_cast<Button*>(button);
+		buttonObject->setOnReleaseCallback(std::bind(&NetworkSelectionBehaviourScript::onServerRelease, this));
+	}
+	for (GameObject* button :
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("ClientButton"))
+	{
+		Button* buttonObject = dynamic_cast<Button*>(button);
+		buttonObject->setOnReleaseCallback(std::bind(&NetworkSelectionBehaviourScript::onClientRelease, this));
+	}
+	for (GameObject* button :
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("HostButton"))
+	{
+		Button* buttonObject = dynamic_cast<Button*>(button);
+		buttonObject->setOnReleaseCallback(std::bind(&NetworkSelectionBehaviourScript::onHostRelease, this));
+	}
 }
 
 void NetworkSelectionBehaviourScript::onUpdate()
@@ -50,15 +71,15 @@ void NetworkSelectionBehaviourScript::onUpdate()
 
 	if (networkManager.getRole() == NetworkRole::SERVER || networkManager.getRole() == NetworkRole::HOST)
 	{
-		networkManager.setDefaultPlayerPrefab(PlayerPrefabFactory::createPlayerPrefab());
-		for (GameObject* object :
-			 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("LevelManager"))
-		{
-			if (object->hasComponent<LevelManagerBehaviourScript>())
-			{
-				object->getComponents<LevelManagerBehaviourScript>()[0]->beginDemoNetworkingGame();
-			}
-		}
+		// networkManager.setDefaultPlayerPrefab(PlayerPrefabFactory::createPlayerPrefab());
+		// for (GameObject* object :
+		// 	 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("LevelManager"))
+		// {
+		// 	if (object->hasComponent<LevelManagerBehaviourScript>())
+		// 	{
+		// 		object->getComponents<LevelManagerBehaviourScript>()[0]->beginDemoNetworkingGame();
+		// 	}
+		// }
 	}
 	if (networkManager.getRole() == NetworkRole::CLIENT)
 	{
@@ -104,5 +125,59 @@ void NetworkSelectionBehaviourScript::onUpdate()
 				scene->addGameObject(ipText);
 			}
 		}
+	}
+}
+
+void NetworkSelectionBehaviourScript::onServerRelease()
+{
+	NetworkManager& networkManager = EngineBravo::getInstance().getNetworkManager();
+	std::cout << "Server selected" << std::endl;
+	if (networkManager.isConnected())
+	{
+		std::cout << "Network is already connected" << std::endl;
+	}
+	else
+	{
+		networkManager.setRole(NetworkRole::SERVER);
+		networkManager.startNetwork();
+	}
+	networkManager.setDefaultPlayerPrefab(PlayerPrefabFactory::createPlayerPrefab());
+	for (GameObject* object :
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("LevelManager"))
+	{
+		if (object->hasComponent<LevelManagerBehaviourScript>())
+		{
+			object->getComponents<LevelManagerBehaviourScript>()[0]->beginDemoNetworkingGame();
+		}
+	}
+}
+
+void NetworkSelectionBehaviourScript::onClientRelease()
+{
+	NetworkManager& networkManager = EngineBravo::getInstance().getNetworkManager();
+	std::cout << "Client selected" << std::endl;
+	if (networkManager.isConnected())
+	{
+		std::cout << "Network is already connected" << std::endl;
+	}
+	else
+	{
+		networkManager.setRole(NetworkRole::CLIENT);
+		networkManager.startNetwork();
+	}
+}
+
+void NetworkSelectionBehaviourScript::onHostRelease()
+{
+	NetworkManager& networkManager = EngineBravo::getInstance().getNetworkManager();
+	std::cout << "Host selected" << std::endl;
+	if (networkManager.isConnected())
+	{
+		std::cout << "Network is already connected" << std::endl;
+	}
+	else
+	{
+		networkManager.setRole(NetworkRole::HOST);
+		networkManager.startNetwork();
 	}
 }

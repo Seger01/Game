@@ -7,23 +7,32 @@
 #include <list>
 #include <vector>
 
-class NetworkSelectionBehaviourScript : public IBehaviourScript {
+class NetworkSelectionBehaviourScript : public IBehaviourScript
+{
 public:
-    NetworkSelectionBehaviourScript() {}
-    ~NetworkSelectionBehaviourScript() {}
+	NetworkSelectionBehaviourScript() {}
 
-    std::unique_ptr<Component> clone() const override { return std::make_unique<NetworkSelectionBehaviourScript>(*this); }
+	~NetworkSelectionBehaviourScript() {}
 
-    void onStart() override;
+	std::unique_ptr<Component> clone() const override
+	{
+		return std::make_unique<NetworkSelectionBehaviourScript>(*this);
+	}
 
-    void onUpdate() override;
+	void onStart() override;
+
+	void onUpdate() override;
+
+	void onServerRelease();
+	void onClientRelease();
+	void onHostRelease();
 
 private:
-    Button* mServerButton{nullptr};
-    Button* mClientButton{nullptr};
-    Button* mHostButton{nullptr};
-    Button* mSearchButton{nullptr};
+	Button* mServerButton{nullptr};
+	Button* mClientButton{nullptr};
+	Button* mHostButton{nullptr};
+	Button* mSearchButton{nullptr};
 
-    std::list<std::string> mServerAddresses;
+	std::list<std::string> mServerAddresses;
 };
 #endif // NETWORKSELECTIONBEHAVIOURSCRIPT_H
