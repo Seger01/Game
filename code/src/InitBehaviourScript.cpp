@@ -23,9 +23,6 @@ void InitBehaviourScript::createLevelManager()
 	scene->addPersistentGameObject(LevelManagerObject);
 
 	createMainMenu();
-	// LevelManagerBehaviourScript* levelManager =
-	// LevelManagerObject->getComponents<LevelManagerBehaviourScript>()[0];
-	// levelManager->beginGame();
 }
 
 void InitBehaviourScript::createMainMenu()
@@ -59,12 +56,6 @@ void InitBehaviourScript::createMainMenu()
                                                 menuStartY);
 
 	scene->addGameObject(MainMenuObject);
-	// int cameraID = scene->addCamera();
-	// scene->setActiveCamera(cameraID);
-	//
-	// scene->getActiveCamera().setTransform(Transform(Vector2((16 * 30) / 2, (9 * 30) / 2)));
-	// scene->getActiveCamera().setWidth(16 * 30);
-	// scene->getActiveCamera().setHeight(9 * 30);
 
 	Camera* camera = new Camera;
 	camera->setTag("MainCamera");

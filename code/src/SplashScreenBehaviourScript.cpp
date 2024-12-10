@@ -30,7 +30,6 @@ void SplashScreenBehaviourScript::onStart()
 	initScene->addGameObject(camera);
 
 	Scene* splashScreenScene = sceneManager.getCurrentScene();
-	// splashScreenPrefab = SplashScreenPrefab::create();
 	splashScreenScene->addGameObject(&splashScreenPrefab);
 
 	startTime = std::chrono::system_clock::now();
@@ -45,7 +44,6 @@ void SplashScreenBehaviourScript::onUpdate()
 	if (elapsedTime.count() > 2 || input.GetKeyDown(Key::Key_Space))
 	{
 		SceneManager& sceneManager = EngineBravo::getInstance().getSceneManager();
-		// sceneManager.getCurrentScene()->requestGameObjectRemoval(&splashScreenPrefab);
 		sceneManager.requestSceneChange("InitScene");
 	}
 }

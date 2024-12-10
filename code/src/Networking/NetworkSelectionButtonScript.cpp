@@ -16,43 +16,59 @@ void NetworkSelectionButtonScript::onButtonPressed() {
         EngineBravo& engine = EngineBravo::getInstance();
         NetworkManager& networkManager = engine.getNetworkManager();
 
-        if (button->getTag() == "Server") {
-            std::cout << "Server selected" << std::endl;
-            if (networkManager.isConnected()) {
-                std::cout << "Network is already connected" << std::endl;
-            } else {
-                networkManager.setRole(NetworkRole::SERVER);
-                networkManager.startNetwork();
-            }
-            setButtonsVisibility();
-
-        } else if (button->getTag() == "Client") {
-            std::cout << "Client selected" << std::endl;
-            if (networkManager.isConnected()) {
-                std::cout << "Network is already connected" << std::endl;
-            } else {
-                networkManager.setRole(NetworkRole::CLIENT);
-                networkManager.startNetwork();
-            }
-            setButtonsVisibility();
-        } else if (button->getTag() == "Host") {
-            std::cout << "Host selected" << std::endl;
-            if (networkManager.isConnected()) {
-                std::cout << "Network is already connected" << std::endl;
-            } else {
-                networkManager.setRole(NetworkRole::HOST);
-                networkManager.startNetwork();
-            }
-            setButtonsVisibility();
-        } else if (button->getTag() == "Search") {
-            std::cout << "Search selected" << std::endl;
+		if (button->getTag() == "ServerButton")
+		{
+			std::cout << "Server selected" << std::endl;
+			if (networkManager.isConnected())
+			{
+				std::cout << "Network is already connected" << std::endl;
+			}
+			else
+			{
+				networkManager.setRole(NetworkRole::SERVER);
+				networkManager.startNetwork();
+			}
+			setButtonsVisibility();
+		}
+		else if (button->getTag() == "ClientButton")
+		{
+			std::cout << "Client selected" << std::endl;
+			if (networkManager.isConnected())
+			{
+				std::cout << "Network is already connected" << std::endl;
+			}
+			else
+			{
+				networkManager.setRole(NetworkRole::CLIENT);
+				networkManager.startNetwork();
+			}
+			setButtonsVisibility();
+		}
+		else if (button->getTag() == "HostButton")
+		{
+			std::cout << "Host selected" << std::endl;
+			if (networkManager.isConnected())
+			{
+				std::cout << "Network is already connected" << std::endl;
+			}
+			else
+			{
+				networkManager.setRole(NetworkRole::HOST);
+				networkManager.startNetwork();
+			}
+			setButtonsVisibility();
+		}
+		else if (button->getTag() == "SearchButton")
+		{
+			std::cout << "Search selected" << std::endl;
             NetworkClient& networkClient = engine.getNetworkManager().getClient();
             networkClient.discoverServers();
-        } else {
-            std::cout << "Unknown tag" << button->getTag() << std::endl;
-        }
-
-    } else {
+		}
+		else
+		{
+			std::cout << "Unknown tag" << button->getTag() << std::endl;
+		}
+	} else {
         std::cout << "Parent object not a button" << std::endl;
     }
 }
