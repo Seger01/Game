@@ -26,12 +26,14 @@ public:
 	void onServerRelease();
 	void onClientRelease();
 	void onHostRelease();
+	void onSearchRelease();
 
 private:
 	Button* mServerButton{nullptr};
 	Button* mClientButton{nullptr};
 	Button* mHostButton{nullptr};
 	Button* mSearchButton{nullptr};
+	bool mSearchServers{false};
 
 	std::list<std::string> mServerAddresses;
 };
