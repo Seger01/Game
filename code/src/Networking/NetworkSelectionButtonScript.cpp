@@ -10,11 +10,13 @@ NetworkSelectionButtonScript::NetworkSelectionButtonScript() {}
 
 NetworkSelectionButtonScript::~NetworkSelectionButtonScript() {}
 
-void NetworkSelectionButtonScript::onButtonPressed() {
-    Button* button = dynamic_cast<Button*>(mGameObject);
-    if (button) {
-        EngineBravo& engine = EngineBravo::getInstance();
-        NetworkManager& networkManager = engine.getNetworkManager();
+void NetworkSelectionButtonScript::onButtonPressed()
+{
+	Button* button = dynamic_cast<Button*>(mGameObject);
+	if (button)
+	{
+		EngineBravo& engine = EngineBravo::getInstance();
+		NetworkManager& networkManager = engine.getNetworkManager();
 
 		if (button->getTag() == "ServerButton")
 		{
@@ -61,46 +63,53 @@ void NetworkSelectionButtonScript::onButtonPressed() {
 		else if (button->getTag() == "SearchButton")
 		{
 			std::cout << "Search selected" << std::endl;
-            NetworkClient& networkClient = engine.getNetworkManager().getClient();
-            networkClient.discoverServers();
+			NetworkClient& networkClient = engine.getNetworkManager().getClient();
+			networkClient.discoverServers();
 		}
 		else
 		{
 			std::cout << "Unknown tag" << button->getTag() << std::endl;
 		}
-	} else {
-        std::cout << "Parent object not a button" << std::endl;
-    }
+	}
+	else
+	{
+		std::cout << "Parent object not a button" << std::endl;
+	}
 }
 
 void NetworkSelectionButtonScript::onButtonReleased() {}
 
-void NetworkSelectionButtonScript::setButtonsVisibility() {
-    EngineBravo& engine = EngineBravo::getInstance();
-    SceneManager& sceneManager = engine.getSceneManager();
-    Scene* scene = sceneManager.getCurrentScene();
+void NetworkSelectionButtonScript::setButtonsVisibility()
+{
+	EngineBravo& engine = EngineBravo::getInstance();
+	SceneManager& sceneManager = engine.getSceneManager();
+	Scene* scene = sceneManager.getCurrentScene();
 
-    for (auto& gameObject : scene->getGameObjects()) {
-        Button* button = dynamic_cast<Button*>(gameObject);
-        Text* text = dynamic_cast<Text*>(gameObject);
-        if (button) {
-            button->setInteractable(!button->interactable());
-        }
-        if (text) {
-            text->setActive(!text->isActive());
-        }
-    }
+	for (auto& gameObject : scene->getGameObjects())
+	{
+		Button* button = dynamic_cast<Button*>(gameObject);
+		Text* text = dynamic_cast<Text*>(gameObject);
+		if (button)
+		{
+			button->setInteractable(!button->interactable());
+		}
+		if (text)
+		{
+			text->setActive(!text->isActive());
+		}
+	}
 }
 
 ConnectButtonScript::ConnectButtonScript(Text* aTextObject) : mTextObject(aTextObject) {}
 
 ConnectButtonScript::~ConnectButtonScript() {}
 
-void ConnectButtonScript::onButtonPressed() {
-    std::cout << "Connect button pressed" << std::endl;
-    NetworkClient& networkClient = EngineBravo::getInstance().getNetworkManager().getClient();
-    networkClient.setServerAddress(mTextObject->getText());
-    networkClient.connectToServer();
+void ConnectButtonScript::onButtonPressed()
+{
+	std::cout << "Connect button pressed" << std::endl;
+	NetworkClient& networkClient = EngineBravo::getInstance().getNetworkManager().getClient();
+	networkClient.setServerAddress(mTextObject->getText());
+	networkClient.connectToServer();
 }
 
 void ConnectButtonScript::onButtonReleased() {}
