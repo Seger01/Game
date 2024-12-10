@@ -263,6 +263,13 @@ void PlayerBehaviourScript::hanldeCameraMovement()
 	Transform playerTransform = this->mGameObject->getTransform();
 
 	currentCam->setTransform(playerTransform);
+
+	Input& input = Input::getInstance();
+
+	if (input.GetKeyDown(Key::Key_M))
+	{
+		currentCam->startShake(0.5f, 2.0f);
+	}
 }
 
 void PlayerBehaviourScript::handleAspectRatioTest()

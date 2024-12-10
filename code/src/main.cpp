@@ -14,9 +14,13 @@ void init()
 	Scene* scene = sceneManager.createScene("SplashScreenScene");
 	GameObject* initObject = new GameObject;
 	initObject->addComponent<SplashScreenBehaviourScript>();
+	initObject->setTag("initObject");
 
+	GameObject* temp = new GameObject;
+	temp->setTag("temp");
+
+	// scene->addGameObject(temp);
 	scene->addGameObject(initObject);
-
 	Camera* camera = new Camera;
 	camera->setTag("MainCamera");
 	camera->setActive(true);
