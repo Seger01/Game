@@ -37,7 +37,7 @@ void NetworkSelectionBehaviourScript::onStart()
 
 	Button* searchButton = MainMenuPrefabFactory().createDefaultButton(
 		MainMenuObject, scene, "SearchServer", "SearchButton", "SearchServerText", menuStartX, menuStartY);
-	searchButton->setInteractable(false);
+	searchButton->setActive(false);
 	// Text* searchButtonText = searchButton->getComponents<Text>()[0];
 	// searchButtonText->setActive(false);
 	scene->addGameObject(MainMenuObject);
@@ -69,18 +69,6 @@ void NetworkSelectionBehaviourScript::onUpdate()
 	SceneManager& sceneManager = engine.getSceneManager();
 	NetworkManager& networkManager = engine.getNetworkManager();
 
-	if (networkManager.getRole() == NetworkRole::SERVER || networkManager.getRole() == NetworkRole::HOST)
-	{
-		// networkManager.setDefaultPlayerPrefab(PlayerPrefabFactory::createPlayerPrefab());
-		// for (GameObject* object :
-		// 	 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("LevelManager"))
-		// {
-		// 	if (object->hasComponent<LevelManagerBehaviourScript>())
-		// 	{
-		// 		object->getComponents<LevelManagerBehaviourScript>()[0]->beginDemoNetworkingGame();
-		// 	}
-		// }
-	}
 	if (networkManager.getRole() == NetworkRole::CLIENT)
 	{
 		if (networkManager.isConnected())
@@ -164,6 +152,30 @@ void NetworkSelectionBehaviourScript::onClientRelease()
 	{
 		networkManager.setRole(NetworkRole::CLIENT);
 		networkManager.startNetwork();
+		for (GameObject* button :
+			 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("ServerButton"))
+		{
+			Button* buttonObject = dynamic_cast<Button*>(button);
+			buttonObject->setInteractable(false);
+		}
+		for (GameObject* button :
+			 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("ClientButton"))
+		{
+			Button* buttonObject = dynamic_cast<Button*>(button);
+			buttonObject->setInteractable(false);
+		}
+		for (GameObject* button :
+			 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("HostButton"))
+		{
+			Button* buttonObject = dynamic_cast<Button*>(button);
+			buttonObject->setInteractable(false);
+		}
+		for (GameObject* button :
+			 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("SearchButton"))
+		{
+			Button* buttonObject = dynamic_cast<Button*>(button);
+			buttonObject->setActive(true);
+		}
 	}
 }
 
