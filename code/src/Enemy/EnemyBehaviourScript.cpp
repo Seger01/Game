@@ -228,7 +228,6 @@ void EnemyBehaviourScript::removePathVisualization() {
     Scene* scene = engine.getSceneManager().getCurrentScene();
 
     std::vector<GameObject*> pathMarkers = scene->getGameObjectsWithTag("PathMarker");
-    std::cout << "Removing " << pathMarkers.size() << " path markers" << std::endl;
     for (GameObject* marker : pathMarkers) {
         scene->requestGameObjectRemoval(marker);
     }
@@ -273,12 +272,10 @@ void EnemyBehaviourScript::moveWithPathfinding() {
     Scene* scene = engine.getSceneManager().getCurrentScene();
     GameObject* enemy = mGameObject;
     if (enemy == nullptr) {
-        std::cout << "Enemy not found" << std::endl;
         return;
     }
     GameObject* player = scene->getGameObjectsWithTag("Player")[0];
     if (player == nullptr) {
-        std::cout << "Player not found" << std::endl;
         return;
     }
     Vector2 playerPosition = player->getTransform().position;
