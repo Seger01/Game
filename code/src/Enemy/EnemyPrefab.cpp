@@ -18,7 +18,7 @@ const Point enemyIdlePosition = {53, 389};
 SpriteDef firstFrameEnemyIdle = {
     "Dungeontileset/0x72_DungeonTilesetII_v1.7.png",
     Rect{enemyIdlePosition.x, enemyIdlePosition.y, enemySpriteWidth, enemySpriteHeight},
-    enemySpriteWidth, enemySpriteHeight};
+    16, 16};
 
 const Point enemyWalkingPosition = {16, 388};
 SpriteDef firstFrameEnemyWalking = {

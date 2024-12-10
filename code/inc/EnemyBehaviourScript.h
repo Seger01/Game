@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <Pathfinding.h>
+#include <SpriteDef.h>
 
 class EnemyBehaviourScript : public IBehaviourScript {
 public:
@@ -37,16 +38,26 @@ private:
     float vectorLength(const Vector2& vec);
     Vector2 normalizeVector(const Vector2& vec);
     int getGridPosition(const Vector2& position) const;
+    void visualizePath(const std::vector<int>& path);
+    void visualizeGraph();
+    void removePathVisualization();
+    void removeGraphVisualization();
 
 private :
     float mHealth;
     bool mIsDead;
 
-    std::unique_ptr<Pathfinding> mPathfinding;
+    std::unique_ptr<Pathfinding> mPathfinding = nullptr;
     int mMapWidth;
     int mMapHeight;
     std::vector<int> mPath;
     size_t mCurrentPathIndex;
     float mPathUpdateTime;
     Vector2 mPreviousPlayerPosition;
+    SpriteDef mPathMarkerSpriteDef;
+    SpriteDef mGraphNodeSpriteDef;
+
+    bool drawPath = false;
+    bool drawGraph = false;
+
 };

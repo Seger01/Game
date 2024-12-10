@@ -192,7 +192,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 	buttonSFX->setTransform(Transform(Vector2(540, 56)));
 	buttonSFX->addComponent<DemoSFXButtonBehaviourScript>();
 
-	Text* textSFX = new Text("SFX", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.2, 0.2));
+	Text* textSFX = new Text("SFX", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.4, 0.4));
 	textSFX->setLayer(5);
 	textSFX->setTag("ButtonSFXText");
 	textSFX->setParent(buttonSFX);
@@ -206,7 +206,7 @@ void DemoManagerBehaviourScript::createSecondScene()
     button1->setTag("ButtonBox");
 	button1->addComponent<DemoPhysicsButtonBehaviourScript>();
 
-    Text* text1 = new Text("Box object", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.2, 0.2));
+    Text* text1 = new Text("Box object", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.3, 0.3));
     text1->setLayer(5);
     text1->setTag("ButtonBoxText");
     text1->setParent(button1);
@@ -219,7 +219,7 @@ void DemoManagerBehaviourScript::createSecondScene()
     button2->setTag("ButtonCircle");
 	button2->addComponent<DemoPhysicsButtonBehaviourScript>();
 
-    Text* text2 = new Text("Circle object", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.2, 0.2));
+    Text* text2 = new Text("Circle object", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.3, 0.3));
     text2->setLayer(5);
     text2->setTag("Button2Text");
     text2->setParent(button2);
@@ -231,7 +231,7 @@ void DemoManagerBehaviourScript::createSecondScene()
     button3->setTransform(Transform(Vector2(288, 608)));
     button3->setTag("Button3");
 
-    Text* text3 = new Text("Button3", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.2, 0.2));
+    Text* text3 = new Text("Button3", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.3, 0.3));
     text3->setLayer(5);
     text3->setTag("Button3Text");
     text3->setParent(button3);
