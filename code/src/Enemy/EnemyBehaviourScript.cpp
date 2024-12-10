@@ -251,7 +251,7 @@ void EnemyBehaviourScript::visualizeGraph() {
         marker->setTransform(transform);
 
         Sprite* sprite = engine.getResourceManager().createSprite(mGraphNodeSpriteDef);
-        sprite->setLayer(1);
+        sprite->setLayer(7);
         marker->addComponent(sprite);
 
         scene->addGameObject(marker);
