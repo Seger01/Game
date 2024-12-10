@@ -51,6 +51,7 @@ void DemoParticlesButtonBehaviourScript::updateButtonState() {
                 component->setActive(true);
             }
         }
+        removeParticles();
         mButtonPressed = false;
     }
 }
@@ -64,36 +65,66 @@ void DemoParticlesButtonBehaviourScript::launchParticles() {
         Color(0, 255, 0, 255),   // Green
         Color(0, 0, 255, 255)    // Blue
     };
+    EmitterMode emitterMode = EmitterMode::Continuous;
+	float speed = 50.0f;
+	float acceleration = 0.0f;
+	int minLifeTimeMs = 100;
+	int maxLifeTimeMs = 1000;
+	Vector2 startSize = Vector2(5, 5);
+	Vector2 endSize = Vector2(0, 0);
+	float rotation = 0.0f;
+	float rotationSpeed = 0.0f;
+	float rotationAcceleration = 0.0f;
 
-    ParticleEmitter* fireworksEmitter = new ParticleEmitter(
-        EmitterMode::Burst, // Emitter mode
-        50.0f,             // Speed
-        0.0f,               // Acceleration
-        500,                // Min lifetime (ms)
-        1000,               // Max lifetime (ms)
-        Vector2(5, 5),      // Initial size
-        Vector2(1, 1),      // End size
-        0.0f,               // Initial rotation
-        0.0f,               // Angular velocity
-        0.0f,               // Angular acceleration
-        colorGradient       // Color gradient
-    );
+	ParticleEmitter* emitter =
+		new ParticleEmitter(emitterMode, speed, acceleration, minLifeTimeMs, maxLifeTimeMs, startSize, endSize,
+							rotation, rotationSpeed, rotationAcceleration, colorGradient);
 
-    fireworksEmitter->setParticlesPerSecond(100);
-    fireworksEmitter->setAngle(0, 360);
-    fireworksEmitter->setLayer(4);
+	emitter->setParticlesPerSecond(300);
+    emitter->setAngle(0, 360);
+	emitter->setLayer(4);
+    // Transform transform = mGameObject->getTransform();
+    // transform.position.y += 10;
+    // //std::cout << "Emitter position: (" << transform.position.x << ", " << transform.position.y << ")" << std::endl;
 
-    Transform transform = mGameObject->getTransform();
-    transform.position.y += 50;
-    std::cout << "Emitter position: (" << transform.position.x << ", " << transform.position.y << ")" << std::endl;
+    // emitter->setRelativeTransform(transform);
+	mGameObject->addComponent(emitter);
 
-    fireworksEmitter->setRelativeTransform(transform);
+    // ParticleEmitter* fireworksEmitter = new ParticleEmitter(
+    //     EmitterMode::Continuous,
+    //     50.0f,             // Speed
+    //     0.0f,               // Acceleration
+    //     500,                // Min lifetime (ms)
+    //     1000,               // Max lifetime (ms)
+    //     Vector2(5, 5),      // Initial size
+    //     Vector2(1, 1),      // End size
+    //     0.0f,               // Initial rotation
+    //     0.0f,               // Angular velocity
+    //     0.0f,               // Angular acceleration
+    //     colorGradient       // Color gradient
+    // );
 
-    // Add the emitter to the button's GameObject
-    mGameObject->addComponent(fireworksEmitter);
+    // fireworksEmitter->setParticlesPerSecond(100);
+    // fireworksEmitter->setAngle(0, 360);
+    // fireworksEmitter->setLayer(4);
 
-    // Trigger the burst
-    fireworksEmitter->burst(300);
+    // Transform transform = mGameObject->getTransform();
+    // transform.position.y += 50;
+    // std::cout << "Emitter position: (" << transform.position.x << ", " << transform.position.y << ")" << std::endl;
 
-    std::cout << "Emitter active: " << fireworksEmitter->isActive() << std::endl;
+    // fireworksEmitter->setRelativeTransform(transform);
+
+    // // Add the emitter to the button's GameObject
+    // mGameObject->addComponent(fireworksEmitter);
+
+    // // Trigger the burst
+    // //fireworksEmitter->burst(300);
+
+    // std::cout << "Emitter active: " << fireworksEmitter->isActive() << std::endl;
+}
+
+void DemoParticlesButtonBehaviourScript::removeParticles() {
+    if (mGameObject->hasComponent<ParticleEmitter>()) {
+        mGameObject->removeComponent(mGameObject->getComponents<ParticleEmitter>()[0]);
+    }
 }

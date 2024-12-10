@@ -18,6 +18,7 @@ public:
 private:
     void updateButtonState();
     void launchParticles();
+    void removeParticles();
 private:
     bool mButtonPressed;
 
