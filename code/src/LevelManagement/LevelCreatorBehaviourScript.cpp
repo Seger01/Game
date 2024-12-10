@@ -1,6 +1,7 @@
 #include "LevelCreatorBehaviourScript.h"
 #include "CanvasBehaviourScript.h"
 #include "EnemyPrefab.h"
+#include "NetworkObject.h"
 #include <BoxCollider.h>
 #include <EngineBravo.h>
 #include <FSConverter.h>
@@ -195,7 +196,7 @@ void LevelCreatorBehaviourScript::createDemoNetworkingLevel()
 	scene->addGameObject(enemy);
 	if (engine.getNetworkManager().isServer())
 	{
-		enemy->getComponent<NetworkObject>()->setOwner(true);
+		enemy->getComponents<NetworkObject>()[0]->setOwner(true);
 	}
 
 	sceneManager.requestSceneChange("DemoNetworkingLevel");

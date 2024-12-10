@@ -1,6 +1,5 @@
 #include "EnemyPrefab.h"
 #include "EnemyBehaviourScript.h"
-#include "EnemyNetworkBehaviourForces.h"
 #include "EnemyNetworkBehaviourScript.h"
 #include "EnemyNetworkBehaviourTransform.h"
 #include <Animation.h>
@@ -36,7 +35,6 @@ GameObject* EnemyPrefab::createEnemyPrefab()
 		enemy->addComponent<NetworkObject>();
 		// enemy->addComponent<NetworkTransform>(true, true, false, false, false);
 		enemy->addComponent<EnemyNetworkBehaviourTransform>();
-		enemy->addComponent<EnemyNetworkBehaviourForces>();
 		enemy->addComponent<EnemyNetworkBehaviourScript>(100.0f);
 	}
 	else

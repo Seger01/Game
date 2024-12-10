@@ -1,6 +1,7 @@
 #include "PlayerPrefab.h"
 
 #include "AudioBehaviourScript.h"
+#include "PlayerNetworkBehaviourInputs.h"
 #include "PlayerNetworkBehaviourTransform.h"
 #include <GameObject.h>
 #include <NetworkObject.h>
@@ -53,7 +54,8 @@ GameObject* PlayerPrefabFactory::createPlayerPrefab()
 	if (EngineBravo::getInstance().getNetworkManager().isNetworked())
 	{
 		defaultPlayerPrefab->addComponent<NetworkObject>();
-		// addNetworkTransform(defaultPlayerPrefab);
+		defaultPlayerPrefab->addComponent<PlayerNetworkBehaviourInputs>();
+		//  addNetworkTransform(defaultPlayerPrefab);
 		addNetworkBehaviourScript(defaultPlayerPrefab);
 	}
 	else
@@ -87,7 +89,7 @@ void PlayerPrefabFactory::addPlayerBehaviourScript(GameObject* gameObject)
 void PlayerPrefabFactory::addNetworkBehaviourScript(GameObject* gameObject)
 {
 	gameObject->addComponent<PlayerNetworkBehaviourScript>();
-	gameObject->addComponent<PlayerNetworkBehaviourTransform>();
+	//	gameObject->addComponent<PlayerNetworkBehaviourTransform>();
 }
 
 void PlayerPrefabFactory::setTag(GameObject* gameObject) { gameObject->setTag("Player"); }
