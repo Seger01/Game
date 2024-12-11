@@ -35,9 +35,9 @@ void NetworkSelectionBehaviourScript::onStart()
 												menuStartY);
 	menuStartY += 20;
 
-	Button* searchButton = MainMenuPrefabFactory().createDefaultButton(
-		MainMenuObject, scene, "SearchServer", "SearchButton", "SearchServerText", menuStartX, menuStartY);
-	searchButton->setActive(false);
+	mSearchButton = MainMenuPrefabFactory().createDefaultButton(MainMenuObject, scene, "SearchServer", "SearchButton",
+																"SearchServerText", menuStartX, menuStartY);
+	mSearchButton->setActive(false);
 	// Text* searchButtonText = searchButton->getComponents<Text>()[0];
 	// searchButtonText->setActive(false);
 	scene->addGameObject(MainMenuObject);
@@ -89,36 +89,40 @@ void NetworkSelectionBehaviourScript::onUpdate()
 				}
 			}
 		}
-		NetworkClient& networkClient = engine.getNetworkManager().getClient();
-		std::vector<std::string> serverAddresses = networkClient.getServerAddresses();
-		for (std::string serverAddress : serverAddresses)
+		else
 		{
-			auto it = std::find(mServerAddresses.begin(), mServerAddresses.end(), serverAddress);
-			if (it == mServerAddresses.end())
-			{
-				// Server address not found
-				mServerAddresses.push_back(serverAddress);
-
-				int buttonHeight;
-				int buttonWidth;
-
-				Button* ipButton = new Button;
-				ipButton->setTransform(Transform(Vector2(100, mServerAddresses.size() * 20)));
-				ipButton->setTag(serverAddress);
-				Text* ipText =
-					new Text(serverAddress, serverAddress, Color(15, 110, 47), Vector2(0, 0), Vector2(0.5, 0.5));
-				ipText->setParent(ipButton);
-				ipButton->addComponent<ConnectButtonScript>(ipText);
-				engine.getRenderSystem().getTextSize(serverAddress, serverAddress, buttonWidth, buttonHeight,
-													 Vector2(0.5, 0.5));
-				ipButton->setWidth(buttonWidth);
-				ipButton->setHeight(buttonHeight);
-
-				Scene* scene = sceneManager.getCurrentScene();
-				scene->addGameObject(ipButton);
-				scene->addGameObject(ipText);
-			}
+			mSearchButton->setActive(true);
 		}
+		// NetworkClient& networkClient = engine.getNetworkManager().getClient();
+		// std::vector<std::string> serverAddresses = networkClient.getServerAddresses();
+		// for (std::string serverAddress : serverAddresses)
+		// {
+		// 	auto it = std::find(mServerAddresses.begin(), mServerAddresses.end(), serverAddress);
+		// 	if (it == mServerAddresses.end())
+		// 	{
+		// 		// Server address not found
+		// 		mServerAddresses.push_back(serverAddress);
+
+		// 		int buttonHeight;
+		// 		int buttonWidth;
+
+		// 		Button* ipButton = new Button;
+		// 		ipButton->setTransform(Transform(Vector2(100, mServerAddresses.size() * 20)));
+		// 		ipButton->setTag(serverAddress);
+		// 		Text* ipText =
+		// 			new Text(serverAddress, serverAddress, Color(15, 110, 47), Vector2(0, 0), Vector2(0.5, 0.5));
+		// 		ipText->setParent(ipButton);
+		// 		ipButton->addComponent<ConnectButtonScript>(ipText);
+		// 		engine.getRenderSystem().getTextSize(serverAddress, serverAddress, buttonWidth, buttonHeight,
+		// 											 Vector2(0.5, 0.5));
+		// 		ipButton->setWidth(buttonWidth);
+		// 		ipButton->setHeight(buttonHeight);
+
+		// 		Scene* scene = sceneManager.getCurrentScene();
+		// 		scene->addGameObject(ipButton);
+		// 		scene->addGameObject(ipText);
+		// 	}
+		// }
 	}
 }
 
