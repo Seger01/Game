@@ -1,4 +1,6 @@
 #include "BulletPrefab.h"
+#include "Particle.h"
+#include "ParticleEmitter.h"
 
 BulletPrefabFactory::BulletPrefabFactory() {
     mBulletWidth = 12;
@@ -22,6 +24,7 @@ GameObject* BulletPrefabFactory::createBulletPrefab(GameObject& shooter) {
     addSprite(bulletPrefab);
     addRigidBody(bulletPrefab);
     addCollider(bulletPrefab);
+    //addParticleEmitter(bulletPrefab);
 
     return bulletPrefab;
 }
@@ -64,3 +67,29 @@ void BulletPrefabFactory::addCollider(GameObject* gameObject) {
     gameObject->addComponent(boxCollider);
 }
 
+void BulletPrefabFactory::addParticleEmitter(GameObject* gameObject) {
+    std::vector<Color> colorGradient = {
+        Color(255, 255, 255, 255), // White
+        Color(200, 200, 200, 255), // Light Gray
+        Color(150, 150, 150, 255)  // Darker Gray
+    };
+    EmitterMode emitterMode = EmitterMode::Burst;
+    float speed = 0.0f;
+    float acceleration = 0.0f;
+    int minLifeTimeMs = 200;
+    int maxLifeTimeMs = 400;
+    Vector2 startSize = Vector2(2, 2);
+    Vector2 endSize = Vector2(0, 0);
+    float rotation = 0.0f;
+    float rotationSpeed = 0.0f;
+    float rotationAcceleration = 0.0f;
+
+    ParticleEmitter* emitter = new ParticleEmitter(emitterMode, speed, acceleration, minLifeTimeMs, maxLifeTimeMs, startSize, endSize, rotation, rotationSpeed, rotationAcceleration, colorGradient);
+    emitter->setParticlesPerSecond(50);
+    emitter->setAngle(0, 360);
+    emitter->setLayer(4);
+    emitter->setRelativeTransform(Transform(Vector2(0, 0)));
+    emitter->setActive(true);
+
+    gameObject->addComponent(emitter);
+}
