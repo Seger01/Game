@@ -344,7 +344,6 @@ void DemoManagerBehaviourScript::nextScene()
 
 void DemoManagerBehaviourScript::onStart()
 {
-	std::cout << "DemoInitBehaviourScript::onStart()" << std::endl;
 
 	mCurrentScene = 0;
 	createFirstScene();
