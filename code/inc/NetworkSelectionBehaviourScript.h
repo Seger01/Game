@@ -30,6 +30,7 @@ public:
 	void onConnectRelease(const std::string& aServerAddress);
 
 private:
+	GameObject* mMainMenuObject{nullptr};
 	Button* mServerButton{nullptr};
 	Button* mClientButton{nullptr};
 	Button* mHostButton{nullptr};
