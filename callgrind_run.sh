@@ -20,7 +20,8 @@ cd "$BUILD_DIR"
 #     fi
 # fi
 # cmake -DCMAKE_BUILD_TYPE=Debug ..
-cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
+cmake ..
+# cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
 # Build with multiple cores and wait for it to complete
 cmake --build . -- -j$(nproc) && \
 

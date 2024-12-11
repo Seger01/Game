@@ -288,7 +288,7 @@ void LevelCreatorBehaviourScript::createLevel(Scene* scene, const TileMapData& t
 				roomObject->setName("RoomTrigger");
 				scene->addGameObject(roomObject);
 			}
-			
+
 			// Add a trigger for the level end
 			else if (type == "LevelEndTrigger")
 			{
@@ -401,6 +401,7 @@ void LevelCreatorBehaviourScript::createLevel(Scene* scene, const TileMapData& t
 									rigidBody->setActive(false);
 								}
 							}
+							rigidBody->setFriction(5.0f);
 							gameObject->addComponent(rigidBody);
 							gameObject->setName("Tile");
 						}
