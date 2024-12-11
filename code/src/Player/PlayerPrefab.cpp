@@ -236,7 +236,7 @@ void PlayerPrefabFactory::addRigidBody(GameObject* gameObject)
 {
 	RigidBody* rigidBody = new RigidBody();
 
-	rigidBody->setCanRotate(false);
+	rigidBody->setCanRotate(true);
 	rigidBody->setHasGravity(false);
 	rigidBody->setIsMoveableByForce(true);
 	rigidBody->setDensity(1.0f);

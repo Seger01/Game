@@ -3,7 +3,6 @@
 #include <CircleCollider.h>
 #include <EngineBravo.h>
 #include <FSConverter.h>
-#include <PhysicsManager.h>
 #include <RigidBody.h>
 #include <Scene.h>
 #include <SceneManager.h>
@@ -155,9 +154,9 @@ void DemoPhysicsButtonBehaviourScript::spawnBox(const Vector2& aPosition, const 
     transform.position = aPosition;
     box->setTransform(transform);
 
-    Sprite* sprite = engine.getResourceManager().createSprite(mBoxSpriteDef);
-    sprite->setLayer(3);
-    box->addComponent(sprite);
+	Sprite* sprite = engine.getResourceManager().createSprite(mBoxSpriteDef);
+	sprite->setLayer(3);
+	box->addComponent(sprite);
 
     RigidBody* rigidBody = new RigidBody();
     rigidBody->setDensity(1.0f);
@@ -165,13 +164,13 @@ void DemoPhysicsButtonBehaviourScript::spawnBox(const Vector2& aPosition, const 
     rigidBody->addForce(aForce);
     box->addComponent(rigidBody);
 
-    BoxCollider* boxCollider = new BoxCollider();
-    boxCollider->setWidth(sprite->getWidth() + 1);
-    boxCollider->setHeight(sprite->getHeight());
-    boxCollider->setTrigger(false);
-    box->addComponent(boxCollider);
+	BoxCollider* boxCollider = new BoxCollider();
+	boxCollider->setWidth(sprite->getWidth() + 1);
+	boxCollider->setHeight(sprite->getHeight());
+	boxCollider->setTrigger(false);
+	box->addComponent(boxCollider);
 
-    scene->addGameObject(box);
+	scene->addGameObject(box);
 }
 
 void DemoPhysicsButtonBehaviourScript::spawnCircle(const Vector2& aPosition, const std::string& aName, const Vector2& aForce)
@@ -187,9 +186,9 @@ void DemoPhysicsButtonBehaviourScript::spawnCircle(const Vector2& aPosition, con
     transform.position = aPosition;
     circle->setTransform(transform);
 
-    Sprite* sprite = engine.getResourceManager().createSprite(mCircleSpriteDef);
-    sprite->setLayer(3);
-    circle->addComponent(sprite);
+	Sprite* sprite = engine.getResourceManager().createSprite(mCircleSpriteDef);
+	sprite->setLayer(3);
+	circle->addComponent(sprite);
 
     RigidBody* rigidBody = new RigidBody();
     rigidBody->setDensity(1.0f);
@@ -208,7 +207,7 @@ void DemoPhysicsButtonBehaviourScript::spawnCircle(const Vector2& aPosition, con
 	circleCollider->setTransform(colliderTransform);
     circle->addComponent(circleCollider);
 
-    scene->addGameObject(circle);
+	scene->addGameObject(circle);
 }
 
 void DemoPhysicsButtonBehaviourScript::removeBox(const std::string& aName)
