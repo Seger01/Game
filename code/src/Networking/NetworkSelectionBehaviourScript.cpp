@@ -198,35 +198,39 @@ void NetworkSelectionBehaviourScript::onSearchRelease()
 	NetworkClient& networkClient = engine.getNetworkManager().getClient();
 	// networkClient.discoverServers();
 	std::vector<std::string> serverAddresses = networkClient.getServerAddresses();
+	int i{0};
 	for (std::string serverAddress : serverAddresses)
 	{
 		int menuIndexX = mMenuStartX;
 		int menuIndexY = mMenuStartY;
-		auto it = std::find(mServerAddresses.begin(), mServerAddresses.end(), serverAddress);
-		if (it == mServerAddresses.end())
-		{
-			// Server address not found
-			mServerAddresses.push_back(serverAddress);
 
-			int buttonHeight;
-			int buttonWidth;
+		int buttonHeight;
+		int buttonWidth;
 
-			Button* ipButton = new Button;
-			// ipButton->setTransform(Transform(Vector2(100, mServerAddresses.size() * 20)));
-			ipButton->setTransform(Transform(Vector2(menuIndexX, menuIndexY)));
-			menuIndexY += 20;
-			ipButton->setTag(serverAddress);
-			Text* ipText = new Text(serverAddress, serverAddress, Color(15, 110, 47), Vector2(0, 0), Vector2(0.5, 0.5));
-			ipText->setParent(ipButton);
-			ipButton->addComponent<ConnectButtonScript>(ipText);
-			engine.getRenderSystem().getTextSize(serverAddress, serverAddress, buttonWidth, buttonHeight,
-												 Vector2(0.5, 0.5));
-			ipButton->setWidth(buttonWidth);
-			ipButton->setHeight(buttonHeight);
+		Button* ipButton = new Button;
+		ipButton->setTransform(Transform(Vector2(menuIndexX, menuIndexY)));
+		menuIndexY += 20;
+		ipButton->setTag(serverAddress);
+		Text* ipText = new Text(serverAddress, serverAddress, Color(15, 110, 47), Vector2(0, 0), Vector2(0.5, 0.5));
+		ipText->setParent(ipButton);
+		ipButton->addComponent<ConnectButtonScript>(ipText);
+		engine.getRenderSystem().getTextSize(serverAddress, serverAddress, buttonWidth, buttonHeight,
+											 Vector2(0.5, 0.5));
+		ipButton->setWidth(buttonWidth);
+		ipButton->setHeight(buttonHeight);
 
-			Scene* scene = sceneManager.getCurrentScene();
-			scene->addGameObject(ipButton);
-			scene->addGameObject(ipText);
-		}
+		Scene* scene = sceneManager.getCurrentScene();
+		scene->addGameObject(ipButton);
+		scene->addGameObject(ipText);
+
+		++i;
 	}
+}
+
+void NetworkSelectionBehaviourScript::onConnectRelease(const std::string& aServerAdress)
+{
+	std::cout << "Connect button released" << std::endl;
+	NetworkClient& networkClient = EngineBravo::getInstance().getNetworkManager().getClient();
+	networkClient.setServerAddress(aServerAdress);
+	networkClient.connectToServer();
 }

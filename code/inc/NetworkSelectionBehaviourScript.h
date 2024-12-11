@@ -27,6 +27,7 @@ public:
 	void onClientRelease();
 	void onHostRelease();
 	void onSearchRelease();
+	void onConnectRelease(const std::string& aServerAddress);
 
 private:
 	Button* mServerButton{nullptr};
@@ -35,7 +36,7 @@ private:
 	Button* mSearchButton{nullptr};
 	bool mSearchServers{false};
 
-	std::list<std::string> mServerAddresses;
+	// std::list<std::string> mServerAddresses;
 	const int mMenuStartX{240 + 13};
 	const int mMenuStartY{135 + 5};
 };
