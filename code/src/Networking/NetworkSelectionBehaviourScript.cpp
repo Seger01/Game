@@ -1,7 +1,6 @@
 #include "NetworkSelectionBehaviourScript.h"
 
 #include "InitBehaviourScript.h"
-#include "NetworkSelectionButtonScript.h"
 
 #include "Button.h"
 #include "Engine/EngineBravo.h"
@@ -19,15 +18,17 @@ void NetworkSelectionBehaviourScript::onStart()
 	SceneManager& sceneManager = engine.getSceneManager();
 	Scene* scene = sceneManager.getCurrentScene();
 
+	// Create the menu
 	mMainMenuObject = MainMenuPrefabFactory().createMainMenuPrefab();
 	int menuIndexX = mMenuStartX;
 	int menuIndexY = mMenuStartY;
 
+	// Create the buttons
 	mServerButton = MainMenuPrefabFactory().createDefaultButton(mMainMenuObject, scene, "Server", "ServerButton",
 																"ServerText", menuIndexX, menuIndexY);
 
-	mSearchButton = MainMenuPrefabFactory().createDefaultButton(mMainMenuObject, scene, "SearchServer", "SearchButton",
-																"SearchServerText", menuIndexX, menuIndexY);
+	mSearchButton = MainMenuPrefabFactory().createDefaultButton(
+		mMainMenuObject, scene, "Search for servers", "SearchButton", "SearchServerText", menuIndexX, menuIndexY);
 	mSearchButton->setActive(false);
 
 	menuIndexY += 20;
@@ -41,6 +42,7 @@ void NetworkSelectionBehaviourScript::onStart()
 	menuIndexY += 20;
 	scene->addGameObject(mMainMenuObject);
 
+	// Add the button callbacks
 	for (GameObject* button :
 		 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("ServerButton"))
 	{
@@ -75,6 +77,7 @@ void NetworkSelectionBehaviourScript::onUpdate()
 
 	if (networkManager.getRole() == NetworkRole::CLIENT)
 	{
+		// If client is connected, load the networking demo
 		if (networkManager.isConnected())
 		{
 			networkManager.setDefaultPlayerPrefab(PlayerPrefabFactory::createPlayerPrefab());
@@ -89,6 +92,7 @@ void NetworkSelectionBehaviourScript::onUpdate()
 		}
 		else
 		{
+			// If client is selected but not yet connected, disable the other buttons
 			mServerButton->setActive(false);
 			mClientButton->setActive(false);
 			mHostButton->setActive(false);
@@ -135,7 +139,6 @@ void NetworkSelectionBehaviourScript::onClientRelease()
 		networkManager.startNetwork();
 		NetworkClient& networkClient = EngineBravo::getInstance().getNetworkManager().getClient();
 		networkClient.discoverServers();
-		// mSearchServers = true;
 		for (GameObject* button :
 			 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("ServerButton"))
 		{
@@ -182,19 +185,13 @@ void NetworkSelectionBehaviourScript::onSearchRelease()
 {
 	EngineBravo& engine = EngineBravo::getInstance();
 	SceneManager& sceneManager = engine.getSceneManager();
-	NetworkManager& networkManager = engine.getNetworkManager();
-	if (networkManager.isConnected())
+
+	for (Button* ipButton : mServerAdressButtons)
 	{
-		networkManager.setDefaultPlayerPrefab(PlayerPrefabFactory::createPlayerPrefab());
-		for (GameObject* object :
-			 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("LevelManager"))
-		{
-			if (object->hasComponent<LevelManagerBehaviourScript>())
-			{
-				object->getComponents<LevelManagerBehaviourScript>()[0]->beginDemoNetworkingGame();
-			}
-		}
+		sceneManager.getCurrentScene()->requestGameObjectRemoval(ipButton);
 	}
+	mServerAdressButtons.clear();
+
 	NetworkClient& networkClient = engine.getNetworkManager().getClient();
 	std::vector<std::string> serverAddresses = networkClient.getServerAddresses();
 	for (std::string serverAddress : serverAddresses)
@@ -203,8 +200,9 @@ void NetworkSelectionBehaviourScript::onSearchRelease()
 		int menuIndexY = mMenuStartY + 20;
 
 		std::string buttonTag = "button" + serverAddress;
-		MainMenuPrefabFactory::createDefaultButton(mMainMenuObject, sceneManager.getCurrentScene(), serverAddress,
-												   buttonTag, serverAddress, menuIndexX, menuIndexY);
+		mServerAdressButtons.push_back(
+			MainMenuPrefabFactory::createDefaultButton(mMainMenuObject, sceneManager.getCurrentScene(), serverAddress,
+													   buttonTag, serverAddress, menuIndexX, menuIndexY));
 
 		for (GameObject* button :
 			 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag(buttonTag))
