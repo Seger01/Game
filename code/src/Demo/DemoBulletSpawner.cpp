@@ -10,7 +10,7 @@
 #include "Text.h"
 
 DemoBulletSpawner::DemoBulletSpawner()
-    : mMaxBullets(1000), mSpawnInterval(0.1f), mTimeSinceLastSpawn(0.0f) {}
+    : mMaxBullets(1000), mSpawnInterval(0.016f), mTimeSinceLastSpawn(0.0f) {}
 
 void DemoBulletSpawner::onStart() {
     EngineBravo& engine = EngineBravo::getInstance();

@@ -24,7 +24,7 @@ GameObject* BulletPrefabFactory::createBulletPrefab(GameObject& shooter) {
     addSprite(bulletPrefab);
     addRigidBody(bulletPrefab);
     addCollider(bulletPrefab);
-    //addParticleEmitter(bulletPrefab);
+    addParticleEmitter(bulletPrefab);
 
     return bulletPrefab;
 }
@@ -73,11 +73,11 @@ void BulletPrefabFactory::addParticleEmitter(GameObject* gameObject) {
         Color(200, 200, 200, 255), // Light Gray
         Color(150, 150, 150, 255)  // Darker Gray
     };
-    EmitterMode emitterMode = EmitterMode::Burst;
+    EmitterMode emitterMode = EmitterMode::Continuous;
     float speed = 0.0f;
     float acceleration = 0.0f;
     int minLifeTimeMs = 200;
-    int maxLifeTimeMs = 400;
+    int maxLifeTimeMs = 1000;
     Vector2 startSize = Vector2(2, 2);
     Vector2 endSize = Vector2(0, 0);
     float rotation = 0.0f;
@@ -89,6 +89,9 @@ void BulletPrefabFactory::addParticleEmitter(GameObject* gameObject) {
     emitter->setAngle(0, 360);
     emitter->setLayer(4);
     emitter->setRelativeTransform(Transform(Vector2(0, 0)));
+    Transform transform;
+    transform.position = Vector2(6, 6);
+    emitter->setRelativeTransform(transform);
     emitter->setActive(true);
 
     gameObject->addComponent(emitter);
