@@ -23,7 +23,7 @@ private:
     void spawnCircle(const Vector2& aPosition, const std::string& aName);
     void removeBox(const std::string& aName);
     void removeCircle(const std::string& aName);
-    void toggleGravity(bool aState);
+    void toggleGravity();
 
 private:
     SpriteDef mBoxSpriteDef;
