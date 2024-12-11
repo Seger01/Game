@@ -25,4 +25,5 @@ void NetworkDemoSceneBehaviour::onUpdate()
 			networkManager.instantiate(enemyPrefab.getPrefabID(), Transform(Vector2(128, 112)));
 		}
 	}
+	
 }

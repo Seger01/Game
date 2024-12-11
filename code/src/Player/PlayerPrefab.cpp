@@ -53,9 +53,6 @@ GameObject* PlayerPrefabFactory::createPlayerPrefab()
 	setTransform(defaultPlayerPrefab);
 	if (EngineBravo::getInstance().getNetworkManager().isNetworked())
 	{
-		defaultPlayerPrefab->addComponent<NetworkObject>();
-		defaultPlayerPrefab->addComponent<PlayerNetworkBehaviourInputs>();
-		//  addNetworkTransform(defaultPlayerPrefab);
 		addNetworkBehaviourScript(defaultPlayerPrefab);
 	}
 	else
@@ -88,6 +85,8 @@ void PlayerPrefabFactory::addPlayerBehaviourScript(GameObject* gameObject)
 
 void PlayerPrefabFactory::addNetworkBehaviourScript(GameObject* gameObject)
 {
+	gameObject->addComponent<NetworkObject>();
+	gameObject->addComponent<PlayerNetworkBehaviourInputs>();
 	gameObject->addComponent<PlayerNetworkBehaviourScript>();
 	gameObject->addComponent<PlayerNetworkBehaviourTransform>();
 }

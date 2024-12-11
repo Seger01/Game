@@ -15,7 +15,7 @@ PlayerNetworkBehaviourTransform::PlayerNetworkBehaviourTransform(const PlayerNet
 
 void PlayerNetworkBehaviourTransform::onUpdate()
 {
-	if (isOwner())
+	if (!isOwner())
 	{
 		mTransformSerialize.getValue().setPosition(mGameObject->getTransform().position); // Set the network variable
 		mTransformSerialize.getValue().setRotation(mGameObject->getTransform().rotation); // Set the network variable
