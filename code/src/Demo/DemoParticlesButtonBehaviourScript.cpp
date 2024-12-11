@@ -23,10 +23,11 @@ void DemoParticlesButtonBehaviourScript::onStart()
 		Color(0, 255, 0, 255),	 // Green
 		Color(0, 0, 255, 255)	 // Blue
 	};
+
 	EmitterMode emitterMode = EmitterMode::Continuous;
-	float speed = 300.0f;
+	float speed = 50.0f;
 	float acceleration = 0.0f;
-	int minLifeTimeMs = 500;
+	int minLifeTimeMs = 100;
 	int maxLifeTimeMs = 1000;
 	Vector2 startSize = Vector2(5, 5);
 	Vector2 endSize = Vector2(0, 0);
@@ -38,16 +39,19 @@ void DemoParticlesButtonBehaviourScript::onStart()
 		new ParticleEmitter(emitterMode, speed, acceleration, minLifeTimeMs, maxLifeTimeMs, startSize, endSize,
 							rotation, rotationSpeed, rotationAcceleration, colorGradient);
 
-	emitter->setParticlesPerSecond(15000);
+	emitter->setParticlesPerSecond(200);
 	emitter->setAngle(0, 360);
 	emitter->setLayer(4);
+	emitter->setTag("ButtonParticles");
 	Transform transform;
 	transform.position.y = 5 * 16;
 	// //std::cout << "Emitter position: (" << transform.position.x << ", " << transform.position.y << ")" << std::endl;
 
 	emitter->setRelativeTransform(transform);
 
-	emitter->setActive(false);
+	emitter->setActive(true);
+
+	std::cout << "adding emitter to game object" << std::endl;
 	mGameObject->addComponent(emitter);
 }
 

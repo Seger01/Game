@@ -85,19 +85,10 @@ void MainMenuBehaviourScript::onDemoMultiRelease()
 	networkSelectionObject->addComponent<NetworkSelectionBehaviourScript>();
 	scene->addGameObject(networkSelectionObject);
 
-	// int cameraID = scene->addCamera();
-	// scene->setActiveCamera(cameraID);
-	//
-	// scene->getActiveCamera().setTransform(Transform(Vector2(100, 100)));
-	// scene->getActiveCamera().setWidth(200);
-	// scene->getActiveCamera().setHeight(200);
-	Camera* camera = new Camera;
+	Camera* camera =
+		new Camera(*EngineBravo::getInstance().getSceneManager().getCurrentScene()->getCameraWithTag("MainCamera"));
 	camera->setTag("MainCamera");
 	camera->setActive(true);
-
-	camera->setTransform(Transform(Vector2(100, 100)));
-	camera->setWidth(200);
-	camera->setHeight(200);
 
 	scene->addGameObject(camera);
 

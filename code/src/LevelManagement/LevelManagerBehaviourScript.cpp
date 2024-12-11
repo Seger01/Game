@@ -15,12 +15,15 @@ void LevelManagerBehaviourScript::beginGame()
 	mGameObject->getComponents<LevelCreatorBehaviourScript>().at(0)->createLevel1();
 }
 
-void LevelManagerBehaviourScript::beginDemoNetworkingGame() {
-  mGameObject->getComponents<LevelCreatorBehaviourScript>().at(0)->createDemoNetworkingLevel();
+void LevelManagerBehaviourScript::beginDemoNetworkingGame()
+{
+	std::cout << "Beginning network demo level\n";
+	mGameObject->getComponents<LevelCreatorBehaviourScript>().at(0)->createDemoNetworkingLevel();
 }
 
-void LevelManagerBehaviourScript::doneWithCurrentLevel() {
-  mCurrentLevel++;
+void LevelManagerBehaviourScript::doneWithCurrentLevel()
+{
+	mCurrentLevel++;
 
 	EngineBravo& engine = EngineBravo::getInstance();
 	SceneManager& sceneManager = engine.getSceneManager();
