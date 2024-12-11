@@ -186,9 +186,9 @@ void NetworkSelectionBehaviourScript::onSearchRelease()
 	EngineBravo& engine = EngineBravo::getInstance();
 	SceneManager& sceneManager = engine.getSceneManager();
 
-	for (Button* ipButton : mServerAdressButtons)
+	for (GameObject* gameObject : sceneManager.getCurrentScene()->getGameObjectsWithTag("ipButton"))
 	{
-		sceneManager.getCurrentScene()->requestGameObjectRemoval(ipButton);
+		sceneManager.getCurrentScene()->requestGameObjectRemoval(gameObject);
 	}
 	mServerAdressButtons.clear();
 
@@ -199,13 +199,13 @@ void NetworkSelectionBehaviourScript::onSearchRelease()
 		int menuIndexX = mMenuStartX;
 		int menuIndexY = mMenuStartY + 20;
 
-		std::string buttonTag = "button" + serverAddress;
+		// std::string buttonTag = "button" + serverAddress;
 		mServerAdressButtons.push_back(
 			MainMenuPrefabFactory::createDefaultButton(mMainMenuObject, sceneManager.getCurrentScene(), serverAddress,
-													   buttonTag, serverAddress, menuIndexX, menuIndexY));
+													   "ipButton", serverAddress, menuIndexX, menuIndexY));
 
 		for (GameObject* button :
-			 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag(buttonTag))
+			 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("ipButton"))
 		{
 			Button* buttonObject = dynamic_cast<Button*>(button);
 			buttonObject->setOnReleaseCallback(
