@@ -23,23 +23,22 @@ void NetworkSelectionBehaviourScript::onStart()
 	int menuStartX = 240 + 13;
 	int menuStartY = 135 + 5;
 
-	MainMenuPrefabFactory().createDefaultButton(MainMenuObject, scene, "Server", "ServerButton", "ServerText",
-												menuStartX, menuStartY);
-	menuStartY += 20;
-
-	MainMenuPrefabFactory().createDefaultButton(MainMenuObject, scene, "Client", "ClientButton", "ClientText",
-												menuStartX, menuStartY);
-	menuStartY += 20;
-
-	MainMenuPrefabFactory().createDefaultButton(MainMenuObject, scene, "Host", "HostButton", "HostText", menuStartX,
-												menuStartY);
-	menuStartY += 20;
+	mServerButton = MainMenuPrefabFactory().createDefaultButton(MainMenuObject, scene, "Server", "ServerButton",
+																"ServerText", menuStartX, menuStartY);
 
 	mSearchButton = MainMenuPrefabFactory().createDefaultButton(MainMenuObject, scene, "SearchServer", "SearchButton",
 																"SearchServerText", menuStartX, menuStartY);
 	mSearchButton->setActive(false);
-	// Text* searchButtonText = searchButton->getComponents<Text>()[0];
-	// searchButtonText->setActive(false);
+
+	menuStartY += 20;
+
+	mClientButton = MainMenuPrefabFactory().createDefaultButton(MainMenuObject, scene, "Client", "ClientButton",
+																"ClientText", menuStartX, menuStartY);
+	menuStartY += 20;
+
+	mHostButton = MainMenuPrefabFactory().createDefaultButton(MainMenuObject, scene, "Host", "HostButton", "HostText",
+															  menuStartX, menuStartY);
+	menuStartY += 20;
 	scene->addGameObject(MainMenuObject);
 
 	// TODO: add callbacks for button clicks. (See MainMenuBehaviourScript for example)
@@ -91,6 +90,9 @@ void NetworkSelectionBehaviourScript::onUpdate()
 		}
 		else
 		{
+			mServerButton->setActive(false);
+			mClientButton->setActive(false);
+			mHostButton->setActive(false);
 			mSearchButton->setActive(true);
 		}
 		// NetworkClient& networkClient = engine.getNetworkManager().getClient();
