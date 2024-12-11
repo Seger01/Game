@@ -313,19 +313,11 @@ void DemoManagerBehaviourScript::createSecondScene()
 		enemyStatic->getComponents<RigidBody>().at(0)->setCanRotate(true);
 	}
 	else
-	{
-		std::cout << "Enemystatic does not have a RigidBody component" << std::endl;
-	}
 
 	if (enemyWithCollider->hasComponent<RigidBody>())
 	{
 		enemyWithCollider->getComponents<RigidBody>().at(0)->setCanRotate(true);
 	}
-	else
-	{
-		std::cout << "Enemystatic does not have a RigidBody component" << std::endl;
-	}
-
 	scene->addGameObject(enemyMoving);
 	scene->addGameObject(enemyStatic);
 	scene->addGameObject(enemyWithCollider);

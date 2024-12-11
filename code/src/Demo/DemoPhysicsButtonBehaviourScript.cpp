@@ -26,7 +26,7 @@ void DemoPhysicsButtonBehaviourScript::onStart()
     mButtonPressedFilter = false;
     mBoxGravitySpawned = false;
     mBoxSpriteDef = {"Dungeontileset/0x72_DungeonTilesetII_v1.7.png", Rect{304, 402, 16, 14}, 16, 14};
-    mCircleSpriteDef = {"Dungeontileset/0x72_DungeonTilesetII_v1.7.png", Rect{292, 439, 7, 6}, 7, 6};
+    mCircleSpriteDef = {"Dungeontileset/0x72_DungeonTilesetII_v1.7.png", Rect{292, 439, 7, 6}, 16, 14};
     physicsManager.getPhysicsEngine().getWorld().setGravity(Vector2(0.0f, 9.8f));
 }
 
@@ -68,7 +68,7 @@ void DemoPhysicsButtonBehaviourScript::updateButtonState(const std::string& butt
     {
         if (!mButtonPressedCircle)
         {
-            spawnCircle(Vector2(176, 512), "Circle1");
+            spawnCircle(Vector2(176, 512), "Circle1", Vector2(200, -1000));
             mButtonPressedCircle = true;
         }
         else
@@ -88,10 +88,10 @@ void DemoPhysicsButtonBehaviourScript::updateButtonState(const std::string& butt
         std::cout << "ButtonFilter" << std::endl;
         if (!mButtonPressedFilter)
         {
-            spawnBox(Vector2(96, 624), "ButtonFilterBox", Vector2(-2000, -10000));
-            spawnBox(Vector2(112, 624), "ButtonFilterBox", Vector2(2000, -10000));
-            spawnCircle(Vector2(128, 624), "ButtonFilterCircle");
-            spawnCircle(Vector2(144, 624), "ButtonFilterCircle");
+            spawnBox(Vector2(96, 624), "ButtonFilterBox", Vector2(-400, -1000));
+            spawnBox(Vector2(112, 624), "ButtonFilterBox", Vector2(400, -1000));
+            spawnCircle(Vector2(128, 624), "ButtonFilterCircle", Vector2(-200, 1000));
+            spawnCircle(Vector2(144, 624), "ButtonFilterCircle", Vector2(200, -1000));
 
             std::vector<GameObject*> boxes =
                 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Box");
@@ -99,8 +99,8 @@ void DemoPhysicsButtonBehaviourScript::updateButtonState(const std::string& butt
             {
                 if (box->hasComponent<BoxCollider>())
                 {
-                    box->getComponents<BoxCollider>()[0]->setCollideCategory(1);
-                    box->getComponents<BoxCollider>()[0]->setCollideWithCategory({1});
+                    box->getComponents<BoxCollider>()[0]->setCollideCategory(3);
+                    box->getComponents<BoxCollider>()[0]->setCollideWithCategory({1, 3});
                 }
             }
 
@@ -111,7 +111,7 @@ void DemoPhysicsButtonBehaviourScript::updateButtonState(const std::string& butt
                 if (circle->hasComponent<CircleCollider>())
                 {
                     circle->getComponents<CircleCollider>()[0]->setCollideCategory(2);
-                    circle->getComponents<CircleCollider>()[0]->setCollideWithCategory({2});
+					circle->getComponents<CircleCollider>()[0]->setCollideWithCategory({1, 2});
                 }
             }
 
@@ -174,7 +174,7 @@ void DemoPhysicsButtonBehaviourScript::spawnBox(const Vector2& aPosition, const 
     scene->addGameObject(box);
 }
 
-void DemoPhysicsButtonBehaviourScript::spawnCircle(const Vector2& aPosition, const std::string& aName)
+void DemoPhysicsButtonBehaviourScript::spawnCircle(const Vector2& aPosition, const std::string& aName, const Vector2& aForce)
 {
     EngineBravo& engine = EngineBravo::getInstance();
     SceneManager& sceneManager = engine.getSceneManager();
@@ -194,12 +194,18 @@ void DemoPhysicsButtonBehaviourScript::spawnCircle(const Vector2& aPosition, con
     RigidBody* rigidBody = new RigidBody();
     rigidBody->setDensity(1.0f);
     rigidBody->setRestitution(1.0f);
-    rigidBody->addForce(Vector2(-200, -1000));
+    rigidBody->addForce(aForce);
+	rigidBody->setCanRotate(true);
     circle->addComponent(rigidBody);
 
     CircleCollider* circleCollider = new CircleCollider();
     circleCollider->setRadius(sprite->getWidth() / 2);
     circleCollider->setIsTrigger(false);
+	Transform colliderTransform;
+	colliderTransform.position = aPosition;	
+	colliderTransform.position.x = sprite->getWidth() / 2;
+	colliderTransform.position.y = sprite->getHeight() / 2;
+	circleCollider->setTransform(colliderTransform);
     circle->addComponent(circleCollider);
 
     scene->addGameObject(circle);

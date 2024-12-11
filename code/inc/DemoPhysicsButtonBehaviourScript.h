@@ -20,7 +20,7 @@ private:
     void updateButtonState(const std::string& buttonTag);
     void updateButtonSprites(bool isActive);
     void spawnBox(const Vector2& aPosition, const std::string& aName, const Vector2& aForce);
-    void spawnCircle(const Vector2& aPosition, const std::string& aName);
+    void spawnCircle(const Vector2& aPosition, const std::string& aName, const Vector2& aForce);
     void removeBox(const std::string& aName);
     void removeCircle(const std::string& aName);
     void toggleGravity();
