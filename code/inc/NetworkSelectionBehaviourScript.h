@@ -36,5 +36,7 @@ private:
 	bool mSearchServers{false};
 
 	std::list<std::string> mServerAddresses;
+	const int mMenuStartX{240 + 13};
+	const int mMenuStartY{135 + 5};
 };
 #endif // NETWORKSELECTIONBEHAVIOURSCRIPT_H
