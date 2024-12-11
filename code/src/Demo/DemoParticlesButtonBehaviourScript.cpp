@@ -1,74 +1,32 @@
 #include "DemoParticlesButtonBehaviourScript.h"
-#include <iostream>
-#include <Sprite.h>
+#include "Input.h"
+#include <EngineBravo.h>
+#include <GameObject.h>
 #include <Particle.h>
 #include <ParticleEmitter.h>
 #include <ParticleSystem.h>
-#include <Time.h>
-#include <EngineBravo.h>
-#include <SceneManager.h>
 #include <Scene.h>
-#include <GameObject.h>
+#include <SceneManager.h>
+#include <Sprite.h>
+#include <Time.h>
+#include <iostream>
 
 DemoParticlesButtonBehaviourScript::DemoParticlesButtonBehaviourScript() {}
 
-void DemoParticlesButtonBehaviourScript::onStart() {
-    mButtonPressed = false;
-}
+void DemoParticlesButtonBehaviourScript::onStart()
+{
+	mButtonPressed = false;
 
-void DemoParticlesButtonBehaviourScript::onUpdate() {
-
-}
-
-void DemoParticlesButtonBehaviourScript::onCollide(GameObject* aGameObject) {
-    if (aGameObject == nullptr) {
-        return;
-    }
-    if (aGameObject->getTag() == "Player") {
-        updateButtonState();
-    }
-}
-
-void DemoParticlesButtonBehaviourScript::updateButtonState() {
-    if (!mButtonPressed) {
-        for (Component* component : mGameObject->getComponents<Sprite>()) {
-            if (component->getTag() == "ButtonDownSprite") {
-                component->setActive(true);
-            }
-            else if (component->getTag() == "ButtonUpSprite") {
-                component->setActive(false);
-            }
-        }
-        launchParticles();
-        mButtonPressed = true;
-    }
-    else if (mButtonPressed) {
-        for (Component* component : mGameObject->getComponents<Sprite>()) {
-            if (component->getTag() == "ButtonDownSprite") {
-                component->setActive(false);
-            }
-            else if (component->getTag() == "ButtonUpSprite") {
-                component->setActive(true);
-            }
-        }
-        removeParticles();
-        mButtonPressed = false;
-    }
-}
-
-void DemoParticlesButtonBehaviourScript::launchParticles() {
-    std::cout << "Particles launched" << std::endl;
-
-    std::vector<Color> colorGradient = {
-        Color(255, 0, 0, 255),   // Red
-        Color(255, 255, 0, 255), // Yellow
-        Color(0, 255, 0, 255),   // Green
-        Color(0, 0, 255, 255)    // Blue
-    };
-    EmitterMode emitterMode = EmitterMode::Continuous;
-	float speed = 50.0f;
+	std::vector<Color> colorGradient = {
+		Color(255, 0, 0, 255),	 // Red
+		Color(255, 255, 0, 255), // Yellow
+		Color(0, 255, 0, 255),	 // Green
+		Color(0, 0, 255, 255)	 // Blue
+	};
+	EmitterMode emitterMode = EmitterMode::Continuous;
+	float speed = 300.0f;
 	float acceleration = 0.0f;
-	int minLifeTimeMs = 100;
+	int minLifeTimeMs = 500;
 	int maxLifeTimeMs = 1000;
 	Vector2 startSize = Vector2(5, 5);
 	Vector2 endSize = Vector2(0, 0);
@@ -80,51 +38,94 @@ void DemoParticlesButtonBehaviourScript::launchParticles() {
 		new ParticleEmitter(emitterMode, speed, acceleration, minLifeTimeMs, maxLifeTimeMs, startSize, endSize,
 							rotation, rotationSpeed, rotationAcceleration, colorGradient);
 
-	emitter->setParticlesPerSecond(300);
-    emitter->setAngle(0, 360);
+	emitter->setParticlesPerSecond(15000);
+	emitter->setAngle(0, 360);
 	emitter->setLayer(4);
-    // Transform transform = mGameObject->getTransform();
-    // transform.position.y += 10;
-    // //std::cout << "Emitter position: (" << transform.position.x << ", " << transform.position.y << ")" << std::endl;
+	Transform transform;
+	transform.position.y = 5 * 16;
+	// //std::cout << "Emitter position: (" << transform.position.x << ", " << transform.position.y << ")" << std::endl;
 
-    // emitter->setRelativeTransform(transform);
+	emitter->setRelativeTransform(transform);
+
+	emitter->setActive(false);
 	mGameObject->addComponent(emitter);
-
-    // ParticleEmitter* fireworksEmitter = new ParticleEmitter(
-    //     EmitterMode::Continuous,
-    //     50.0f,             // Speed
-    //     0.0f,               // Acceleration
-    //     500,                // Min lifetime (ms)
-    //     1000,               // Max lifetime (ms)
-    //     Vector2(5, 5),      // Initial size
-    //     Vector2(1, 1),      // End size
-    //     0.0f,               // Initial rotation
-    //     0.0f,               // Angular velocity
-    //     0.0f,               // Angular acceleration
-    //     colorGradient       // Color gradient
-    // );
-
-    // fireworksEmitter->setParticlesPerSecond(100);
-    // fireworksEmitter->setAngle(0, 360);
-    // fireworksEmitter->setLayer(4);
-
-    // Transform transform = mGameObject->getTransform();
-    // transform.position.y += 50;
-    // std::cout << "Emitter position: (" << transform.position.x << ", " << transform.position.y << ")" << std::endl;
-
-    // fireworksEmitter->setRelativeTransform(transform);
-
-    // // Add the emitter to the button's GameObject
-    // mGameObject->addComponent(fireworksEmitter);
-
-    // // Trigger the burst
-    // //fireworksEmitter->burst(300);
-
-    // std::cout << "Emitter active: " << fireworksEmitter->isActive() << std::endl;
 }
 
-void DemoParticlesButtonBehaviourScript::removeParticles() {
-    if (mGameObject->hasComponent<ParticleEmitter>()) {
-        mGameObject->removeComponent(mGameObject->getComponents<ParticleEmitter>()[0]);
-    }
+void DemoParticlesButtonBehaviourScript::onUpdate()
+{
+	Input& input = Input::getInstance();
+
+	if (input.GetKeyDown(Key::Key_Y))
+	{
+		launchParticles();
+	}
+}
+
+void DemoParticlesButtonBehaviourScript::onCollide(GameObject* aGameObject)
+{
+	if (aGameObject == nullptr)
+	{
+		return;
+	}
+	if (aGameObject->getTag() == "Player")
+	{
+		updateButtonState();
+	}
+}
+
+void DemoParticlesButtonBehaviourScript::updateButtonState()
+{
+	if (!mButtonPressed)
+	{
+		for (Component* component : mGameObject->getComponents<Sprite>())
+		{
+			if (component->getTag() == "ButtonDownSprite")
+			{
+				component->setActive(true);
+			}
+			else if (component->getTag() == "ButtonUpSprite")
+			{
+				component->setActive(false);
+			}
+		}
+		launchParticles();
+		mButtonPressed = true;
+	}
+	else if (mButtonPressed)
+	{
+		for (Component* component : mGameObject->getComponents<Sprite>())
+		{
+			if (component->getTag() == "ButtonDownSprite")
+			{
+				component->setActive(false);
+			}
+			else if (component->getTag() == "ButtonUpSprite")
+			{
+				component->setActive(true);
+			}
+		}
+		removeParticles();
+		mButtonPressed = false;
+	}
+}
+
+void DemoParticlesButtonBehaviourScript::launchParticles()
+{
+	std::cout << "Particles launched" << std::endl;
+
+	if (mGameObject->hasComponent<ParticleEmitter>())
+	{
+		ParticleEmitter* emitter = mGameObject->getComponents<ParticleEmitter>()[0];
+		emitter->setActive(true);
+		emitter->burst(300);
+	}
+}
+
+void DemoParticlesButtonBehaviourScript::removeParticles()
+{
+	if (mGameObject->hasComponent<ParticleEmitter>())
+	{
+		ParticleEmitter* emitter = mGameObject->getComponents<ParticleEmitter>()[0];
+		emitter->setActive(false);
+	}
 }
