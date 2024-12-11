@@ -12,6 +12,8 @@
 #include <SpriteDefUtil.h>
 #include <Transform.h>
 
+REGISTER_NETWORK_PREFAB(EnemyPrefab);
+
 const int enemySpriteWidth = 20;  // Width of each sprite
 const int enemySpriteHeight = 27; // Height of each sprite
 
@@ -26,14 +28,13 @@ SpriteDef firstFrameEnemyWalking = {"Dungeontileset/0x72_DungeonTilesetII_v1.7.p
 
 EnemyPrefab::EnemyPrefab() {}
 
-GameObject* EnemyPrefab::createEnemyPrefab()
+GameObject* EnemyPrefab::create()
 {
 	GameObject* enemy = new GameObject;
 	// setTransform(enemy);
 	if (EngineBravo::getInstance().getNetworkManager().isNetworked())
 	{
 		enemy->addComponent<NetworkObject>();
-		// enemy->addComponent<NetworkTransform>(true, true, false, false, false);
 		enemy->addComponent<EnemyNetworkBehaviourTransform>();
 		enemy->addComponent<EnemyNetworkBehaviourScript>(100.0f);
 	}
@@ -45,8 +46,11 @@ GameObject* EnemyPrefab::createEnemyPrefab()
 	addRigidBody(enemy);
 	addCollider(enemy);
 	addAnimations(enemy);
+	enemy->setTag("enemy");
 	return enemy;
 }
+
+int EnemyPrefab::getPrefabID() const { return GetTypeId<EnemyPrefab>(); }
 
 void EnemyPrefab::setTransform(GameObject* gameObject)
 {

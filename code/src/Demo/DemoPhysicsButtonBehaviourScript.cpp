@@ -141,8 +141,8 @@ void DemoPhysicsButtonBehaviourScript::spawnCircle() {
 
     CircleCollider* circleCollider = new CircleCollider();
     circleCollider->setRadius(sprite->getWidth() / 2);
-    circleCollider->setTrigger(false);
-    circle->addComponent(circleCollider);
+	circleCollider->setIsTrigger(false);
+	circle->addComponent(circleCollider);
 
     scene->addGameObject(circle);
 }

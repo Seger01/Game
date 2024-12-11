@@ -1,10 +1,13 @@
 #pragma once
 #include "GameObject.h"
+#include "Network/INetworkPrefab.h"
 
-class EnemyPrefab {
+class EnemyPrefab : public INetworkPrefab
+{
 public: 
     EnemyPrefab();
-    GameObject* createEnemyPrefab();
+    GameObject* create() override;
+    int getPrefabID() const override;
 
 private:
     void setTransform(GameObject *gameObject);
