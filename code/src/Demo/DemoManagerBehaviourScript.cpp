@@ -229,9 +229,10 @@ void DemoManagerBehaviourScript::createSecondScene()
 
     GameObject* button3 = DemoButtonPrefab().createButtonPrefab();
     button3->setTransform(Transform(Vector2(288, 608)));
-    button3->setTag("Button3");
+    button3->setTag("ButtonFilter");
+	button3->addComponent<DemoPhysicsButtonBehaviourScript>();
 
-    Text* text3 = new Text("Button3", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.3, 0.3));
+    Text* text3 = new Text("Filters", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.3, 0.3));
     text3->setLayer(5);
     text3->setTag("Button3Text");
     text3->setParent(button3);
@@ -253,6 +254,20 @@ void DemoManagerBehaviourScript::createSecondScene()
 
 	scene->addGameObject(textPar);
 	scene->addGameObject(buttonPar);
+
+	//Add button to toggle gravity
+	GameObject* buttonGravity = DemoButtonPrefab().createButtonPrefab();
+	buttonGravity->setTag("ButtonGravity");
+	buttonGravity->setTransform(Transform(Vector2(288, 368)));
+	buttonGravity->addComponent<DemoPhysicsButtonBehaviourScript>();
+
+	Text* textGravity = new Text("Toggle Gravity", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.3, 0.3));
+	textGravity->setLayer(5);
+	textGravity->setTag("ButtonGravityText");
+	textGravity->setParent(buttonGravity);
+
+	scene->addGameObject(textGravity);
+	scene->addGameObject(buttonGravity);
 
 	// Add enemies
 	GameObject* enemyMoving = EnemyPrefab().createEnemyPrefab();
@@ -298,19 +313,11 @@ void DemoManagerBehaviourScript::createSecondScene()
 		enemyStatic->getComponents<RigidBody>().at(0)->setCanRotate(true);
 	}
 	else
-	{
-		std::cout << "Enemystatic does not have a RigidBody component" << std::endl;
-	}
 
 	if (enemyWithCollider->hasComponent<RigidBody>())
 	{
 		enemyWithCollider->getComponents<RigidBody>().at(0)->setCanRotate(true);
 	}
-	else
-	{
-		std::cout << "Enemystatic does not have a RigidBody component" << std::endl;
-	}
-
 	scene->addGameObject(enemyMoving);
 	scene->addGameObject(enemyStatic);
 	scene->addGameObject(enemyWithCollider);

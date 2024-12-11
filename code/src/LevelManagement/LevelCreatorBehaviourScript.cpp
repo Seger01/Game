@@ -381,6 +381,8 @@ void LevelCreatorBehaviourScript::createLevel(Scene* scene, const TileMapData& t
 							boxCollider->setTransform(transform);
 							boxCollider->setWidth(collider.mWidth + 0.1f);
 							boxCollider->setHeight(collider.mHeight + 0.1f);
+							boxCollider->setCollideCategory(1);
+							boxCollider->setCollideWithCategory({1, 2, 3});
 							if (isDoorsLayer)
 							{
 								boxCollider->setActive(false);
