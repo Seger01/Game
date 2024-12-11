@@ -23,6 +23,7 @@
 #include "EnemyBehaviourScript.h"
 #include "DemoPhysicsButtonBehaviourScript.h"
 #include "DemoParticlesButtonBehaviourScript.h"
+#include "DemoBulletSpawner.h"
 
 void DemoManagerBehaviourScript::createFirstScene()
 {
@@ -91,8 +92,8 @@ void DemoManagerBehaviourScript::createFirstScene()
 	scene->addGameObject(button);
 
 	GameObject* endOfLevelTrigger = new GameObject;
-	endOfLevelTrigger->setTransform(Transform(Vector2(260, 64)));
-	endOfLevelTrigger->setTag("EndOfLevelTrigger");
+	endOfLevelTrigger->setTransform(Transform(Vector2(276, 64)));
+	endOfLevelTrigger->setTag("EndOfLevelTriggerDemo");
 	endOfLevelTrigger->addComponent<DemoEndOfLevelTriggerBehaviourScript>();
 
 	endOfLevelTrigger->addComponent<RigidBody>();
@@ -103,6 +104,21 @@ void DemoManagerBehaviourScript::createFirstScene()
 	endOfLevelTrigger->addComponent(endOfLevelTriggerCollider);
 
 	scene->addGameObject(endOfLevelTrigger);
+
+
+	GameObject* endOfLevelTriggerStressTest = new GameObject;
+	endOfLevelTriggerStressTest->setTransform(Transform(Vector2(208, 176)));
+	endOfLevelTriggerStressTest->setTag("EndOfLevelTriggerStressTest");
+	endOfLevelTriggerStressTest->addComponent<DemoEndOfLevelTriggerBehaviourScript>();
+
+	endOfLevelTriggerStressTest->addComponent<RigidBody>();
+	BoxCollider* endOfLevelTriggerColliderStressTest = new BoxCollider();
+	endOfLevelTriggerColliderStressTest->setWidth(16);
+	endOfLevelTriggerColliderStressTest->setHeight(16);
+	endOfLevelTriggerColliderStressTest->setTrigger(true);
+	endOfLevelTriggerStressTest->addComponent(endOfLevelTriggerColliderStressTest);
+
+	scene->addGameObject(endOfLevelTriggerStressTest);
 
 	sceneManager.requestSceneChange("DemoScene1");
 
@@ -336,16 +352,67 @@ void DemoManagerBehaviourScript::createSecondScene()
 	//saveGame();
 }
 
-void DemoManagerBehaviourScript::nextScene()
-{
-	mCurrentScene++;
-	switch (mCurrentScene)
+void DemoManagerBehaviourScript::createStressTest() {
+	EngineBravo& engine = EngineBravo::getInstance();
+	SceneManager& sceneManager = engine.getSceneManager();
+
+	Scene* scene = sceneManager.createScene("DemoStressTest");
+	if (scene == nullptr)
 	{
-	case 1:
+		exit(1);
+	}
+
+	Camera* camera = new Camera;
+	camera->setTag("MainCamera");
+	camera->setActive(true);
+
+	camera->setBackgroundColor(Color(0, 0, 0));
+
+	camera->setRenderOrder(0);
+
+	camera->setTransform(Transform(Vector2(80, 96)));
+	camera->setWidth(16 * 30);
+	camera->setHeight(9 * 30);
+
+	scene->addGameObject(camera);
+
+	GameObject* playerObject =
+		EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
+	if (playerObject == nullptr)
+	{
+		std::cout << "Player not found" << std::endl;
+		return;
+	}
+	playerObject->setTransform(Transform(Vector2(40, 40)));
+
+
+	FSConverter fsconverter;
+	std::string path = fsconverter.getResourcePath("LevelDefs/demoStressTest.json");
+	TileMapParser tileMapParser(path);
+	tileMapParser.parse();
+	mTileMapData = tileMapParser.getTileMapData();
+
+	LevelCreatorBehaviourScript().createLevel(scene, mTileMapData);
+
+	GameObject* spawner = new GameObject();
+    spawner->addComponent<DemoBulletSpawner>();
+	Transform transform;
+	transform.position = Vector2(100, 100);
+	spawner->setTransform(transform);
+    scene->addGameObject(spawner);
+
+	sceneManager.requestSceneChange("DemoStressTest");
+}
+
+void DemoManagerBehaviourScript::nextScene(const std::string& aSceneName)
+{
+	if (aSceneName == "2")
+	{
 		createSecondScene();
-		break;
-	default:
-		break;
+	}
+	else if (aSceneName == "3")
+	{
+		createStressTest();
 	}
 }
 

@@ -17,7 +17,12 @@ void DemoEndOfLevelTriggerBehaviourScript::onCollide(GameObject* aGameObject) {
         for (GameObject* object :
              EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("DemoManager")) {
             if (object->hasComponent<DemoManagerBehaviourScript>()) {
-                object->getComponents<DemoManagerBehaviourScript>()[0]->nextScene();
+                if (mGameObject->getTag() == "EndOfLevelTriggerDemo") {
+                    object->getComponents<DemoManagerBehaviourScript>()[0]->nextScene("2");
+                }
+                else {
+                    object->getComponents<DemoManagerBehaviourScript>()[0]->nextScene("3");
+                }
             }
         }
     }
