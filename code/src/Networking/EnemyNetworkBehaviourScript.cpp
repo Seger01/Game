@@ -22,15 +22,8 @@ void EnemyNetworkBehaviourScript::onCollide(GameObject* aGameObject)
 
 	if (aGameObject->getTag() == "Bullet")
 	{
-		BulletBehaviourScript* bullet = aGameObject->getComponents<BulletBehaviourScript>().at(0);
-		if (bullet != nullptr)
-		{
-			// takeDamage(bullet->getDamage());
-		}
-		else
-		{
-			std::runtime_error("BulletBehaviourScript not found in EnemyNetworkBehaviourScript::onCollide");
-		}
+		BulletBehaviourScript& bullet = aGameObject->getComponents<BulletBehaviourScript>().at(0);
+		// takeDamage(bullet->getDamage());
 	}
 }
 
@@ -42,7 +35,7 @@ void EnemyNetworkBehaviourScript::deactivateAllAnimations()
 {
 	for (auto animation : mGameObject->getComponents<Animation>())
 	{
-		animation->setActive(false);
+		animation.get().setActive(false);
 	}
 }
 
@@ -52,14 +45,14 @@ void EnemyNetworkBehaviourScript::setFlipX(bool aState)
 	{
 		for (auto animation : mGameObject->getComponents<Animation>())
 		{
-			animation->setFlipX(aState);
+			animation.get().setFlipX(aState);
 		}
 	}
 	else if (mGameObject->hasComponent<Sprite>())
 	{
 		for (auto sprite : mGameObject->getComponents<Sprite>())
 		{
-			sprite->setFlipX(aState);
+			sprite.get().setFlipX(aState);
 		}
 	}
 }
@@ -70,14 +63,14 @@ void EnemyNetworkBehaviourScript::setFlipY(bool aState)
 	{
 		for (auto animation : mGameObject->getComponents<Animation>())
 		{
-			animation->setFlipY(aState);
+			animation.get().setFlipY(aState);
 		}
 	}
 	else if (mGameObject->hasComponent<Sprite>())
 	{
 		for (auto sprite : mGameObject->getComponents<Sprite>())
 		{
-			sprite->setFlipY(aState);
+			sprite.get().setFlipY(aState);
 		}
 	}
 }

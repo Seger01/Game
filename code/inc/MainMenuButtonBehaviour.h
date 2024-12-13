@@ -21,9 +21,9 @@ public:
 
 	void onButtonHover() override
 	{
-		for (auto& sprite : mGameObject->getComponents<Sprite>())
+		for (Sprite& sprite : mGameObject->getComponents<Sprite>())
 		{
-			sprite->setColorFilter({255, 255, 255, 255});
+			sprite.setColorFilter({255, 255, 255, 255});
 		}
 
 		for (GameObject* child : mGameObject->getChildren())
@@ -42,9 +42,9 @@ public:
 
 	void onButtonUnhover() override
 	{
-		for (auto& sprite : mGameObject->getComponents<Sprite>())
+		for (Sprite& sprite : mGameObject->getComponents<Sprite>())
 		{
-			sprite->setColorFilter({255, 255, 255, 100});
+			sprite.setColorFilter({255, 255, 255, 100});
 		}
 
 		for (GameObject* child : mGameObject->getChildren())

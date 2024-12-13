@@ -81,15 +81,15 @@ void DemoParticlesButtonBehaviourScript::updateButtonState()
 {
 	if (!mButtonPressed)
 	{
-		for (Component* component : mGameObject->getComponents<Sprite>())
+		for (Component& component : mGameObject->getComponents<Sprite>())
 		{
-			if (component->getTag() == "ButtonDownSprite")
+			if (component.getTag() == "ButtonDownSprite")
 			{
-				component->setActive(true);
+				component.setActive(true);
 			}
-			else if (component->getTag() == "ButtonUpSprite")
+			else if (component.getTag() == "ButtonUpSprite")
 			{
-				component->setActive(false);
+				component.setActive(false);
 			}
 		}
 		launchParticles();
@@ -97,15 +97,15 @@ void DemoParticlesButtonBehaviourScript::updateButtonState()
 	}
 	else if (mButtonPressed)
 	{
-		for (Component* component : mGameObject->getComponents<Sprite>())
+		for (Component& component : mGameObject->getComponents<Sprite>())
 		{
-			if (component->getTag() == "ButtonDownSprite")
+			if (component.getTag() == "ButtonDownSprite")
 			{
-				component->setActive(false);
+				component.setActive(false);
 			}
-			else if (component->getTag() == "ButtonUpSprite")
+			else if (component.getTag() == "ButtonUpSprite")
 			{
-				component->setActive(true);
+				component.setActive(true);
 			}
 		}
 		removeParticles();
@@ -119,9 +119,9 @@ void DemoParticlesButtonBehaviourScript::launchParticles()
 
 	if (mGameObject->hasComponent<ParticleEmitter>())
 	{
-		ParticleEmitter* emitter = mGameObject->getComponents<ParticleEmitter>()[0];
-		emitter->setActive(true);
-		emitter->burst(300);
+		ParticleEmitter& emitter = mGameObject->getComponents<ParticleEmitter>()[0];
+		emitter.setActive(true);
+		emitter.burst(300);
 	}
 }
 
@@ -129,7 +129,7 @@ void DemoParticlesButtonBehaviourScript::removeParticles()
 {
 	if (mGameObject->hasComponent<ParticleEmitter>())
 	{
-		ParticleEmitter* emitter = mGameObject->getComponents<ParticleEmitter>()[0];
-		emitter->setActive(false);
+		ParticleEmitter& emitter = mGameObject->getComponents<ParticleEmitter>()[0];
+		emitter.setActive(false);
 	}
 }

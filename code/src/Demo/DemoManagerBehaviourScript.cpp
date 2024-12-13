@@ -1,10 +1,14 @@
 #include "DemoManagerBehaviourScript.h"
+#include "DemoBulletSpawner.h"
 #include "DemoButtonBehaviourScript.h"
 #include "DemoButtonPrefab.h"
 #include "DemoEndOfLevelTriggerBehaviourScript.h"
 #include "DemoLevel2Behaviour.h"
 #include "DemoMusicButtonBehaviourScript.h"
+#include "DemoParticlesButtonBehaviourScript.h"
+#include "DemoPhysicsButtonBehaviourScript.h"
 #include "DemoSFXButtonBehaviourScript.h"
+#include "EnemyBehaviourScript.h"
 #include "EnemyPrefab.h"
 #include "Input.h"
 #include "LevelCreatorBehaviourScript.h"
@@ -20,10 +24,6 @@
 #include <SceneManager.h>
 #include <Text.h>
 #include <iostream>
-#include "EnemyBehaviourScript.h"
-#include "DemoPhysicsButtonBehaviourScript.h"
-#include "DemoParticlesButtonBehaviourScript.h"
-#include "DemoBulletSpawner.h"
 
 void DemoManagerBehaviourScript::createFirstScene()
 {
@@ -105,7 +105,6 @@ void DemoManagerBehaviourScript::createFirstScene()
 
 	scene->addGameObject(endOfLevelTrigger);
 
-
 	GameObject* endOfLevelTriggerStressTest = new GameObject;
 	endOfLevelTriggerStressTest->setTransform(Transform(Vector2(208, 176)));
 	endOfLevelTriggerStressTest->setTag("EndOfLevelTriggerStressTest");
@@ -139,14 +138,9 @@ void DemoManagerBehaviourScript::createSecondScene()
 	// set starting pos for player in this scene
 	// GameObject* playerObject = sceneManager.getCurrentScene()->getGameObjectsWithTag("Player").at(0);
 	// playerObject->setTransform(Transform(Vector2(40, 40)));
-	GameObject* playerObject =
+	GameObject& playerObject =
 		EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
-	if (playerObject == nullptr)
-	{
-		std::cout << "Player not found" << std::endl;
-		return;
-	}
-	playerObject->setTransform(Transform(Vector2(40, 40)));
+	playerObject.setTransform(Transform(Vector2(40, 40)));
 	//  playerObject->setTransform(Transform(Vector2(40, 40)));
 
 	Camera* camera = new Camera;
@@ -216,46 +210,45 @@ void DemoManagerBehaviourScript::createSecondScene()
 	scene->addGameObject(textSFX);
 	scene->addGameObject(buttonSFX);
 
-	//Add buttons for physics objects
+	// Add buttons for physics objects
 	GameObject* button1 = DemoButtonPrefab().createButtonPrefab();
-    button1->setTransform(Transform(Vector2(288, 432)));
-    button1->setTag("ButtonBox");
+	button1->setTransform(Transform(Vector2(288, 432)));
+	button1->setTag("ButtonBox");
 	button1->addComponent<DemoPhysicsButtonBehaviourScript>();
 
-    Text* text1 = new Text("Box object", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.3, 0.3));
-    text1->setLayer(5);
-    text1->setTag("ButtonBoxText");
-    text1->setParent(button1);
+	Text* text1 = new Text("Box object", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.3, 0.3));
+	text1->setLayer(5);
+	text1->setTag("ButtonBoxText");
+	text1->setParent(button1);
 
-    scene->addGameObject(text1);
-    scene->addGameObject(button1);
+	scene->addGameObject(text1);
+	scene->addGameObject(button1);
 
-    GameObject* button2 = DemoButtonPrefab().createButtonPrefab();
-    button2->setTransform(Transform(Vector2(288, 512)));
-    button2->setTag("ButtonCircle");
+	GameObject* button2 = DemoButtonPrefab().createButtonPrefab();
+	button2->setTransform(Transform(Vector2(288, 512)));
+	button2->setTag("ButtonCircle");
 	button2->addComponent<DemoPhysicsButtonBehaviourScript>();
 
-    Text* text2 = new Text("Circle object", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.3, 0.3));
-    text2->setLayer(5);
-    text2->setTag("Button2Text");
-    text2->setParent(button2);
+	Text* text2 = new Text("Circle object", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.3, 0.3));
+	text2->setLayer(5);
+	text2->setTag("Button2Text");
+	text2->setParent(button2);
 
-    scene->addGameObject(text2);
-    scene->addGameObject(button2);
+	scene->addGameObject(text2);
+	scene->addGameObject(button2);
 
-    GameObject* button3 = DemoButtonPrefab().createButtonPrefab();
-    button3->setTransform(Transform(Vector2(288, 608)));
-    button3->setTag("ButtonFilter");
+	GameObject* button3 = DemoButtonPrefab().createButtonPrefab();
+	button3->setTransform(Transform(Vector2(288, 608)));
+	button3->setTag("ButtonFilter");
 	button3->addComponent<DemoPhysicsButtonBehaviourScript>();
 
-    Text* text3 = new Text("Filters", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.3, 0.3));
-    text3->setLayer(5);
-    text3->setTag("Button3Text");
-    text3->setParent(button3);
+	Text* text3 = new Text("Filters", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.3, 0.3));
+	text3->setLayer(5);
+	text3->setTag("Button3Text");
+	text3->setParent(button3);
 
-    scene->addGameObject(text3);
-    scene->addGameObject(button3);
-
+	scene->addGameObject(text3);
+	scene->addGameObject(button3);
 
 	// Add button for particle effects
 	GameObject* buttonPar = DemoButtonPrefab().createButtonPrefab();
@@ -271,7 +264,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 	scene->addGameObject(textPar);
 	scene->addGameObject(buttonPar);
 
-	//Add button to toggle gravity
+	// Add button to toggle gravity
 	GameObject* buttonGravity = DemoButtonPrefab().createButtonPrefab();
 	buttonGravity->setTag("ButtonGravity");
 	buttonGravity->setTransform(Transform(Vector2(288, 368)));
@@ -294,16 +287,16 @@ void DemoManagerBehaviourScript::createSecondScene()
 	enemyMoving->setTransform(Transform(Vector2(100, 112)));
 	enemyMoving->setTag("EnemyMoving");
 	if (enemyMoving->hasComponent<RigidBody>())
-		enemyMoving->removeComponent(enemyMoving->getComponents<RigidBody>()[0]);
+		enemyMoving->removeComponent(&enemyMoving->getComponents<RigidBody>()[0].get());
 	if (enemyMoving->hasComponent<BoxCollider>())
-		enemyMoving->removeComponent(enemyMoving->getComponents<BoxCollider>()[0]);
+		enemyMoving->removeComponent(&enemyMoving->getComponents<BoxCollider>()[0].get());
 
 	enemyStatic->setTransform(Transform(Vector2(40, 84)));
 	enemyStatic->setTag("EnemyStatic");
 	if (enemyStatic->hasComponent<RigidBody>())
-		enemyStatic->removeComponent(enemyStatic->getComponents<RigidBody>()[0]);
+		enemyStatic->removeComponent(&enemyStatic->getComponents<RigidBody>()[0].get());
 	if (enemyStatic->hasComponent<BoxCollider>())
-		enemyStatic->removeComponent(enemyStatic->getComponents<BoxCollider>()[0]);
+		enemyStatic->removeComponent(&enemyStatic->getComponents<BoxCollider>()[0].get());
 
 	enemyWithCollider->setTransform(Transform(Vector2(320, 112)));
 	enemyWithCollider->setTag("EnemyWithCollider");
@@ -314,31 +307,30 @@ void DemoManagerBehaviourScript::createSecondScene()
 
 	if (enemyWithPathfinding->hasComponent<EnemyBehaviourScript>())
 	{
-		enemyWithPathfinding->getComponents<EnemyBehaviourScript>()[0]->setPathfinding(std::move(pathfinding));
-		enemyWithPathfinding->getComponents<EnemyBehaviourScript>()[0]->setMapWidth(mapWidth);
-		enemyWithPathfinding->getComponents<EnemyBehaviourScript>()[0]->setMapHeight(mapHeight);
+		enemyWithPathfinding->getComponents<EnemyBehaviourScript>()[0].get().setPathfinding(std::move(pathfinding));
+		enemyWithPathfinding->getComponents<EnemyBehaviourScript>()[0].get().setMapWidth(mapWidth);
+		enemyWithPathfinding->getComponents<EnemyBehaviourScript>()[0].get().setMapHeight(mapHeight);
 	}
-	
+
 	if (enemyWithPathfinding->hasComponent<RigidBody>())
 	{
-		enemyWithPathfinding->getComponents<RigidBody>()[0]->setLinearDamping(0.5f);
+		enemyWithPathfinding->getComponents<RigidBody>()[0].get().setLinearDamping(0.5f);
 	}
 
 	if (enemyStatic->hasComponent<RigidBody>())
 	{
-		enemyStatic->getComponents<RigidBody>().at(0)->setCanRotate(true);
+		enemyStatic->getComponents<RigidBody>().at(0).get().setCanRotate(true);
 	}
 	else
 
-	if (enemyWithCollider->hasComponent<RigidBody>())
+		if (enemyWithCollider->hasComponent<RigidBody>())
 	{
-		enemyWithCollider->getComponents<RigidBody>().at(0)->setCanRotate(true);
+		enemyWithCollider->getComponents<RigidBody>().at(0).get().setCanRotate(true);
 	}
 	scene->addGameObject(enemyMoving);
 	scene->addGameObject(enemyStatic);
 	scene->addGameObject(enemyWithCollider);
 	scene->addGameObject(enemyWithPathfinding);
-
 
 	GameObject* level2 = new GameObject;
 	level2->addComponent<DemoLevel2Behaviour>();
@@ -349,10 +341,11 @@ void DemoManagerBehaviourScript::createSecondScene()
 
 	mPlayerPositionSet = true;
 
-	//saveGame();
+	// saveGame();
 }
 
-void DemoManagerBehaviourScript::createStressTest() {
+void DemoManagerBehaviourScript::createStressTest()
+{
 	EngineBravo& engine = EngineBravo::getInstance();
 	SceneManager& sceneManager = engine.getSceneManager();
 
@@ -376,15 +369,9 @@ void DemoManagerBehaviourScript::createStressTest() {
 
 	scene->addGameObject(camera);
 
-	GameObject* playerObject =
+	GameObject& playerObject =
 		EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
-	if (playerObject == nullptr)
-	{
-		std::cout << "Player not found" << std::endl;
-		return;
-	}
-	playerObject->setTransform(Transform(Vector2(40, 40)));
-
+	playerObject.setTransform(Transform(Vector2(40, 40)));
 
 	FSConverter fsconverter;
 	std::string path = fsconverter.getResourcePath("LevelDefs/demoStressTest.json");
@@ -395,11 +382,11 @@ void DemoManagerBehaviourScript::createStressTest() {
 	LevelCreatorBehaviourScript().createLevel(scene, mTileMapData);
 
 	GameObject* spawner = new GameObject();
-    spawner->addComponent<DemoBulletSpawner>();
+	spawner->addComponent<DemoBulletSpawner>();
 	Transform transform;
 	transform.position = Vector2(100, 100);
 	spawner->setTransform(transform);
-    scene->addGameObject(spawner);
+	scene->addGameObject(spawner);
 
 	sceneManager.requestSceneChange("DemoStressTest");
 }
@@ -431,10 +418,10 @@ void DemoManagerBehaviourScript::onUpdate()
 
 	if (input.GetKeyDown(Key::Key_Space))
 	{
-		GameObject* playerObject =
+		GameObject& playerObject =
 			EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("Player").at(0);
 		std::cout << "Setting player transform" << std::endl;
-		playerObject->setTransform(Transform(Vector2(40, 40)));
+		playerObject.setTransform(Transform(Vector2(40, 40)));
 	}
 
 	handleSaveGame();
@@ -447,9 +434,10 @@ void DemoManagerBehaviourScript::onUpdate()
 
 		if (currentScene != nullptr)
 		{
-			std::vector<GameObject*> persistentObjects = currentScene->getPersistentGameObjects();
+			std::vector<std::reference_wrapper<GameObject>> persistentObjects =
+				currentScene->getPersistentGameObjects();
 			auto playerIt = std::find_if(persistentObjects.begin(), persistentObjects.end(),
-										 [](GameObject* obj) { return obj->getTag() == "Player"; });
+										 [](GameObject& obj) { return obj.getTag() == "Player"; });
 
 			if (playerIt != persistentObjects.end())
 			{
@@ -485,13 +473,13 @@ void DemoManagerBehaviourScript::saveGame()
 	Transform playerPos;
 	if (currentScene != nullptr)
 	{
-		std::vector<GameObject*> persistentObjects = currentScene->getPersistentGameObjects();
+		std::vector<std::reference_wrapper<GameObject>> persistentObjects = currentScene->getPersistentGameObjects();
 		auto playerIt = std::find_if(persistentObjects.begin(), persistentObjects.end(),
-									 [](GameObject* obj) { return obj->getTag() == "Player"; });
+									 [](GameObject& obj) { return obj.getTag() == "Player"; });
 
 		if (playerIt != persistentObjects.end())
 		{
-			playerPos = (*playerIt)->getTransform().position;
+			playerPos = (*playerIt).get().getTransform().position;
 		}
 	}
 
@@ -568,20 +556,20 @@ void DemoManagerBehaviourScript::loadGame()
 	Transform playerPos;
 	if (currentScene != nullptr)
 	{
-		std::vector<GameObject*> persistentObjects = currentScene->getPersistentGameObjects();
+		std::vector<std::reference_wrapper<GameObject>> persistentObjects = currentScene->getPersistentGameObjects();
 		auto playerIt = std::find_if(persistentObjects.begin(), persistentObjects.end(),
-									 [](GameObject* obj) { return obj->getTag() == "Player"; });
+									 [](GameObject& obj) { return obj.getTag() == "Player"; });
 
 		if (playerIt != persistentObjects.end())
 		{
-			Transform playerPos = (*playerIt)->getTransform();
+			Transform playerPos = (*playerIt).get().getTransform();
 			playerPos.position.x = playerX;
 			playerPos.position.y = playerY;
 			playerPos.rotation = playerRotation;
 			playerPos.scale.x = playerScaleX;
 			playerPos.scale.y = playerScaleY;
 
-			(*playerIt)->setTransform(playerPos);
+			(playerIt)->get().setTransform(playerPos);
 		}
 	}
 }
