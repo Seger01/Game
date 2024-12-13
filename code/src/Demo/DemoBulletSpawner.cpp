@@ -9,7 +9,7 @@
 #include <Time.h>
 #include <iostream>
 
-DemoBulletSpawner::DemoBulletSpawner() : mMaxBullets(3000), mSpawnInterval(0.016f), mTimeSinceLastSpawn(0.0f) {}
+DemoBulletSpawner::DemoBulletSpawner() : mMaxBullets(1000), mSpawnInterval(0.016f), mTimeSinceLastSpawn(0.0f) {}
 
 void DemoBulletSpawner::onStart()
 {

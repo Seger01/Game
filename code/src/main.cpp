@@ -1,5 +1,9 @@
 #include <iostream>
 
+#include "IBehaviourScript.h"
+#include "Input.h"
+#include "ParticleEmitter.h"
+#include "RigidBody.h"
 #include "SplashScreenBehaviourScript.h"
 #include <EngineBravo.h>
 #include <GameObject.h>

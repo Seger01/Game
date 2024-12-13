@@ -37,7 +37,7 @@ void DemoParticlesButtonBehaviourScript::onStart()
 
 	ParticleEmitter* emitter =
 		new ParticleEmitter(emitterMode, speed, acceleration, minLifeTimeMs, maxLifeTimeMs, startSize, endSize,
-							rotation, rotationSpeed, rotationAcceleration, colorGradient);
+							colorGradient, rotation, rotationSpeed, rotationAcceleration);
 
 	emitter->setParticlesPerSecond(200);
 	emitter->setAngle(0, 360);

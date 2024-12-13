@@ -99,7 +99,7 @@ void BulletPrefabFactory::addParticleEmitter(GameObject* gameObject)
 
 	ParticleEmitter* emitter =
 		new ParticleEmitter(emitterMode, speed, acceleration, minLifeTimeMs, maxLifeTimeMs, startSize, endSize,
-							rotation, rotationSpeed, rotationAcceleration, colorGradient);
+							colorGradient, rotation, rotationSpeed, rotationAcceleration);
 	emitter->setParticlesPerSecond(50);
 	emitter->setAngle(0, 360);
 	emitter->setLayer(4);
