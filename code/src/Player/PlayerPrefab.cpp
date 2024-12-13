@@ -199,8 +199,8 @@ void PlayerPrefabFactory::addAnimations(GameObject* gameObject)
 
 	for (auto animation : gameObject->getComponents<Animation>())
 	{
-		animation->setActive(false);
-		animation->setLayer(2);
+		animation.get().setActive(false);
+		animation.get().setLayer(2);
 	}
 
 	playerIdleFrontAnimation->setActive(true);

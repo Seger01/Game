@@ -16,18 +16,18 @@ void DemoEndOfLevelTriggerBehaviourScript::onCollide(GameObject* aGameObject)
 	{
 		std::cout << "End of level trigger collided" << std::endl;
 
-		for (GameObject* object :
+		for (GameObject& object :
 			 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("DemoManager"))
 		{
-			if (object->hasComponent<DemoManagerBehaviourScript>())
+			if (object.hasComponent<DemoManagerBehaviourScript>())
 			{
 				if (mGameObject->getTag() == "EndOfLevelTriggerDemo")
 				{
-					object->getComponents<DemoManagerBehaviourScript>()[0]->nextScene("2");
+					object.getComponents<DemoManagerBehaviourScript>()[0].get().nextScene("2");
 				}
 				else
 				{
-					object->getComponents<DemoManagerBehaviourScript>()[0]->nextScene("3");
+					object.getComponents<DemoManagerBehaviourScript>()[0].get().nextScene("3");
 				}
 			}
 		}

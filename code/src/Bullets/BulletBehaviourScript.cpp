@@ -18,7 +18,7 @@ void BulletBehaviourScript::onCollide(GameObject* aGameObject)
 	if (aGameObject->getTag() != "Player")
 	{
 		mIsMarkedForRemoval = true;
-		mGameObject->getComponents<RigidBody>().at(0)->setActive(false);
+		mGameObject->getComponents<RigidBody>().at(0).get().setActive(false);
 		sceneManager.getCurrentScene().requestGameObjectRemoval(mGameObject);
 	}
 }

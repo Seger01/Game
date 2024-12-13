@@ -37,7 +37,8 @@ void RoomBehaviourScript::onUpdate()
 		// If so, openDoors()
 		EngineBravo& engine = EngineBravo::getInstance();
 		SceneManager& sceneManager = engine.getSceneManager();
-		std::vector<GameObject*> enemyGameObjects = sceneManager.getCurrentScene().getGameObjectsWithTag("Enemy");
+		std::vector<std::reference_wrapper<GameObject>> enemyGameObjects =
+			sceneManager.getCurrentScene().getGameObjectsWithTag("Enemy");
 
 		if (enemyGameObjects.size() == 0)
 		{
@@ -72,18 +73,18 @@ void RoomBehaviourScript::spawnEnemies()
 			enemy->addComponent(enemySprite);
 
 			enemy->addComponent<BoxCollider>();
-			enemy->getComponents<BoxCollider>().at(0)->setWidth(enemySprite->getWidth());
-			enemy->getComponents<BoxCollider>().at(0)->setHeight(enemySprite->getHeight());
+			enemy->getComponents<BoxCollider>().at(0).get().setWidth(enemySprite->getWidth());
+			enemy->getComponents<BoxCollider>().at(0).get().setHeight(enemySprite->getHeight());
 
 			enemy->addComponent<RigidBody>();
-			RigidBody* rigidBody = enemy->getComponents<RigidBody>().at(0);
-			rigidBody->setHasGravity(true);
-			rigidBody->setDensity(1.0f);
-			rigidBody->setFriction(0.3f);
-			rigidBody->setRestitution(0.2f);
-			rigidBody->setMass(1.0f);
-			rigidBody->setGravityScale(10.0f);
-			rigidBody->setCanRotate(false);
+			RigidBody& rigidBody = enemy->getComponents<RigidBody>().at(0);
+			rigidBody.setHasGravity(true);
+			rigidBody.setDensity(1.0f);
+			rigidBody.setFriction(0.3f);
+			rigidBody.setRestitution(0.2f);
+			rigidBody.setMass(1.0f);
+			rigidBody.setGravityScale(10.0f);
+			rigidBody.setCanRotate(false);
 			enemy->setTransform(transform);
 			enemy->addComponent<EnemyBehaviourScript>(100);
 			enemy->setTag("Enemy");
@@ -117,37 +118,35 @@ void RoomBehaviourScript::updateDoors(const SpriteDef& spriteDef)
 {
 	EngineBravo& engine = EngineBravo::getInstance();
 	SceneManager& sceneManager = engine.getSceneManager();
-	std::vector<GameObject*> doorGameObjects = sceneManager.getCurrentScene().getGameObjectsWithTag("Door");
+	std::vector<std::reference_wrapper<GameObject>> doorGameObjects =
+		sceneManager.getCurrentScene().getGameObjectsWithTag("Door");
 	int spriteWidth = 16;
 	int spriteHeight = 16;
 
 	for (size_t i = 0; i < doorGameObjects.size(); ++i)
 	{
-		GameObject* doorPart = doorGameObjects[i];
-		std::vector<Sprite*> sprites = doorPart->getComponents<Sprite>();
-		for (Sprite* sprite : sprites)
+		GameObject& doorPart = doorGameObjects[i];
+		std::vector<std::reference_wrapper<Sprite>> sprites = doorPart.getComponents<Sprite>();
+		for (Sprite& sprite : sprites)
 		{
-			if (sprite)
-			{
-				int index = i % 12;	 // Reset index after every 12 door parts
-				int col = index % 4; // 4 tiles per row
-				int row = index / 4; // 4 tiles per column
+			int index = i % 12;	 // Reset index after every 12 door parts
+			int col = index % 4; // 4 tiles per row
+			int row = index / 4; // 4 tiles per column
 
-				Rect sourceRect = {spriteDef.sourceRect.x + col * spriteWidth,
-								   spriteDef.sourceRect.y + row * spriteHeight, spriteWidth, spriteHeight};
+			Rect sourceRect = {spriteDef.sourceRect.x + col * spriteWidth, spriteDef.sourceRect.y + row * spriteHeight,
+							   spriteWidth, spriteHeight};
 
-				sprite->setSource(sourceRect);
-			}
+			sprite.setSource(sourceRect);
 		}
-		std::vector<RigidBody*> bodies = doorPart->getComponents<RigidBody>();
+		std::vector<std::reference_wrapper<RigidBody>> bodies = doorPart.getComponents<RigidBody>();
 		if (!bodies.empty())
 		{
-			bodies.at(0)->setActive(mDoorsOpen);
+			bodies.at(0).get().setActive(mDoorsOpen);
 		}
-		std::vector<BoxCollider*> colliders = doorPart->getComponents<BoxCollider>();
+		std::vector<std::reference_wrapper<BoxCollider>> colliders = doorPart.getComponents<BoxCollider>();
 		if (!colliders.empty())
 		{
-			colliders.at(0)->setActive(mDoorsOpen);
+			colliders.at(0).get().setActive(mDoorsOpen);
 		}
 	}
 }
@@ -158,11 +157,8 @@ void RoomBehaviourScript::onCollide(GameObject* aGameObject)
 	{
 		spawnEnemies();
 		closeDoors();
-		RigidBody* rigidBody = mGameObject->getComponents<RigidBody>().at(0);
-		if (rigidBody != nullptr)
-		{
-			rigidBody->setActive(false);
-		}
+		RigidBody& rigidBody = mGameObject->getComponents<RigidBody>().at(0);
+		rigidBody.setActive(false);
 	}
 	else
 	{

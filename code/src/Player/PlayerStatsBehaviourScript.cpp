@@ -64,17 +64,9 @@ void PlayerStatsBehaviourScript::onStart()
 	mHealthBarWidth = playerStatHealthBarSprite->getWidth();
 	mFullHealthBarForegroundSourceRect = playerStatHealthBarSprite->getSource();
 
-	GameObject* playerObject = scene.getGameObjectsWithTag("Player")[0];
-	if (playerObject == nullptr)
-	{
-		throw std::runtime_error("PlayerStatsBehaviourScript: Player object not found");
-	}
+	GameObject& playerObject = scene.getGameObjectsWithTag("Player")[0];
 
-	mPlayerBehaviourScript = playerObject->getComponents<PlayerBehaviourScript>()[0];
-	if (mPlayerBehaviourScript == nullptr)
-	{
-		throw std::runtime_error("PlayerStatsBehaviourScript: PlayerBehaviourScript not found on Player object");
-	}
+	mPlayerBehaviourScript = &playerObject.getComponents<PlayerBehaviourScript>()[0].get();
 }
 
 void PlayerStatsBehaviourScript::onUpdate()
@@ -88,7 +80,7 @@ void PlayerStatsBehaviourScript::onUpdate()
 		return;
 	}
 
-	GameObject* playerObject = scene.getGameObjectsWithTag("Player")[0];
+	GameObject* playerObject = &scene.getGameObjectsWithTag("Player")[0].get();
 	if (playerObject == nullptr)
 	{
 		return;
@@ -111,7 +103,7 @@ void PlayerStatsBehaviourScript::onUpdate()
 
 		if (mGameObject->getComponentsWithTag<Sprite>("playerHealthBar").size() > 0)
 		{
-			Sprite* sprite = mGameObject->getComponentsWithTag<Sprite>("playerHealthBar")[0];
+			Sprite* sprite = &mGameObject->getComponentsWithTag<Sprite>("playerHealthBar")[0].get();
 
 			Rect sourceRect = sprite->getSource();
 			sourceRect.w = mFullHealthBarForegroundSourceRect.w * (playerHealth / playerMaxHealth);
@@ -134,7 +126,7 @@ void PlayerStatsBehaviourScript::onUpdate()
 
 	if (scene.getGameObjectsWithTag("playerBSCountText").size() > 0)
 	{
-		GameObject* gameObject = scene.getGameObjectsWithTag("playerBSCountText")[0];
+		GameObject* gameObject = &scene.getGameObjectsWithTag("playerBSCountText")[0].get();
 		dynamic_cast<Text*>(gameObject)->setText(std::to_string(playerBSCount));
 	}
 }

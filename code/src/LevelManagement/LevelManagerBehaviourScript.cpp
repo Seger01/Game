@@ -12,13 +12,13 @@ void LevelManagerBehaviourScript::onUpdate() {}
 
 void LevelManagerBehaviourScript::beginGame()
 {
-	mGameObject->getComponents<LevelCreatorBehaviourScript>().at(0)->createLevel1();
+	mGameObject->getComponents<LevelCreatorBehaviourScript>().at(0).get().createLevel1();
 }
 
 void LevelManagerBehaviourScript::beginDemoNetworkingGame()
 {
 	std::cout << "Beginning network demo level\n";
-	mGameObject->getComponents<LevelCreatorBehaviourScript>().at(0)->createDemoNetworkingLevel();
+	mGameObject->getComponents<LevelCreatorBehaviourScript>().at(0).get().createDemoNetworkingLevel();
 }
 
 void LevelManagerBehaviourScript::doneWithCurrentLevel()
@@ -32,7 +32,7 @@ void LevelManagerBehaviourScript::doneWithCurrentLevel()
 		auto Components = mGameObject->getComponents<LevelCreatorBehaviourScript>();
 		if (!Components.empty())
 		{
-			LevelCreatorBehaviourScript* Component = Components[0];
+			LevelCreatorBehaviourScript* Component = &Components[0].get();
 			if (mCurrentLevel == 1)
 			{
 				Component->createLevel1();

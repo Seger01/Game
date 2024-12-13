@@ -10,6 +10,7 @@
 #include <SceneManager.h>
 #include <Sprite.h>
 #include <Time.h>
+#include <functional>
 #include <iostream>
 
 EnemyBehaviourScript::EnemyBehaviourScript(float aHealth) : mHealth(aHealth) {}
@@ -80,15 +81,8 @@ void EnemyBehaviourScript::onCollide(GameObject* aGameObject)
 
 	if (aGameObject->getTag() == "Bullet")
 	{
-		BulletBehaviourScript* bullet = aGameObject->getComponents<BulletBehaviourScript>().at(0);
-		if (bullet != nullptr)
-		{
-			takeDamage(bullet->getDamage());
-		}
-		else
-		{
-			std::runtime_error("BulletBehaviourScript not found in EnemyBehaviourScript::onCollide");
-		}
+		BulletBehaviourScript& bullet = aGameObject->getComponents<BulletBehaviourScript>().at(0);
+		takeDamage(bullet.getDamage());
 	}
 }
 
@@ -100,7 +94,7 @@ void EnemyBehaviourScript::deactivateAllAnimations()
 {
 	for (auto animation : mGameObject->getComponents<Animation>())
 	{
-		animation->setActive(false);
+		animation.get().setActive(false);
 	}
 }
 
@@ -110,14 +104,14 @@ void EnemyBehaviourScript::setFlipX(bool aState)
 	{
 		for (auto animation : mGameObject->getComponents<Animation>())
 		{
-			animation->setFlipX(aState);
+			animation.get().setFlipX(aState);
 		}
 	}
 	else if (mGameObject->hasComponent<Sprite>())
 	{
 		for (auto sprite : mGameObject->getComponents<Sprite>())
 		{
-			sprite->setFlipX(aState);
+			sprite.get().setFlipX(aState);
 		}
 	}
 }
@@ -128,14 +122,14 @@ void EnemyBehaviourScript::setFlipY(bool aState)
 	{
 		for (auto animation : mGameObject->getComponents<Animation>())
 		{
-			animation->setFlipY(aState);
+			animation.get().setFlipY(aState);
 		}
 	}
 	else if (mGameObject->hasComponent<Sprite>())
 	{
 		for (auto sprite : mGameObject->getComponents<Sprite>())
 		{
-			sprite->setFlipY(aState);
+			sprite.get().setFlipY(aState);
 		}
 	}
 }
@@ -246,10 +240,10 @@ void EnemyBehaviourScript::removePathVisualization()
 	EngineBravo& engine = EngineBravo::getInstance();
 	Scene& scene = engine.getSceneManager().getCurrentScene();
 
-	std::vector<GameObject*> pathMarkers = scene.getGameObjectsWithTag("PathMarker");
-	for (GameObject* marker : pathMarkers)
+	std::vector<std::reference_wrapper<GameObject>> pathMarkers = scene.getGameObjectsWithTag("PathMarker");
+	for (GameObject& marker : pathMarkers)
 	{
-		scene.requestGameObjectRemoval(marker);
+		scene.requestGameObjectRemoval(&marker);
 	}
 }
 
@@ -284,10 +278,10 @@ void EnemyBehaviourScript::removeGraphVisualization()
 	EngineBravo& engine = EngineBravo::getInstance();
 	Scene& scene = engine.getSceneManager().getCurrentScene();
 
-	std::vector<GameObject*> graphNodes = scene.getGameObjectsWithTag("GraphNode");
-	for (GameObject* marker : graphNodes)
+	std::vector<std::reference_wrapper<GameObject>> graphNodes = scene.getGameObjectsWithTag("GraphNode");
+	for (GameObject& marker : graphNodes)
 	{
-		scene.requestGameObjectRemoval(marker);
+		scene.requestGameObjectRemoval(&marker);
 	}
 }
 
@@ -300,12 +294,8 @@ void EnemyBehaviourScript::moveWithPathfinding()
 	{
 		return;
 	}
-	GameObject* player = scene.getGameObjectsWithTag("Player")[0];
-	if (player == nullptr)
-	{
-		return;
-	}
-	Vector2 playerPosition = player->getTransform().position;
+	GameObject& player = scene.getGameObjectsWithTag("Player")[0];
+	Vector2 playerPosition = player.getTransform().position;
 	int enemyPosition = getGridPosition(enemy->getTransform().position);
 	int playerGridPosition = getGridPosition(playerPosition);
 	if (enemyPosition == -1 || playerGridPosition == -1 || !isValidPosition(enemyPosition) ||

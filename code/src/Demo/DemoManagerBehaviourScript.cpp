@@ -130,14 +130,9 @@ void DemoManagerBehaviourScript::createSecondScene()
 	// set starting pos for player in this scene
 	// GameObject* playerObject = sceneManager.getCurrentScene()->getGameObjectsWithTag("Player").at(0);
 	// playerObject->setTransform(Transform(Vector2(40, 40)));
-	GameObject* playerObject =
+	GameObject& playerObject =
 		EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("Player").at(0);
-	if (playerObject == nullptr)
-	{
-		std::cout << "Player not found" << std::endl;
-		return;
-	}
-	playerObject->setTransform(Transform(Vector2(40, 40)));
+	playerObject.setTransform(Transform(Vector2(40, 40)));
 	//  playerObject->setTransform(Transform(Vector2(40, 40)));
 
 	Camera* camera = new Camera;
@@ -284,16 +279,16 @@ void DemoManagerBehaviourScript::createSecondScene()
 	enemyMoving->setTransform(Transform(Vector2(100, 112)));
 	enemyMoving->setTag("EnemyMoving");
 	if (enemyMoving->hasComponent<RigidBody>())
-		enemyMoving->removeComponent(enemyMoving->getComponents<RigidBody>()[0]);
+		enemyMoving->removeComponent(&enemyMoving->getComponents<RigidBody>()[0].get());
 	if (enemyMoving->hasComponent<BoxCollider>())
-		enemyMoving->removeComponent(enemyMoving->getComponents<BoxCollider>()[0]);
+		enemyMoving->removeComponent(&enemyMoving->getComponents<BoxCollider>()[0].get());
 
 	enemyStatic->setTransform(Transform(Vector2(40, 84)));
 	enemyStatic->setTag("EnemyStatic");
 	if (enemyStatic->hasComponent<RigidBody>())
-		enemyStatic->removeComponent(enemyStatic->getComponents<RigidBody>()[0]);
+		enemyStatic->removeComponent(&enemyStatic->getComponents<RigidBody>()[0].get());
 	if (enemyStatic->hasComponent<BoxCollider>())
-		enemyStatic->removeComponent(enemyStatic->getComponents<BoxCollider>()[0]);
+		enemyStatic->removeComponent(&enemyStatic->getComponents<BoxCollider>()[0].get());
 
 	enemyWithCollider->setTransform(Transform(Vector2(320, 112)));
 	enemyWithCollider->setTag("EnemyWithCollider");
@@ -304,26 +299,27 @@ void DemoManagerBehaviourScript::createSecondScene()
 
 	if (enemyWithPathfinding->hasComponent<EnemyBehaviourScript>())
 	{
-		enemyWithPathfinding->getComponents<EnemyBehaviourScript>()[0]->setPathfinding(std::move(pathfinding));
-		enemyWithPathfinding->getComponents<EnemyBehaviourScript>()[0]->setMapWidth(mapWidth);
-		enemyWithPathfinding->getComponents<EnemyBehaviourScript>()[0]->setMapHeight(mapHeight);
+		enemyWithPathfinding->getComponents<EnemyBehaviourScript>()[0].get().setPathfinding(std::move(pathfinding));
+		enemyWithPathfinding->getComponents<EnemyBehaviourScript>()[0].get().setMapWidth(mapWidth);
+		enemyWithPathfinding->getComponents<EnemyBehaviourScript>()[0].get().setMapHeight(mapHeight);
 	}
 
 	if (enemyWithPathfinding->hasComponent<RigidBody>())
 	{
-		enemyWithPathfinding->getComponents<RigidBody>()[0]->setLinearDamping(0.5f);
+		enemyWithPathfinding->getComponents<RigidBody>()[0].get().setLinearDamping(0.5f);
 	}
 
 	if (enemyStatic->hasComponent<RigidBody>())
 	{
-		enemyStatic->getComponents<RigidBody>().at(0)->setCanRotate(true);
+		enemyStatic->getComponents<RigidBody>().at(0).get().setCanRotate(true);
 	}
 	else
 
 		if (enemyWithCollider->hasComponent<RigidBody>())
 	{
-		enemyWithCollider->getComponents<RigidBody>().at(0)->setCanRotate(true);
+		enemyWithCollider->getComponents<RigidBody>().at(0).get().setCanRotate(true);
 	}
+
 	scene.addGameObject(enemyMoving);
 	scene.addGameObject(enemyStatic);
 	scene.addGameObject(enemyWithCollider);
@@ -362,14 +358,9 @@ void DemoManagerBehaviourScript::createStressTest()
 
 	scene.addGameObject(camera);
 
-	GameObject* playerObject =
+	GameObject& playerObject =
 		EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("Player").at(0);
-	if (playerObject == nullptr)
-	{
-		std::cout << "Player not found" << std::endl;
-		return;
-	}
-	playerObject->setTransform(Transform(Vector2(40, 40)));
+	playerObject.setTransform(Transform(Vector2(40, 40)));
 
 	FSConverter fsconverter;
 	std::string path = fsconverter.getResourcePath("LevelDefs/demoStressTest.json");
@@ -384,6 +375,7 @@ void DemoManagerBehaviourScript::createStressTest()
 	Transform transform;
 	transform.position = Vector2(100, 100);
 	spawner->setTransform(transform);
+
 	scene.addGameObject(spawner);
 
 	sceneManager.requestSceneChange("DemoStressTest");
@@ -416,10 +408,10 @@ void DemoManagerBehaviourScript::onUpdate()
 
 	if (input.GetKeyDown(Key::Key_Space))
 	{
-		GameObject* playerObject =
+		GameObject& playerObject =
 			EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("Player").at(0);
 		std::cout << "Setting player transform" << std::endl;
-		playerObject->setTransform(Transform(Vector2(40, 40)));
+		playerObject.setTransform(Transform(Vector2(40, 40)));
 	}
 
 	handleSaveGame();
@@ -430,9 +422,9 @@ void DemoManagerBehaviourScript::onUpdate()
 		SceneManager& sceneManager = engine.getSceneManager();
 		Scene& currentScene = sceneManager.getCurrentScene();
 
-		std::vector<GameObject*> persistentObjects = currentScene.getPersistentGameObjects();
+		std::vector<std::reference_wrapper<GameObject>> persistentObjects = currentScene.getPersistentGameObjects();
 		auto playerIt = std::find_if(persistentObjects.begin(), persistentObjects.end(),
-									 [](GameObject* obj) { return obj->getTag() == "Player"; });
+									 [](GameObject& obj) { return obj.getTag() == "Player"; });
 
 		if (playerIt != persistentObjects.end())
 		{
@@ -465,13 +457,13 @@ void DemoManagerBehaviourScript::saveGame()
 	Scene& currentScene = sceneManager.getCurrentScene();
 
 	Transform playerPos;
-	std::vector<GameObject*> persistentObjects = currentScene.getPersistentGameObjects();
+	std::vector<std::reference_wrapper<GameObject>> persistentObjects = currentScene.getPersistentGameObjects();
 	auto playerIt = std::find_if(persistentObjects.begin(), persistentObjects.end(),
-								 [](GameObject* obj) { return obj->getTag() == "Player"; });
+								 [](GameObject& obj) { return obj.getTag() == "Player"; });
 
 	if (playerIt != persistentObjects.end())
 	{
-		playerPos = (*playerIt)->getTransform().position;
+		playerPos = (*playerIt).get().getTransform().position;
 	}
 
 	SaveGame sg{"saves/newSave.json"};
@@ -545,19 +537,19 @@ void DemoManagerBehaviourScript::loadGame()
 	Scene& currentScene = sceneManager.getCurrentScene();
 
 	Transform playerPos;
-	std::vector<GameObject*> persistentObjects = currentScene.getPersistentGameObjects();
+	std::vector<std::reference_wrapper<GameObject>> persistentObjects = currentScene.getPersistentGameObjects();
 	auto playerIt = std::find_if(persistentObjects.begin(), persistentObjects.end(),
-								 [](GameObject* obj) { return obj->getTag() == "Player"; });
+								 [](GameObject& obj) { return obj.getTag() == "Player"; });
 
 	if (playerIt != persistentObjects.end())
 	{
-		Transform playerPos = (*playerIt)->getTransform();
+		Transform playerPos = (*playerIt).get().getTransform();
 		playerPos.position.x = playerX;
 		playerPos.position.y = playerY;
 		playerPos.rotation = playerRotation;
 		playerPos.scale.x = playerScaleX;
 		playerPos.scale.y = playerScaleY;
 
-		(*playerIt)->setTransform(playerPos);
+		(playerIt)->get().setTransform(playerPos);
 	}
 }

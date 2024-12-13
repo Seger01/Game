@@ -13,10 +13,10 @@ void LevelEndBehaviourScript::onStart()
 
 	if (!levelManagerObjects.empty())
 	{
-		auto levelManagerComponents = levelManagerObjects[0]->getComponents<LevelManagerBehaviourScript>();
+		auto levelManagerComponents = levelManagerObjects[0].get().getComponents<LevelManagerBehaviourScript>();
 		if (!levelManagerComponents.empty())
 		{
-			mLevelManager = levelManagerComponents[0];
+			mLevelManager = &levelManagerComponents[0].get();
 		}
 		else
 		{

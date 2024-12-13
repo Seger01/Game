@@ -15,8 +15,6 @@ DemoPhysicsButtonBehaviourScript::DemoPhysicsButtonBehaviourScript() {}
 void DemoPhysicsButtonBehaviourScript::onStart()
 {
 	EngineBravo& engine = EngineBravo::getInstance();
-	SceneManager& sceneManager = engine.getSceneManager();
-	Scene& scene = sceneManager.getCurrentScene();
 	PhysicsManager& physicsManager = engine.getPhysicsManager();
 
 	mButtonPressedBox = false;
@@ -92,25 +90,25 @@ void DemoPhysicsButtonBehaviourScript::updateButtonState(const std::string& butt
 			spawnCircle(Vector2(128, 624), "ButtonFilterCircle", Vector2(-200, 1000));
 			spawnCircle(Vector2(144, 624), "ButtonFilterCircle", Vector2(200, -1000));
 
-			std::vector<GameObject*> boxes =
+			std::vector<std::reference_wrapper<GameObject>> boxes =
 				EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("Box");
-			for (GameObject* box : boxes)
+			for (GameObject& box : boxes)
 			{
-				if (box->hasComponent<BoxCollider>())
+				if (box.hasComponent<BoxCollider>())
 				{
-					box->getComponents<BoxCollider>()[0]->setCollideCategory(3);
-					box->getComponents<BoxCollider>()[0]->setCollideWithCategory({1, 3});
+					box.getComponents<BoxCollider>()[0].get().setCollideCategory(3);
+					box.getComponents<BoxCollider>()[0].get().setCollideWithCategory({1, 3});
 				}
 			}
 
-			std::vector<GameObject*> circles =
+			std::vector<std::reference_wrapper<GameObject>> circles =
 				EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("Circle");
-			for (GameObject* circle : circles)
+			for (GameObject& circle : circles)
 			{
-				if (circle->hasComponent<CircleCollider>())
+				if (circle.hasComponent<CircleCollider>())
 				{
-					circle->getComponents<CircleCollider>()[0]->setCollideCategory(2);
-					circle->getComponents<CircleCollider>()[0]->setCollideWithCategory({1, 2});
+					circle.getComponents<CircleCollider>()[0].get().setCollideCategory(2);
+					circle.getComponents<CircleCollider>()[0].get().setCollideWithCategory({1, 2});
 				}
 			}
 
@@ -128,15 +126,15 @@ void DemoPhysicsButtonBehaviourScript::updateButtonState(const std::string& butt
 
 void DemoPhysicsButtonBehaviourScript::updateButtonSprites(bool isActive)
 {
-	for (Component* component : mGameObject->getComponents<Sprite>())
+	for (Component& component : mGameObject->getComponents<Sprite>())
 	{
-		if (component->getTag() == "ButtonDownSprite")
+		if (component.getTag() == "ButtonDownSprite")
 		{
-			component->setActive(isActive);
+			component.setActive(isActive);
 		}
-		else if (component->getTag() == "ButtonUpSprite")
+		else if (component.getTag() == "ButtonUpSprite")
 		{
-			component->setActive(!isActive);
+			component.setActive(!isActive);
 		}
 	}
 }
@@ -221,9 +219,9 @@ void DemoPhysicsButtonBehaviourScript::removeBox(const std::string& aName)
 	auto boxes = scene.getGameObjectsWithTag("Box");
 	for (auto& box : boxes)
 	{
-		if (aName.empty() || box->getName() == aName)
+		if (aName.empty() || box.get().getName() == aName)
 		{
-			scene.requestGameObjectRemoval(box);
+			scene.requestGameObjectRemoval(&box.get());
 		}
 	}
 }
@@ -237,9 +235,9 @@ void DemoPhysicsButtonBehaviourScript::removeCircle(const std::string& aName)
 	auto circles = scene.getGameObjectsWithTag("Circle");
 	for (auto& circle : circles)
 	{
-		if (aName.empty() || circle->getName() == aName)
+		if (aName.empty() || circle.get().getName() == aName)
 		{
-			scene.requestGameObjectRemoval(circle);
+			scene.requestGameObjectRemoval(&circle.get());
 		}
 	}
 }
@@ -260,15 +258,15 @@ void DemoPhysicsButtonBehaviourScript::toggleGravity()
 	spawnBox(Vector2(160, 336), "BoxGravity", Vector2(0, 0));
 
 	// Set the gravity scale for the new box
-	std::vector<GameObject*> boxes = scene.getGameObjectsWithTag("Box");
-	for (GameObject* box : boxes)
+	std::vector<std::reference_wrapper<GameObject>> boxes = scene.getGameObjectsWithTag("Box");
+	for (GameObject& box : boxes)
 	{
-		if (box->getName() == "BoxGravity" && box->hasComponent<RigidBody>())
+		if (box.getName() == "BoxGravity" && box.hasComponent<RigidBody>())
 		{
-			RigidBody* rigidBody = box->getComponents<RigidBody>()[0];
-			rigidBody->setHasGravity(mButtonPressedGravity);
-			rigidBody->setGravityScale(mButtonPressedGravity ? 1.0f : 0.0f);
-			rigidBody->setRestitution(0.8f);
+			RigidBody& rigidBody = box.getComponents<RigidBody>()[0];
+			rigidBody.setHasGravity(mButtonPressedGravity);
+			rigidBody.setGravityScale(mButtonPressedGravity ? 1.0f : 0.0f);
+			rigidBody.setRestitution(0.8f);
 		}
 	}
 }

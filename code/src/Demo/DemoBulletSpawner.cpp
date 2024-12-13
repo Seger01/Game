@@ -39,38 +39,33 @@ void DemoBulletSpawner::onUpdate()
 		EngineBravo& engine = EngineBravo::getInstance();
 		Scene& scene = engine.getSceneManager().getCurrentScene();
 
-		GameObject* playerObject = scene.getGameObjectsWithTag("Player").at(0);
-		if (playerObject == nullptr)
+		GameObject& playerObject = scene.getGameObjectsWithTag("Player").at(0);
+
+		GameObject& bullet = *mBulletFactory.createBulletPrefab(playerObject);
+		bullet.setTag("Bullet");
+		if (bullet.hasComponent<BulletBehaviourScript>())
 		{
-			std::cout << "Player not found" << std::endl;
-			return;
+			BulletBehaviourScript& bulletBehaviourScript = bullet.getComponents<BulletBehaviourScript>()[0];
+			bullet.removeComponent(&bulletBehaviourScript);
 		}
 
-		GameObject* bullet = mBulletFactory.createBulletPrefab(*playerObject);
-		bullet->setTag("Bullet");
-		if (bullet->hasComponent<BulletBehaviourScript>())
+		if (bullet.hasComponent<RigidBody>())
 		{
-			BulletBehaviourScript* bulletBehaviourScript = bullet->getComponents<BulletBehaviourScript>()[0];
-			bullet->removeComponent(bulletBehaviourScript);
+			RigidBody& rigidBody = bullet.getComponents<RigidBody>()[0];
+			rigidBody.setRestitution(1.0f);
+			rigidBody.addForce(Vector2(rand() % 2000 - 1000, rand() % 2000 - 1000));
 		}
 
-		if (bullet->hasComponent<RigidBody>())
+		if (bullet.hasComponent<CircleCollider>())
 		{
-			RigidBody* rigidBody = bullet->getComponents<RigidBody>()[0];
-			rigidBody->setRestitution(1.0f);
-			rigidBody->addForce(Vector2(rand() % 2000 - 1000, rand() % 2000 - 1000));
+			CircleCollider& boxCollider = bullet.getComponents<CircleCollider>()[0];
+			boxCollider.setIsTrigger(false);
+			boxCollider.setCollideCategory(2);
+			boxCollider.setCollideWithCategory({1});
 		}
+		scene.addGameObject(&bullet);
 
-		if (bullet->hasComponent<CircleCollider>())
-		{
-			CircleCollider* boxCollider = bullet->getComponents<CircleCollider>()[0];
-			boxCollider->setIsTrigger(false);
-			boxCollider->setCollideCategory(2);
-			boxCollider->setCollideWithCategory({1});
-		}
-		scene.addGameObject(bullet);
-
-		mBullets.push_back(bullet);
+		mBullets.push_back(&bullet);
 		mTimeSinceLastSpawn = 0.0f;
 
 		if (mTextObject)

@@ -43,29 +43,29 @@ void NetworkSelectionBehaviourScript::onStart()
 	scene.addGameObject(mMainMenuObject);
 
 	// Add the button callbacks
-	for (GameObject* button :
+	for (GameObject& button :
 		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("ServerButton"))
 	{
-		Button* buttonObject = dynamic_cast<Button*>(button);
-		buttonObject->setOnReleaseCallback(std::bind(&NetworkSelectionBehaviourScript::onServerRelease, this));
+		Button& buttonObject = dynamic_cast<Button&>(button);
+		buttonObject.setOnReleaseCallback(std::bind(&NetworkSelectionBehaviourScript::onServerRelease, this));
 	}
-	for (GameObject* button :
+	for (GameObject& button :
 		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("ClientButton"))
 	{
-		Button* buttonObject = dynamic_cast<Button*>(button);
-		buttonObject->setOnReleaseCallback(std::bind(&NetworkSelectionBehaviourScript::onClientRelease, this));
+		Button& buttonObject = dynamic_cast<Button&>(button);
+		buttonObject.setOnReleaseCallback(std::bind(&NetworkSelectionBehaviourScript::onClientRelease, this));
 	}
-	for (GameObject* button :
+	for (GameObject& button :
 		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("HostButton"))
 	{
-		Button* buttonObject = dynamic_cast<Button*>(button);
-		buttonObject->setOnReleaseCallback(std::bind(&NetworkSelectionBehaviourScript::onHostRelease, this));
+		Button& buttonObject = dynamic_cast<Button&>(button);
+		buttonObject.setOnReleaseCallback(std::bind(&NetworkSelectionBehaviourScript::onHostRelease, this));
 	}
-	for (GameObject* button :
+	for (GameObject& button :
 		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("SearchButton"))
 	{
-		Button* buttonObject = dynamic_cast<Button*>(button);
-		buttonObject->setOnReleaseCallback(std::bind(&NetworkSelectionBehaviourScript::onSearchRelease, this));
+		Button& buttonObject = dynamic_cast<Button&>(button);
+		buttonObject.setOnReleaseCallback(std::bind(&NetworkSelectionBehaviourScript::onSearchRelease, this));
 	}
 }
 
@@ -81,12 +81,12 @@ void NetworkSelectionBehaviourScript::onUpdate()
 		if (networkManager.isConnected())
 		{
 			networkManager.setDefaultPlayerPrefab(PlayerPrefabFactory::createPlayerPrefab());
-			for (GameObject* object :
+			for (GameObject& object :
 				 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("LevelManager"))
 			{
-				if (object->hasComponent<LevelManagerBehaviourScript>())
+				if (object.hasComponent<LevelManagerBehaviourScript>())
 				{
-					object->getComponents<LevelManagerBehaviourScript>()[0]->beginDemoNetworkingGame();
+					object.getComponents<LevelManagerBehaviourScript>()[0].get().beginDemoNetworkingGame();
 				}
 			}
 		}
@@ -115,12 +115,12 @@ void NetworkSelectionBehaviourScript::onServerRelease()
 		networkManager.startNetwork();
 	}
 	networkManager.setDefaultPlayerPrefab(PlayerPrefabFactory::createPlayerPrefab());
-	for (GameObject* object :
+	for (GameObject& object :
 		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("LevelManager"))
 	{
-		if (object->hasComponent<LevelManagerBehaviourScript>())
+		if (object.hasComponent<LevelManagerBehaviourScript>())
 		{
-			object->getComponents<LevelManagerBehaviourScript>()[0]->beginDemoNetworkingGame();
+			object.getComponents<LevelManagerBehaviourScript>()[0].get().beginDemoNetworkingGame();
 		}
 	}
 }
@@ -139,29 +139,29 @@ void NetworkSelectionBehaviourScript::onClientRelease()
 		networkManager.startNetwork();
 		NetworkClient& networkClient = EngineBravo::getInstance().getNetworkManager().getClient();
 		networkClient.discoverServers();
-		for (GameObject* button :
+		for (GameObject& button :
 			 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("ServerButton"))
 		{
-			Button* buttonObject = dynamic_cast<Button*>(button);
-			buttonObject->setInteractable(false);
+			Button& buttonObject = dynamic_cast<Button&>(button);
+			buttonObject.setInteractable(false);
 		}
-		for (GameObject* button :
+		for (GameObject& button :
 			 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("ClientButton"))
 		{
-			Button* buttonObject = dynamic_cast<Button*>(button);
-			buttonObject->setInteractable(false);
+			Button& buttonObject = dynamic_cast<Button&>(button);
+			buttonObject.setInteractable(false);
 		}
-		for (GameObject* button :
+		for (GameObject& button :
 			 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("HostButton"))
 		{
-			Button* buttonObject = dynamic_cast<Button*>(button);
-			buttonObject->setInteractable(false);
+			Button& buttonObject = dynamic_cast<Button&>(button);
+			buttonObject.setInteractable(false);
 		}
-		for (GameObject* button :
+		for (GameObject& button :
 			 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("SearchButton"))
 		{
-			Button* buttonObject = dynamic_cast<Button*>(button);
-			buttonObject->setActive(true);
+			Button& buttonObject = dynamic_cast<Button&>(button);
+			buttonObject.setActive(true);
 		}
 	}
 }

@@ -18,11 +18,11 @@
 
 std::string PlayerBehaviourScript::currentActiveAnimationTag()
 {
-	for (auto animation : mGameObject->getComponents<Animation>())
+	for (Animation& animation : mGameObject->getComponents<Animation>())
 	{
-		if (animation->isActive())
+		if (animation.isActive())
 		{
-			return animation->getTag();
+			return animation.getTag();
 		}
 	}
 	return "";
@@ -32,16 +32,16 @@ void PlayerBehaviourScript::setFlipX(bool aState)
 {
 	if (mGameObject->hasComponent<Animation>())
 	{
-		for (auto animation : mGameObject->getComponents<Animation>())
+		for (Animation& animation : mGameObject->getComponents<Animation>())
 		{
-			animation->setFlipX(aState);
+			animation.setFlipX(aState);
 		}
 	}
 	else if (mGameObject->hasComponent<Sprite>())
 	{
-		for (auto sprite : mGameObject->getComponents<Sprite>())
+		for (Sprite& sprite : mGameObject->getComponents<Sprite>())
 		{
-			sprite->setFlipX(aState);
+			sprite.setFlipX(aState);
 		}
 	}
 }
@@ -50,35 +50,35 @@ void PlayerBehaviourScript::setFlipY(bool aState)
 {
 	if (mGameObject->hasComponent<Animation>())
 	{
-		for (auto animation : mGameObject->getComponents<Animation>())
+		for (Animation& animation : mGameObject->getComponents<Animation>())
 		{
-			animation->setFlipY(aState);
+			animation.setFlipY(aState);
 		}
 	}
 	else if (mGameObject->hasComponent<Sprite>())
 	{
-		for (auto sprite : mGameObject->getComponents<Sprite>())
+		for (Sprite& sprite : mGameObject->getComponents<Sprite>())
 		{
-			sprite->setFlipY(aState);
+			sprite.setFlipY(aState);
 		}
 	}
 }
 
 void PlayerBehaviourScript::deactivateAllAnimations()
 {
-	for (auto animation : mGameObject->getComponents<Animation>())
+	for (Animation& animation : mGameObject->getComponents<Animation>())
 	{
-		animation->setActive(false);
+		animation.setActive(false);
 	}
 }
 
 void PlayerBehaviourScript::setAnimationActive(std::string aAnimationTag, bool aState)
 {
-	for (auto animation : mGameObject->getComponents<Animation>())
+	for (Animation& animation : mGameObject->getComponents<Animation>())
 	{
-		if (animation->getTag() == aAnimationTag)
+		if (animation.getTag() == aAnimationTag)
 		{
-			animation->setActive(aState);
+			animation.setActive(aState);
 		}
 	}
 }
@@ -89,12 +89,8 @@ void PlayerBehaviourScript::handleAnimations()
 {
 	if (mGameObject->hasComponent<NetworkObject>())
 	{
-		NetworkObject* networkObject = mGameObject->getComponents<NetworkObject>()[0];
-		if (!networkObject)
-		{
-			return;
-		}
-		if (!networkObject->isOwner())
+		NetworkObject& networkObject = mGameObject->getComponents<NetworkObject>().at(0);
+		if (!networkObject.isOwner())
 		{
 			return;
 		}
@@ -195,12 +191,8 @@ void PlayerBehaviourScript::handleMovement()
 
 	if (mGameObject->hasComponent<NetworkObject>())
 	{
-		NetworkObject* networkObject = mGameObject->getComponents<NetworkObject>()[0];
-		if (!networkObject)
-		{
-			return;
-		}
-		if (!networkObject->isOwner())
+		NetworkObject& networkObject = mGameObject->getComponents<NetworkObject>().at(0);
+		if (!networkObject.isOwner())
 		{
 			return;
 		}
@@ -226,19 +218,19 @@ void PlayerBehaviourScript::handleMovement()
 
 	if (input.GetKey(Key::Key_W))
 	{
-		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(0, -movementSpeed * Time::deltaTime));
+		mGameObject->getComponents<RigidBody>()[0].get().addForce(Vector2(0, -movementSpeed * Time::deltaTime));
 	}
 	if (input.GetKey(Key::Key_A))
 	{
-		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(-movementSpeed * Time::deltaTime, 0));
+		mGameObject->getComponents<RigidBody>()[0].get().addForce(Vector2(-movementSpeed * Time::deltaTime, 0));
 	}
 	if (input.GetKey(Key::Key_S))
 	{
-		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(0, movementSpeed * Time::deltaTime));
+		mGameObject->getComponents<RigidBody>()[0].get().addForce(Vector2(0, movementSpeed * Time::deltaTime));
 	}
 	if (input.GetKey(Key::Key_D))
 	{
-		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(movementSpeed * Time::deltaTime, 0));
+		mGameObject->getComponents<RigidBody>()[0].get().addForce(Vector2(movementSpeed * Time::deltaTime, 0));
 	}
 	this->mGameObject->setTransform(parentTransform);
 }
@@ -247,12 +239,8 @@ void PlayerBehaviourScript::hanldeCameraMovement()
 {
 	if (mGameObject->hasComponent<NetworkObject>())
 	{
-		NetworkObject* networkObject = mGameObject->getComponents<NetworkObject>()[0];
-		if (!networkObject)
-		{
-			return;
-		}
-		if (!networkObject->isOwner())
+		NetworkObject& networkObject = mGameObject->getComponents<NetworkObject>().at(0);
+		if (!networkObject.isOwner())
 		{
 			return;
 		}
@@ -341,9 +329,9 @@ void PlayerBehaviourScript::fireBullet(Point mousePosition)
 	bulletObject->getTransform().position = bulletSpawnPosition;
 
 	// Add force to bullet
-	RigidBody* bulletRigidBody = bulletObject->getComponents<RigidBody>()[0];
+	RigidBody& bulletRigidBody = bulletObject->getComponents<RigidBody>()[0];
 	float bulletSpeed = 1000.0f;
-	bulletRigidBody->addForce(direction * bulletSpeed);
+	bulletRigidBody.addForce(direction * bulletSpeed);
 
 	sceneManager.getCurrentScene().addGameObject(bulletObject);
 }
@@ -381,11 +369,11 @@ void PlayerBehaviourScript::onUpdate()
 	{
 		static bool emitterMode = false;
 
-		ParticleEmitter* emitter = mGameObject->getComponents<ParticleEmitter>()[0];
+		ParticleEmitter& emitter = mGameObject->getComponents<ParticleEmitter>()[0];
 
 		if (input.GetKeyDown(Key::Key_P))
 		{
-			emitter->setActive(!emitter->isActive());
+			emitter.setActive(!emitter.isActive());
 		}
 
 		if (input.GetKeyDown(Key::Key_Space))
@@ -395,13 +383,13 @@ void PlayerBehaviourScript::onUpdate()
 
 		if (emitterMode)
 		{
-			emitter->setAngle(0, 45);
-			emitter->getRelativeTransform().rotation += 1.0f * Time::deltaTime;
+			emitter.setAngle(0, 45);
+			emitter.getRelativeTransform().rotation += 1.0f * Time::deltaTime;
 		}
 		else
 		{
-			emitter->setAngle(0, 360);
-			emitter->getRelativeTransform().rotation = 0.0f;
+			emitter.setAngle(0, 360);
+			emitter.getRelativeTransform().rotation = 0.0f;
 		}
 	}
 }

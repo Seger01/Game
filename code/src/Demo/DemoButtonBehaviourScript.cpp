@@ -41,15 +41,15 @@ void DemoButtonBehaviourScript::onCollide(GameObject* aGameObject)
 			EngineBravo::getInstance().getSceneManager().getCurrentScene().addGameObject(guy);
 			buttonPressed = true;
 
-			for (Component* component : mGameObject->getComponents<Sprite>())
+			for (Component& component : mGameObject->getComponents<Sprite>())
 			{
-				if (component->getTag() == "ButtonDownSprite")
+				if (component.getTag() == "ButtonDownSprite")
 				{
-					component->setActive(true);
+					component.setActive(true);
 				}
-				if (component->getTag() == "ButtonUpSprite")
+				if (component.getTag() == "ButtonUpSprite")
 				{
-					component->setActive(false);
+					component.setActive(false);
 				}
 			}
 		}

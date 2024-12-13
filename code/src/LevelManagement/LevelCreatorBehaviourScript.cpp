@@ -31,9 +31,9 @@ void LevelCreatorBehaviourScript::onUpdate()
 		SceneManager& sceneManager = engine.getSceneManager();
 		Scene& currentScene = sceneManager.getCurrentScene();
 
-		std::vector<GameObject*> persistentObjects = currentScene.getPersistentGameObjects();
+		std::vector<std::reference_wrapper<GameObject>> persistentObjects = currentScene.getPersistentGameObjects();
 		auto playerIt = std::find_if(persistentObjects.begin(), persistentObjects.end(),
-									 [](GameObject* obj) { return obj->getTag() == "Player"; });
+									 [](GameObject& obj) { return obj.getTag() == "Player"; });
 
 		if (playerIt != persistentObjects.end())
 		{
@@ -199,11 +199,11 @@ void LevelCreatorBehaviourScript::setPlayerStartPosition(Scene* scene, const Til
 		{
 			// std::cout << "Setting player position to " << mapObject.x << ", " << mapObject.y << std::endl;
 
-			std::vector<GameObject*> persistentObjects = scene->getPersistentGameObjects();
+			std::vector<std::reference_wrapper<GameObject>> persistentObjects = scene->getPersistentGameObjects();
 			// std::cout << "Number of persistent objects: " << persistentObjects.size() << std::endl;
 
 			auto playerIt = std::find_if(persistentObjects.begin(), persistentObjects.end(),
-										 [](GameObject* obj) { return obj->getTag() == "Player"; });
+										 [](GameObject& obj) { return obj.getTag() == "Player"; });
 
 			if (playerIt == persistentObjects.end())
 			{
@@ -214,7 +214,7 @@ void LevelCreatorBehaviourScript::setPlayerStartPosition(Scene* scene, const Til
 			transform.position.x = mapObject.x;
 			transform.position.y = mapObject.y;
 
-			(*playerIt)->setTransform(transform);
+			(*playerIt).get().setTransform(transform);
 			// std::cout << "Player position set to " << transform.position.x << ", " << transform.position.y <<
 			// std::endl;
 		}

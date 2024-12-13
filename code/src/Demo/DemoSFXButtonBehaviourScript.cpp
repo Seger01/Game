@@ -41,29 +41,29 @@ void DemoSFXButtonBehaviourScript::updateButtonState()
 
 	if (audioManager.getFacade().isPlaying("Audio/gun1.wav"))
 	{
-		for (Component* component : button->getComponents<Sprite>())
+		for (Component& component : button->getComponents<Sprite>())
 		{
-			if (component->getTag() == "ButtonDownSprite")
+			if (component.getTag() == "ButtonDownSprite")
 			{
-				component->setActive(true);
+				component.setActive(true);
 			}
-			else if (component->getTag() == "ButtonUpSprite")
+			else if (component.getTag() == "ButtonUpSprite")
 			{
-				component->setActive(false);
+				component.setActive(false);
 			}
 		}
 	}
 	else
 	{
-		for (Component* component : button->getComponents<Sprite>())
+		for (Component& component : button->getComponents<Sprite>())
 		{
-			if (component->getTag() == "ButtonDownSprite")
+			if (component.getTag() == "ButtonDownSprite")
 			{
-				component->setActive(false);
+				component.setActive(false);
 			}
-			else if (component->getTag() == "ButtonUpSprite")
+			else if (component.getTag() == "ButtonUpSprite")
 			{
-				component->setActive(true);
+				component.setActive(true);
 			}
 		}
 	}
