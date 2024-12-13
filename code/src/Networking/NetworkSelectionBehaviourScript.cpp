@@ -16,7 +16,7 @@ void NetworkSelectionBehaviourScript::onStart()
 {
 	EngineBravo& engine = EngineBravo::getInstance();
 	SceneManager& sceneManager = engine.getSceneManager();
-	Scene* scene = sceneManager.getCurrentScene();
+	Scene& scene = sceneManager.getCurrentScene();
 
 	// Create the menu
 	mMainMenuObject = MainMenuPrefabFactory().createMainMenuPrefab();
@@ -24,45 +24,45 @@ void NetworkSelectionBehaviourScript::onStart()
 	int menuIndexY = mMenuStartY;
 
 	// Create the buttons
-	mServerButton = MainMenuPrefabFactory().createDefaultButton(mMainMenuObject, scene, "Server", "ServerButton",
+	mServerButton = MainMenuPrefabFactory().createDefaultButton(mMainMenuObject, &scene, "Server", "ServerButton",
 																"ServerText", menuIndexX, menuIndexY);
 
 	mSearchButton = MainMenuPrefabFactory().createDefaultButton(
-		mMainMenuObject, scene, "Search for servers", "SearchButton", "SearchServerText", menuIndexX, menuIndexY);
+		mMainMenuObject, &scene, "Search for servers", "SearchButton", "SearchServerText", menuIndexX, menuIndexY);
 	mSearchButton->setActive(false);
 
 	menuIndexY += 20;
 
-	mClientButton = MainMenuPrefabFactory().createDefaultButton(mMainMenuObject, scene, "Client", "ClientButton",
+	mClientButton = MainMenuPrefabFactory().createDefaultButton(mMainMenuObject, &scene, "Client", "ClientButton",
 																"ClientText", menuIndexX, menuIndexY);
 	menuIndexY += 20;
 
-	mHostButton = MainMenuPrefabFactory().createDefaultButton(mMainMenuObject, scene, "Host", "HostButton", "HostText",
+	mHostButton = MainMenuPrefabFactory().createDefaultButton(mMainMenuObject, &scene, "Host", "HostButton", "HostText",
 															  menuIndexX, menuIndexY);
 	menuIndexY += 20;
-	scene->addGameObject(mMainMenuObject);
+	scene.addGameObject(mMainMenuObject);
 
 	// Add the button callbacks
 	for (GameObject* button :
-		 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("ServerButton"))
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("ServerButton"))
 	{
 		Button* buttonObject = dynamic_cast<Button*>(button);
 		buttonObject->setOnReleaseCallback(std::bind(&NetworkSelectionBehaviourScript::onServerRelease, this));
 	}
 	for (GameObject* button :
-		 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("ClientButton"))
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("ClientButton"))
 	{
 		Button* buttonObject = dynamic_cast<Button*>(button);
 		buttonObject->setOnReleaseCallback(std::bind(&NetworkSelectionBehaviourScript::onClientRelease, this));
 	}
 	for (GameObject* button :
-		 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("HostButton"))
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("HostButton"))
 	{
 		Button* buttonObject = dynamic_cast<Button*>(button);
 		buttonObject->setOnReleaseCallback(std::bind(&NetworkSelectionBehaviourScript::onHostRelease, this));
 	}
 	for (GameObject* button :
-		 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("SearchButton"))
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("SearchButton"))
 	{
 		Button* buttonObject = dynamic_cast<Button*>(button);
 		buttonObject->setOnReleaseCallback(std::bind(&NetworkSelectionBehaviourScript::onSearchRelease, this));
@@ -82,7 +82,7 @@ void NetworkSelectionBehaviourScript::onUpdate()
 		{
 			networkManager.setDefaultPlayerPrefab(PlayerPrefabFactory::createPlayerPrefab());
 			for (GameObject* object :
-				 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("LevelManager"))
+				 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("LevelManager"))
 			{
 				if (object->hasComponent<LevelManagerBehaviourScript>())
 				{
@@ -116,7 +116,7 @@ void NetworkSelectionBehaviourScript::onServerRelease()
 	}
 	networkManager.setDefaultPlayerPrefab(PlayerPrefabFactory::createPlayerPrefab());
 	for (GameObject* object :
-		 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("LevelManager"))
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("LevelManager"))
 	{
 		if (object->hasComponent<LevelManagerBehaviourScript>())
 		{
@@ -140,25 +140,25 @@ void NetworkSelectionBehaviourScript::onClientRelease()
 		NetworkClient& networkClient = EngineBravo::getInstance().getNetworkManager().getClient();
 		networkClient.discoverServers();
 		for (GameObject* button :
-			 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("ServerButton"))
+			 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("ServerButton"))
 		{
 			Button* buttonObject = dynamic_cast<Button*>(button);
 			buttonObject->setInteractable(false);
 		}
 		for (GameObject* button :
-			 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("ClientButton"))
+			 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("ClientButton"))
 		{
 			Button* buttonObject = dynamic_cast<Button*>(button);
 			buttonObject->setInteractable(false);
 		}
 		for (GameObject* button :
-			 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("HostButton"))
+			 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("HostButton"))
 		{
 			Button* buttonObject = dynamic_cast<Button*>(button);
 			buttonObject->setInteractable(false);
 		}
 		for (GameObject* button :
-			 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("SearchButton"))
+			 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("SearchButton"))
 		{
 			Button* buttonObject = dynamic_cast<Button*>(button);
 			buttonObject->setActive(true);
@@ -196,7 +196,7 @@ void NetworkSelectionBehaviourScript::onSearchRelease()
 		std::string buttonTag = "button" + serverAddress;
 
 		Button* button =
-			MainMenuPrefabFactory::createDefaultButton(mMainMenuObject, sceneManager.getCurrentScene(), serverAddress,
+			MainMenuPrefabFactory::createDefaultButton(mMainMenuObject, &sceneManager.getCurrentScene(), serverAddress,
 													   buttonTag, serverAddress, menuIndexX, menuIndexY);
 		mServerAdressButtons.push_back(button);
 		button->getComponents<Animation>();

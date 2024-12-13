@@ -30,7 +30,7 @@ void MainMenuPrefabFactory::setBackground(GameObject* gameObject)
 
 	backgroundSprite->setLayer(0);
 
-	Camera* camera = EngineBravo::getInstance().getSceneManager().getCurrentScene()->getCameraWithTag("MainCamera");
+	Camera* camera = EngineBravo::getInstance().getSceneManager().getCurrentScene().getCameraWithTag("MainCamera");
 
 	backgroundSprite->setWidth(camera->getWidth());
 	backgroundSprite->setHeight(camera->getHeight());

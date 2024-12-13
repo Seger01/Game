@@ -29,19 +29,16 @@ void LevelCreatorBehaviourScript::onUpdate()
 	{
 		EngineBravo& engine = EngineBravo::getInstance();
 		SceneManager& sceneManager = engine.getSceneManager();
-		Scene* currentScene = sceneManager.getCurrentScene();
+		Scene& currentScene = sceneManager.getCurrentScene();
 
-		if (currentScene != nullptr)
+		std::vector<GameObject*> persistentObjects = currentScene.getPersistentGameObjects();
+		auto playerIt = std::find_if(persistentObjects.begin(), persistentObjects.end(),
+									 [](GameObject* obj) { return obj->getTag() == "Player"; });
+
+		if (playerIt != persistentObjects.end())
 		{
-			std::vector<GameObject*> persistentObjects = currentScene->getPersistentGameObjects();
-			auto playerIt = std::find_if(persistentObjects.begin(), persistentObjects.end(),
-										 [](GameObject* obj) { return obj->getTag() == "Player"; });
-
-			if (playerIt != persistentObjects.end())
-			{
-				setPlayerStartPosition(currentScene, mTileMapData);
-				mPlayerPositionSet = true; // Set the flag to true
-			}
+			setPlayerStartPosition(&currentScene, mTileMapData);
+			mPlayerPositionSet = true; // Set the flag to true
 		}
 	}
 }
@@ -51,11 +48,7 @@ void LevelCreatorBehaviourScript::createLevel1()
 	EngineBravo& engine = EngineBravo::getInstance();
 	SceneManager& sceneManager = engine.getSceneManager();
 
-	Scene* scene = sceneManager.createScene("Level-1");
-	if (scene == nullptr)
-	{
-		exit(1);
-	}
+	Scene& scene = sceneManager.createScene("Level-1");
 
 	Camera* camera = new Camera;
 	camera->setTag("MainCamera");
@@ -65,7 +58,7 @@ void LevelCreatorBehaviourScript::createLevel1()
 	camera->setWidth(16 * 30);
 	camera->setHeight(9 * 30);
 
-	scene->addGameObject(camera);
+	scene.addGameObject(camera);
 
 	std::string path = mFsConverter.getResourcePath("LevelDefs/levelwithcollision.json");
 
@@ -73,8 +66,8 @@ void LevelCreatorBehaviourScript::createLevel1()
 	tileMapParser.parse();
 	mTileMapData = tileMapParser.getTileMapData();
 
-	createLevel(scene, mTileMapData);
-	createPlayer(scene, mTileMapData);
+	createLevel(&scene, mTileMapData);
+	createPlayer(&scene, mTileMapData);
 	sceneManager.requestSceneChange("Level-1");
 	mPlayerPositionSet = false;
 }
@@ -84,11 +77,7 @@ void LevelCreatorBehaviourScript::createLevel2()
 	EngineBravo& engine = EngineBravo::getInstance();
 	SceneManager& sceneManager = engine.getSceneManager();
 
-	Scene* scene = sceneManager.createScene("Level-2");
-	if (scene == nullptr)
-	{
-		exit(1);
-	}
+	Scene& scene = sceneManager.createScene("Level-2");
 
 	Camera* camera = new Camera;
 	camera->setTag("MainCamera");
@@ -98,7 +87,7 @@ void LevelCreatorBehaviourScript::createLevel2()
 	camera->setWidth(16 * 30);
 	camera->setHeight(9 * 30);
 
-	scene->addGameObject(camera);
+	scene.addGameObject(camera);
 
 	std::string path = mFsConverter.getResourcePath("LevelDefs/level2.json");
 
@@ -106,7 +95,7 @@ void LevelCreatorBehaviourScript::createLevel2()
 	tileMapParser.parse();
 	mTileMapData = tileMapParser.getTileMapData();
 
-	createLevel(scene, mTileMapData);
+	createLevel(&scene, mTileMapData);
 	sceneManager.requestSceneChange("Level-2");
 	mPlayerPositionSet = false;
 }
@@ -116,11 +105,7 @@ void LevelCreatorBehaviourScript::createLevel3()
 	EngineBravo& engine = EngineBravo::getInstance();
 	SceneManager& sceneManager = engine.getSceneManager();
 
-	Scene* scene = sceneManager.createScene("Level-3");
-	if (scene == nullptr)
-	{
-		exit(1);
-	}
+	Scene& scene = sceneManager.createScene("Level-3");
 
 	Camera* camera = new Camera;
 	camera->setTag("MainCamera");
@@ -130,7 +115,7 @@ void LevelCreatorBehaviourScript::createLevel3()
 	camera->setWidth(16 * 30);
 	camera->setHeight(9 * 30);
 
-	scene->addGameObject(camera);
+	scene.addGameObject(camera);
 
 	std::string path = mFsConverter.getResourcePath("LevelDefs/level3.json");
 
@@ -138,7 +123,7 @@ void LevelCreatorBehaviourScript::createLevel3()
 	tileMapParser.parse();
 	mTileMapData = tileMapParser.getTileMapData();
 
-	createLevel(scene, mTileMapData);
+	createLevel(&scene, mTileMapData);
 	sceneManager.requestSceneChange("Level-3");
 	mPlayerPositionSet = false;
 }
@@ -148,11 +133,7 @@ void LevelCreatorBehaviourScript::createDemoNetworkingLevel()
 	EngineBravo& engine = EngineBravo::getInstance();
 	SceneManager& sceneManager = engine.getSceneManager();
 
-	Scene* scene = sceneManager.createScene("DemoNetworkingLevel");
-	if (scene == nullptr)
-	{
-		exit(1);
-	}
+	Scene& scene = sceneManager.createScene("DemoNetworkingLevel");
 
 	Camera* camera = new Camera;
 	camera->setTag("MainCamera");
@@ -179,7 +160,7 @@ void LevelCreatorBehaviourScript::createDemoNetworkingLevel()
 	camera->setWidth(width);
 	camera->setHeight(height);
 
-	scene->addGameObject(camera);
+	scene.addGameObject(camera);
 
 	std::string path = mFsConverter.getResourcePath("LevelDefs/networkDemoLevel.json");
 
@@ -187,7 +168,7 @@ void LevelCreatorBehaviourScript::createDemoNetworkingLevel()
 	tileMapParser.parse();
 	const TileMapData& tileMapData = tileMapParser.getTileMapData();
 
-	createLevel(scene, tileMapData);
+	createLevel(&scene, tileMapData);
 	sceneManager.requestSceneChange("DemoNetworkingLevel");
 }
 

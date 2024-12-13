@@ -264,7 +264,7 @@ void PlayerNetworkBehaviourScript::hanldeCameraMovement()
 		}
 	}
 
-	Camera* currentCam = EngineBravo::getInstance().getSceneManager().getCurrentScene()->getCameraWithTag("MainCamera");
+	Camera* currentCam = EngineBravo::getInstance().getSceneManager().getCurrentScene().getCameraWithTag("MainCamera");
 
 	Transform playerTransform = this->mGameObject->getTransform();
 
@@ -277,7 +277,7 @@ void PlayerNetworkBehaviourScript::fireBullet(Point mousePosition)
 	SceneManager& sceneManager = engine.getSceneManager();
 
 	// Get the camera
-	Camera* currentCam = sceneManager.getCurrentScene()->getCameraWithTag("MainCamera");
+	Camera* currentCam = sceneManager.getCurrentScene().getCameraWithTag("MainCamera");
 	Vector2 cameraOrigin = currentCam->getOrigin();
 
 	// Get window dimensions
@@ -328,7 +328,7 @@ void PlayerNetworkBehaviourScript::fireBullet(Point mousePosition)
 	float bulletSpeed = 1000.0f;
 	bulletRigidBody->addForce(direction * bulletSpeed);
 
-	sceneManager.getCurrentScene()->addGameObject(bulletObject);
+	sceneManager.getCurrentScene().addGameObject(bulletObject);
 }
 
 void PlayerNetworkBehaviourScript::onUpdate()

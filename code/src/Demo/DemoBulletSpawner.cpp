@@ -15,7 +15,7 @@ void DemoBulletSpawner::onStart()
 {
 	EngineBravo& engine = EngineBravo::getInstance();
 	SceneManager& sceneManager = engine.getSceneManager();
-	Scene* scene = sceneManager.getCurrentScene();
+	Scene& scene = sceneManager.getCurrentScene();
 
 	mTextObject = new GameObject();
 	mTextObject->setTag("SpawnedBulletsText");
@@ -26,8 +26,8 @@ void DemoBulletSpawner::onStart()
 	textPar->setTag("SpawnedBulletsText");
 	textPar->setParent(mTextObject);
 
-	scene->addGameObject(textPar);
-	scene->addGameObject(mTextObject);
+	scene.addGameObject(textPar);
+	scene.addGameObject(mTextObject);
 }
 
 void DemoBulletSpawner::onUpdate()
@@ -37,9 +37,9 @@ void DemoBulletSpawner::onUpdate()
 	if (mBullets.size() < mMaxBullets && mTimeSinceLastSpawn >= mSpawnInterval)
 	{
 		EngineBravo& engine = EngineBravo::getInstance();
-		Scene* scene = engine.getSceneManager().getCurrentScene();
+		Scene& scene = engine.getSceneManager().getCurrentScene();
 
-		GameObject* playerObject = scene->getGameObjectsWithTag("Player").at(0);
+		GameObject* playerObject = scene.getGameObjectsWithTag("Player").at(0);
 		if (playerObject == nullptr)
 		{
 			std::cout << "Player not found" << std::endl;
@@ -68,7 +68,7 @@ void DemoBulletSpawner::onUpdate()
 			boxCollider->setCollideCategory(2);
 			boxCollider->setCollideWithCategory({1});
 		}
-		scene->addGameObject(bullet);
+		scene.addGameObject(bullet);
 
 		mBullets.push_back(bullet);
 		mTimeSinceLastSpawn = 0.0f;

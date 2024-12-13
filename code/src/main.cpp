@@ -15,7 +15,7 @@ void init()
 	EngineBravo::getInstance().initialize();
 	SceneManager& sceneManager = EngineBravo::getInstance().getSceneManager();
 
-	Scene* scene = sceneManager.createScene("SplashScreenScene");
+	Scene& scene = sceneManager.createScene("SplashScreenScene");
 	GameObject* initObject = new GameObject;
 	initObject->addComponent<SplashScreenBehaviourScript>();
 	initObject->setTag("initObject");
@@ -24,7 +24,7 @@ void init()
 	temp->setTag("temp");
 
 	// scene->addGameObject(temp);
-	scene->addGameObject(initObject);
+	scene.addGameObject(initObject);
 	Camera* camera = new Camera;
 	camera->setTag("MainCamera");
 	camera->setActive(true);
@@ -33,7 +33,7 @@ void init()
 	camera->setWidth(200);
 	camera->setHeight(200);
 
-	scene->addGameObject(camera);
+	scene.addGameObject(camera);
 
 	sceneManager.requestSceneChange("SplashScreenScene");
 

@@ -116,7 +116,7 @@ void EnemyNetworkBehaviourScript::onDeath()
 		//  sceneManager.getCurrentScene()->addGameObject(coin2);
 
 		std::cout << "Removing GameObject: " << mGameObject->getTag() << std::endl;
-		sceneManager.getCurrentScene()->requestGameObjectRemoval(mGameObject);
+		sceneManager.getCurrentScene().requestGameObjectRemoval(mGameObject);
 	}
 	else
 	{

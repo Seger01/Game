@@ -14,10 +14,10 @@ void SplashScreenBehaviourScript::onStart()
 	std::cout << "SplashScreenBehaviourScript::onStart()" << std::endl;
 	SceneManager& sceneManager = EngineBravo::getInstance().getSceneManager();
 
-	Scene* initScene = sceneManager.createScene("InitScene");
+	Scene& initScene = sceneManager.createScene("InitScene");
 	GameObject* initObject = new GameObject;
 	initObject->addComponent<InitBehaviourScript>();
-	initScene->addGameObject(initObject);
+	initScene.addGameObject(initObject);
 
 	Camera* camera = new Camera;
 	camera->setTag("MainCamera");
@@ -27,10 +27,10 @@ void SplashScreenBehaviourScript::onStart()
 	camera->setWidth(16 * 30);
 	camera->setHeight(9 * 30);
 
-	initScene->addGameObject(camera);
+	initScene.addGameObject(camera);
 
-	Scene* splashScreenScene = sceneManager.getCurrentScene();
-	splashScreenScene->addGameObject(&splashScreenPrefab);
+	Scene& splashScreenScene = sceneManager.getCurrentScene();
+	splashScreenScene.addGameObject(&splashScreenPrefab);
 
 	startTime = std::chrono::system_clock::now();
 }

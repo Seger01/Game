@@ -258,7 +258,7 @@ void PlayerBehaviourScript::hanldeCameraMovement()
 		}
 	}
 
-	Camera* currentCam = EngineBravo::getInstance().getSceneManager().getCurrentScene()->getCameraWithTag("MainCamera");
+	Camera* currentCam = EngineBravo::getInstance().getSceneManager().getCurrentScene().getCameraWithTag("MainCamera");
 
 	Transform playerTransform = this->mGameObject->getTransform();
 
@@ -294,7 +294,7 @@ void PlayerBehaviourScript::fireBullet(Point mousePosition)
 	SceneManager& sceneManager = engine.getSceneManager();
 
 	// Get the camera
-	Camera* currentCam = sceneManager.getCurrentScene()->getCameraWithTag("MainCamera");
+	Camera* currentCam = sceneManager.getCurrentScene().getCameraWithTag("MainCamera");
 	Vector2 cameraOrigin = currentCam->getOrigin();
 
 	// Get window dimensions
@@ -345,7 +345,7 @@ void PlayerBehaviourScript::fireBullet(Point mousePosition)
 	float bulletSpeed = 1000.0f;
 	bulletRigidBody->addForce(direction * bulletSpeed);
 
-	sceneManager.getCurrentScene()->addGameObject(bulletObject);
+	sceneManager.getCurrentScene().addGameObject(bulletObject);
 }
 
 void PlayerBehaviourScript::onUpdate()
@@ -360,16 +360,14 @@ void PlayerBehaviourScript::onUpdate()
 
 	if (input.GetKeyDown(Key::Key_C))
 	{
-		Camera* mainCam =
-			EngineBravo::getInstance().getSceneManager().getCurrentScene()->getCameraWithTag("MainCamera");
+		Camera* mainCam = EngineBravo::getInstance().getSceneManager().getCurrentScene().getCameraWithTag("MainCamera");
 
 		mainCam->getDebugOverlayRef().renderColliders = !mainCam->getDebugOverlayRef().renderColliders;
 	}
 
 	if (input.GetKeyDown(Key::Key_F))
 	{
-		Camera* mainCam =
-			EngineBravo::getInstance().getSceneManager().getCurrentScene()->getCameraWithTag("MainCamera");
+		Camera* mainCam = EngineBravo::getInstance().getSceneManager().getCurrentScene().getCameraWithTag("MainCamera");
 
 		mainCam->getDebugOverlayRef().showFPS = !mainCam->getDebugOverlayRef().showFPS;
 	}

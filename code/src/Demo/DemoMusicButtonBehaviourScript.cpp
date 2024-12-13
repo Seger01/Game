@@ -20,19 +20,17 @@ void DemoMusicButtonBehaviourScript::onCollide(GameObject* aGameObject)
 
 	EngineBravo& engine = EngineBravo::getInstance();
 	SceneManager& sceneManager = engine.getSceneManager();
-	Scene* scene = sceneManager.getCurrentScene();
-	if (!scene)
-		return;
+	Scene& scene = sceneManager.getCurrentScene();
 
 	// Handle Start/Stop button
 	if (mGameObject->getTag() == "ButtonStartStopMusic")
 	{
-		togglePlayStop(scene);
+		togglePlayStop(&scene);
 	}
 	// Handle Reset button
 	else if (mGameObject->getTag() == "ButtonResetMusic")
 	{
-		resetAll(scene);
+		resetAll(&scene);
 	}
 }
 

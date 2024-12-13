@@ -12,31 +12,31 @@ MainMenuBehaviourScript::~MainMenuBehaviourScript() {}
 void MainMenuBehaviourScript::onStart()
 {
 	for (GameObject* button :
-		 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("PlayButton"))
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("PlayButton"))
 	{
 		Button* buttonObject = dynamic_cast<Button*>(button);
 		buttonObject->setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onPlayRelease, this));
 	}
 	for (GameObject* button :
-		 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("MultiplayerButton"))
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("MultiplayerButton"))
 	{
 		Button* buttonObject = dynamic_cast<Button*>(button);
 		buttonObject->setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onMultiplayerRelease, this));
 	}
 	for (GameObject* button :
-		 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("DemoButton"))
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("DemoButton"))
 	{
 		Button* buttonObject = dynamic_cast<Button*>(button);
 		buttonObject->setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onDemoRelease, this));
 	}
 	for (GameObject* button :
-		 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("ExitButton"))
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("ExitButton"))
 	{
 		Button* buttonObject = dynamic_cast<Button*>(button);
 		buttonObject->setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onExitRelease, this));
 	}
 	for (GameObject* button :
-		 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("DemoMultiButton"))
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("DemoMultiButton"))
 	{
 		Button* buttonObject = dynamic_cast<Button*>(button);
 		buttonObject->setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onDemoMultiRelease, this));
@@ -49,7 +49,7 @@ void MainMenuBehaviourScript::onPlayRelease()
 {
 	std::cout << "Wanted to play the game" << std::endl;
 	for (GameObject* object :
-		 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("LevelManager"))
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("LevelManager"))
 	{
 		if (object->hasComponent<LevelManagerBehaviourScript>())
 		{
@@ -66,11 +66,11 @@ void MainMenuBehaviourScript::onDemoRelease()
 	demoManagerObject->addComponent<DemoManagerBehaviourScript>();
 	demoManagerObject->setTag("DemoManager");
 
-	Scene* scene = EngineBravo::getInstance().getSceneManager().getCurrentScene();
+	Scene& scene = EngineBravo::getInstance().getSceneManager().getCurrentScene();
 
-	std::cout << "Current scene: " << scene->getName() << std::endl;
+	std::cout << "Current scene: " << scene.getName() << std::endl;
 
-	scene->addPersistentGameObject(demoManagerObject);
+	scene.addPersistentGameObject(demoManagerObject);
 
 	std::cout << "Wanted to play demo" << std::endl;
 }
@@ -80,17 +80,17 @@ void MainMenuBehaviourScript::onExitRelease() { std::cout << "adfljasdflkjafds t
 void MainMenuBehaviourScript::onDemoMultiRelease()
 {
 	std::cout << "Wanted to play demo multiplayer" << std::endl;
-	Scene* scene = EngineBravo::getInstance().getSceneManager().createScene("networkSelectionScene");
+	Scene& scene = EngineBravo::getInstance().getSceneManager().createScene("networkSelectionScene");
 	GameObject* networkSelectionObject = new GameObject;
 	networkSelectionObject->addComponent<NetworkSelectionBehaviourScript>();
-	scene->addGameObject(networkSelectionObject);
+	scene.addGameObject(networkSelectionObject);
 
 	Camera* camera =
-		new Camera(*EngineBravo::getInstance().getSceneManager().getCurrentScene()->getCameraWithTag("MainCamera"));
+		new Camera(*EngineBravo::getInstance().getSceneManager().getCurrentScene().getCameraWithTag("MainCamera"));
 	camera->setTag("MainCamera");
 	camera->setActive(true);
 
-	scene->addGameObject(camera);
+	scene.addGameObject(camera);
 
 	EngineBravo::getInstance().getSceneManager().requestSceneChange("networkSelectionScene");
 }

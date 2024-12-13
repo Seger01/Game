@@ -27,7 +27,6 @@ void LevelManagerBehaviourScript::doneWithCurrentLevel()
 
 	EngineBravo& engine = EngineBravo::getInstance();
 	SceneManager& sceneManager = engine.getSceneManager();
-	Scene* scene = sceneManager.getCurrentScene();
 	if (mGameObject->hasComponent<LevelCreatorBehaviourScript>())
 	{
 		auto Components = mGameObject->getComponents<LevelCreatorBehaviourScript>();

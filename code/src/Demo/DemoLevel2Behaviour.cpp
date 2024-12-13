@@ -1,8 +1,10 @@
 #include "DemoLevel2Behaviour.h"
+
 #include <Animation.h>
 #include <EnemyBehaviourScript.h>
 #include <EngineBravo.h>
 #include <Input.h>
+#include <RigidBody.h>
 #include <cmath>
 
 void DemoLevel2Behaviour::onStart()
@@ -10,9 +12,9 @@ void DemoLevel2Behaviour::onStart()
 	mGameObject->setTag("DemoLevel2");
 
 	EngineBravo& engine = EngineBravo::getInstance();
-	Scene* scene = engine.getSceneManager().getCurrentScene();
+	Scene& scene = engine.getSceneManager().getCurrentScene();
 
-	GameObject* enemy = scene->getGameObjectsWithTag("EnemyMoving")[0];
+	GameObject* enemy = scene.getGameObjectsWithTag("EnemyMoving")[0];
 	if (enemy != nullptr)
 	{
 		mInitialY = enemy->getTransform().position.y;
@@ -22,7 +24,7 @@ void DemoLevel2Behaviour::onStart()
 		}
 	}
 
-	GameObject* enemyStatic = scene->getGameObjectsWithTag("EnemyStatic")[0];
+	GameObject* enemyStatic = scene.getGameObjectsWithTag("EnemyStatic")[0];
 	if (enemyStatic != nullptr)
 	{
 		if (enemyStatic->hasComponent<EnemyBehaviourScript>())
@@ -35,12 +37,15 @@ void DemoLevel2Behaviour::onStart()
 		}
 	}
 
-    GameObject* enemyWithPathfinding = scene->getGameObjectsWithTag("EnemyWithPathfinding")[0];
-    if (enemyWithPathfinding != nullptr) {
-        if (enemyWithPathfinding->hasComponent<RigidBody>()) {
-            enemyWithPathfinding->getComponents<RigidBody>()[0]->setActive(true);
-        }
-    }
+	GameObject* enemyWithPathfinding = scene.getGameObjectsWithTag("EnemyWithPathfinding")[0];
+	if (enemyWithPathfinding != nullptr)
+	{
+		if (enemyWithPathfinding->hasComponent<RigidBody>())
+		{
+			RigidBody* rigidBody = enemyWithPathfinding->getComponents<RigidBody>().at(0);
+			rigidBody->setActive(false);
+		}
+	}
 }
 
 void DemoLevel2Behaviour::onUpdate()
@@ -55,7 +60,7 @@ void DemoLevel2Behaviour::onCollide(GameObject* aGameObject) {}
 void DemoLevel2Behaviour::moveEnemy()
 {
 	EngineBravo& engine = EngineBravo::getInstance();
-	Scene* scene = engine.getSceneManager().getCurrentScene();
+	Scene& scene = engine.getSceneManager().getCurrentScene();
 	Input& input = Input::getInstance();
 
 	if (input.GetKeyDown(Key::Key_PageUp))
@@ -68,7 +73,7 @@ void DemoLevel2Behaviour::moveEnemy()
 		Time::timeDilation = Time::timeDilation - 0.1f;
 	}
 
-	GameObject* enemy = scene->getGameObjectsWithTag("EnemyMoving")[0];
+	GameObject* enemy = scene.getGameObjectsWithTag("EnemyMoving")[0];
 	if (enemy == nullptr)
 	{
 		std::cout << "Enemy not found" << std::endl;
@@ -102,9 +107,9 @@ void DemoLevel2Behaviour::moveEnemy()
 void DemoLevel2Behaviour::scaleEnemy()
 {
 	EngineBravo& engine = EngineBravo::getInstance();
-	Scene* scene = engine.getSceneManager().getCurrentScene();
+	Scene& scene = engine.getSceneManager().getCurrentScene();
 
-	GameObject* enemy = scene->getGameObjectsWithTag("EnemyStatic")[0];
+	GameObject* enemy = scene.getGameObjectsWithTag("EnemyStatic")[0];
 	if (enemy == nullptr)
 	{
 		std::cout << "Enemy not found" << std::endl;
@@ -139,9 +144,9 @@ void DemoLevel2Behaviour::scaleEnemy()
 void DemoLevel2Behaviour::rotateEnemy()
 {
 	EngineBravo& engine = EngineBravo::getInstance();
-	Scene* scene = engine.getSceneManager().getCurrentScene();
+	Scene& scene = engine.getSceneManager().getCurrentScene();
 
-	GameObject* enemy = scene->getGameObjectsWithTag("EnemyStatic")[0];
+	GameObject* enemy = scene.getGameObjectsWithTag("EnemyStatic")[0];
 	if (enemy == nullptr)
 	{
 		std::cout << "Enemy not found" << std::endl;
@@ -152,16 +157,17 @@ void DemoLevel2Behaviour::rotateEnemy()
 	enemy->setTransform(transform);
 }
 
+void DemoLevel2Behaviour::moveWithPathfinding()
+{
+	EngineBravo& engine = EngineBravo::getInstance();
+	Scene& scene = engine.getSceneManager().getCurrentScene();
 
-void DemoLevel2Behaviour::moveWithPathfinding() {
-    EngineBravo& engine = EngineBravo::getInstance();
-    Scene* scene = engine.getSceneManager().getCurrentScene();
-
-    GameObject* enemy = scene->getGameObjectsWithTag("EnemyWithPathfinding")[0];
-    if (enemy == nullptr) {
-        std::cout << "Enemy not found" << std::endl;
-        return;
-    }
+	GameObject* enemy = scene.getGameObjectsWithTag("EnemyWithPathfinding")[0];
+	if (enemy == nullptr)
+	{
+		std::cout << "Enemy not found" << std::endl;
+		return;
+	}
 
 	if (enemy->hasComponent<EnemyBehaviourScript>())
 	{

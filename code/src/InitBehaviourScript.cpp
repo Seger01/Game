@@ -16,11 +16,11 @@ void InitBehaviourScript::createLevelManager()
 {
 	EngineBravo& engine = EngineBravo::getInstance();
 	SceneManager& sceneManager = engine.getSceneManager();
-	Scene* scene = sceneManager.getCurrentScene();
+	Scene& scene = sceneManager.getCurrentScene();
 
 	GameObject* LevelManagerObject = LevelManagerFactory().createLevelManagerPrefab();
 
-	scene->addPersistentGameObject(LevelManagerObject);
+	scene.addPersistentGameObject(LevelManagerObject);
 
 	createMainMenu();
 }
@@ -29,33 +29,33 @@ void InitBehaviourScript::createMainMenu()
 {
 	EngineBravo& engine = EngineBravo::getInstance();
 	SceneManager& sceneManager = engine.getSceneManager();
-	Scene* scene = sceneManager.createScene("MainMenuScene");
+	Scene& scene = sceneManager.createScene("MainMenuScene");
 
 	int menuStartX = 240 + 13;
 	int menuStartY = 135 + 5;
 
 	GameObject* MainMenuObject = MainMenuPrefabFactory().createMainMenuPrefab();
 
-	MainMenuPrefabFactory().createDefaultButton(MainMenuObject, scene, "Play", "PlayButton", "Play", menuStartX,
+	MainMenuPrefabFactory().createDefaultButton(MainMenuObject, &scene, "Play", "PlayButton", "Play", menuStartX,
 												menuStartY);
 	menuStartY += 20;
 
-	MainMenuPrefabFactory().createDefaultButton(MainMenuObject, scene, "Multiplayer", "MultiplayerButton",
+	MainMenuPrefabFactory().createDefaultButton(MainMenuObject, &scene, "Multiplayer", "MultiplayerButton",
 												"Multiplayer", menuStartX, menuStartY);
 	menuStartY += 20;
 
-	MainMenuPrefabFactory().createDefaultButton(MainMenuObject, scene, "Demo", "DemoButton", "Demo", menuStartX,
+	MainMenuPrefabFactory().createDefaultButton(MainMenuObject, &scene, "Demo", "DemoButton", "Demo", menuStartX,
 												menuStartY);
 	menuStartY += 20;
 
-    MainMenuPrefabFactory().createDefaultButton(MainMenuObject, scene, "Demo Multiplayer", "DemoMultiButton",
-                                                "Demo Multiplayer", menuStartX, menuStartY);
-    menuStartY += 20;
+	MainMenuPrefabFactory().createDefaultButton(MainMenuObject, &scene, "Demo Multiplayer", "DemoMultiButton",
+												"Demo Multiplayer", menuStartX, menuStartY);
+	menuStartY += 20;
 
-    MainMenuPrefabFactory().createDefaultButton(MainMenuObject, scene, "Exit", "ExitButton", "Exit", menuStartX,
-                                                menuStartY);
+	MainMenuPrefabFactory().createDefaultButton(MainMenuObject, &scene, "Exit", "ExitButton", "Exit", menuStartX,
+												menuStartY);
 
-	scene->addGameObject(MainMenuObject);
+	scene.addGameObject(MainMenuObject);
 
 	Camera* camera = new Camera;
 	camera->setTag("MainCamera");
@@ -65,7 +65,7 @@ void InitBehaviourScript::createMainMenu()
 	camera->setWidth(16 * 30);
 	camera->setHeight(9 * 30);
 
-	scene->addGameObject(camera);
+	scene.addGameObject(camera);
 
 	sceneManager.requestSceneChange("MainMenuScene");
 }
