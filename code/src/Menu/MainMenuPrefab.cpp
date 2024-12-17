@@ -50,9 +50,9 @@ Button* MainMenuPrefabFactory::createDefaultButton(GameObject* gameObject, Scene
 	EngineBravo& engine = EngineBravo::getInstance();
 	Button* buttonObject = new Button;
 	buttonObject->setTag(tagButton);
-
 	buttonObject->addComponent<MainMenuButtonBehaviour>();
 	buttonObject->setParent(gameObject);
+
 	Text* buttonTextObj = new Text(text, "werkt niet", Color(255, 255, 255, 150), Vector2(0, 0), Vector2(0.5, 0.5));
 	buttonTextObj->setLayer(2);
 	buttonTextObj->setParent(buttonObject);
