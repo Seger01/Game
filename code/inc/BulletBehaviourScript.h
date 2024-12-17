@@ -5,6 +5,7 @@
 #include <IBehaviourScript.h>
 #include <SceneManager.h>
 #include <iostream>
+#include <ParticleEmitter.h>
 
 class BulletBehaviourScript : public IBehaviourScript {
 public:
@@ -20,4 +21,5 @@ public:
 private:
     float mDamage;
     bool mIsMarkedForRemoval;
+    GameObject* mParticleObject;
 };

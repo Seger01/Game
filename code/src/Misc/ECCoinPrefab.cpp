@@ -6,7 +6,7 @@ ECCoinPrefab::ECCoinPrefab() {
     mCoinSpritePosition = {0.0f, 0.0f}; // Adjust the sprite position as needed
 
     FSConverter fsConverter;
-    std::string coinSpritePath = fsConverter.getResourcePath("Coins/ec_coin_circle.png");
+    std::string coinSpritePath = fsConverter.getResourcePath("Coins/ec_coin.png");
     mCoinSpriteDef = {
         coinSpritePath,
         Rect{static_cast<int>(mCoinSpritePosition.x), static_cast<int>(mCoinSpritePosition.y), static_cast<int>(mCoinWidth), static_cast<int>(mCoinHeight)},
