@@ -4,17 +4,17 @@
 
 class EnemyPrefab : public INetworkPrefab
 {
-public: 
-    EnemyPrefab();
-    GameObject* create() override;
-    int getPrefabID() const override;
+public:
+	EnemyPrefab();
+	GameObject* createEnemyPrefab() override;
+	int getPrefabID() const override;
 
 private:
-    void setTransform(GameObject *gameObject);
-    void addSprite(GameObject *gameObject);
-    void addRigidBody(GameObject *gameObject);
-    void addCollider(GameObject *gameObject);
-    static void addAnimations(GameObject* gameObject);
-private: 
+	void setTransform(GameObject* gameObject);
+	void addSprite(GameObject* gameObject);
+	void addRigidBody(GameObject* gameObject);
+	void addCollider(GameObject* gameObject);
+	static void addAnimations(GameObject* gameObject);
 
+private:
 };

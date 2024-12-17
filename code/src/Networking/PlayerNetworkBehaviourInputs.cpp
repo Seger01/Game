@@ -48,19 +48,19 @@ void PlayerNetworkBehaviourInputs::onUpdate()
 		// Set the locals
 		if (w)
 		{
-			mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(0, -movementSpeed * Time::deltaTime));
+			mGameObject->getComponents<RigidBody>()[0].get().addForce(Vector2(0, -movementSpeed * Time::deltaTime));
 		}
 		if (a)
 		{
-			mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(-movementSpeed * Time::deltaTime, 0));
+			mGameObject->getComponents<RigidBody>()[0].get().addForce(Vector2(-movementSpeed * Time::deltaTime, 0));
 		}
 		if (s)
 		{
-			mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(0, movementSpeed * Time::deltaTime));
+			mGameObject->getComponents<RigidBody>()[0].get().addForce(Vector2(0, movementSpeed * Time::deltaTime));
 		}
 		if (d)
 		{
-			mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(movementSpeed * Time::deltaTime, 0));
+			mGameObject->getComponents<RigidBody>()[0].get().addForce(Vector2(movementSpeed * Time::deltaTime, 0));
 		}
 	}
 }

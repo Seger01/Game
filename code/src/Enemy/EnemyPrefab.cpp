@@ -20,11 +20,7 @@ const int enemySpriteHeight = 27; // Height of each sprite
 const Point enemyIdlePosition = {53, 389};
 SpriteDef firstFrameEnemyIdle = {"Dungeontileset/0x72_DungeonTilesetII_v1.7.png",
 								 Rect{enemyIdlePosition.x, enemyIdlePosition.y, enemySpriteWidth, enemySpriteHeight},
-<<<<<<< HEAD
-								 enemySpriteWidth, enemySpriteHeight};
-=======
 								 16, 16};
->>>>>>> main
 
 const Point enemyWalkingPosition = {16, 388};
 SpriteDef firstFrameEnemyWalking = {"Dungeontileset/0x72_DungeonTilesetII_v1.7.png",
@@ -32,11 +28,7 @@ SpriteDef firstFrameEnemyWalking = {"Dungeontileset/0x72_DungeonTilesetII_v1.7.p
 
 EnemyPrefab::EnemyPrefab() {}
 
-<<<<<<< HEAD
-GameObject* EnemyPrefab::create()
-=======
 GameObject* EnemyPrefab::createEnemyPrefab()
->>>>>>> main
 {
 	GameObject* enemy = new GameObject;
 	// setTransform(enemy);
@@ -58,11 +50,8 @@ GameObject* EnemyPrefab::createEnemyPrefab()
 	return enemy;
 }
 
-<<<<<<< HEAD
 int EnemyPrefab::getPrefabID() const { return GetTypeId<EnemyPrefab>(); }
 
-=======
->>>>>>> main
 void EnemyPrefab::setTransform(GameObject* gameObject)
 {
 	Transform transform;
@@ -115,16 +104,8 @@ void EnemyPrefab::addAnimations(GameObject* gameObject)
 
 	for (auto animation : gameObject->getComponents<Animation>())
 	{
-<<<<<<< HEAD
-		animation->setActive(false);
-		animation->setLayer(2);
-	}
-	enemyWalkingAnimation->setActive(false);
-}
-=======
 		animation.get().setActive(false);
 		animation.get().setLayer(2);
 	}
 	enemyWalkingAnimation->setActive(false);
 }
->>>>>>> main

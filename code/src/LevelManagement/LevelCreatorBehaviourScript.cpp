@@ -168,12 +168,12 @@ void LevelCreatorBehaviourScript::createDemoNetworkingLevel()
 	tileMapParser.parse();
 	const TileMapData& tileMapData = tileMapParser.getTileMapData();
 
-	createLevel(scene, tileMapData);
+	createLevel(&scene, tileMapData);
 
 	GameObject* sceneBehaviour = new GameObject;
 	sceneBehaviour->setTag("SceneBehaviour");
 	sceneBehaviour->addComponent(new NetworkDemoSceneBehaviour());
-	scene->addGameObject(sceneBehaviour);
+	scene.addGameObject(sceneBehaviour);
 
 	sceneManager.requestSceneChange("DemoNetworkingLevel");
 }

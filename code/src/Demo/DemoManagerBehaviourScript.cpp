@@ -366,10 +366,10 @@ void DemoManagerBehaviourScript::createSecondScene()
 	scene.addGameObject(buttonGravity);
 
 	// Add enemies
-	GameObject* enemyMoving = EnemyPrefab().create();
-	GameObject* enemyStatic = EnemyPrefab().create();
-	GameObject* enemyWithCollider = EnemyPrefab().create();
-	GameObject* enemyWithPathfinding = EnemyPrefab().create();
+	GameObject* enemyMoving = EnemyPrefab().createEnemyPrefab();
+	GameObject* enemyStatic = EnemyPrefab().createEnemyPrefab();
+	GameObject* enemyWithCollider = EnemyPrefab().createEnemyPrefab();
+	GameObject* enemyWithPathfinding = EnemyPrefab().createEnemyPrefab();
 
 	enemyMoving->setTransform(Transform(Vector2(100, 112)));
 	enemyMoving->setTag("EnemyMoving");

@@ -64,7 +64,7 @@ void PlayerStatsBehaviourScript::onStart()
 	mHealthBarWidth = playerStatHealthBarSprite->getWidth();
 	mFullHealthBarForegroundSourceRect = playerStatHealthBarSprite->getSource();
 
-	GameObject& playerObject = scene.getGameObjectsWithTag("Player")[0];
+	GameObject& playerObject = scene.getGameObjectsWithTag("Player")[0].get();
 
 	mPlayerBehaviourScript = &playerObject.getComponents<PlayerBehaviourScript>()[0].get();
 }
