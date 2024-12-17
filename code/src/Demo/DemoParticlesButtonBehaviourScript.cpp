@@ -45,13 +45,11 @@ void DemoParticlesButtonBehaviourScript::onStart()
 	emitter->setTag("ButtonParticles");
 	Transform transform;
 	transform.position.y = 5 * 16;
-	// //std::cout << "Emitter position: (" << transform.position.x << ", " << transform.position.y << ")" << std::endl;
 
 	emitter->setRelativeTransform(transform);
 
 	emitter->setActive(true);
 
-	std::cout << "adding emitter to game object" << std::endl;
 	mGameObject->addComponent(emitter);
 }
 

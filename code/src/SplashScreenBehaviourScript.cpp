@@ -11,7 +11,6 @@ SplashScreenBehaviourScript::SplashScreenBehaviourScript() : splashScreenPrefab(
 
 void SplashScreenBehaviourScript::onStart()
 {
-	std::cout << "SplashScreenBehaviourScript::onStart()" << std::endl;
 	SceneManager& sceneManager = EngineBravo::getInstance().getSceneManager();
 
 	Scene& initScene = sceneManager.createScene("InitScene");

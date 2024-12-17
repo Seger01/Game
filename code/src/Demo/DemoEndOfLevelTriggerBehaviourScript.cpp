@@ -14,7 +14,6 @@ void DemoEndOfLevelTriggerBehaviourScript::onCollide(GameObject* aGameObject)
 {
 	if (aGameObject != nullptr)
 	{
-		std::cout << "End of level trigger collided" << std::endl;
 
 		for (GameObject& object :
 			 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("DemoManager"))

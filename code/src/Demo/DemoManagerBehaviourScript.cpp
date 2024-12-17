@@ -155,7 +155,7 @@ void DemoManagerBehaviourScript::createFirstScene()
 	Camera* miniMapCamera = new Camera;
 	miniMapCamera->setTag("MiniMapCamera");
 	miniMapCamera->setActive(true);
-
+	miniMapCamera->setMainCamera(false);
 	miniMapCamera->setRenderOrder(1);
 
 	miniMapCamera->setViewport(FRect{0.7, 0.7, 0.3, 0.3});
@@ -498,8 +498,6 @@ void DemoManagerBehaviourScript::nextScene(const std::string& aSceneName)
 
 void DemoManagerBehaviourScript::onStart()
 {
-	std::cout << "DemoInitBehaviourScript::onStart()" << std::endl;
-
 	mCurrentScene = 0;
 	nextScene("DemoStartScene");
 	// createSecondScene();
