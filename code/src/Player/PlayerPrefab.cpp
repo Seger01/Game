@@ -229,6 +229,7 @@ void PlayerPrefabFactory::addParticleEmitter(GameObject* gameObject)
 	emitter->setParticlesPerSecond(300);
 	emitter->setAngle(0, 45);
 	emitter->setLayer(4);
+	emitter->setActive(false);
 	gameObject->addComponent(emitter);
 }
 
@@ -236,7 +237,7 @@ void PlayerPrefabFactory::addRigidBody(GameObject* gameObject)
 {
 	RigidBody* rigidBody = new RigidBody();
 
-	rigidBody->setCanRotate(true);
+	rigidBody->setCanRotate(false);
 	rigidBody->setHasGravity(false);
 	rigidBody->setIsMoveableByForce(true);
 	rigidBody->setDensity(1.0f);

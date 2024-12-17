@@ -382,7 +382,7 @@ void LevelCreatorBehaviourScript::createLevel(Scene* scene, const TileMapData& t
 									rigidBody->setActive(false);
 								}
 							}
-							rigidBody->setFriction(5.0f);
+							rigidBody->setFriction(1.0f);
 							gameObject->addComponent(rigidBody);
 							gameObject->setName("Tile");
 						}

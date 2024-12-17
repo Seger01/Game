@@ -21,11 +21,15 @@ void DemoEndOfLevelTriggerBehaviourScript::onCollide(GameObject* aGameObject)
 		{
 			if (object.hasComponent<DemoManagerBehaviourScript>())
 			{
-				if (mGameObject->getTag() == "EndOfLevelTriggerDemo")
+				if (mGameObject->getTag() == "startDemoTrigger")
+				{
+					object.getComponents<DemoManagerBehaviourScript>()[0].get().nextScene("1");
+				}
+				else if (mGameObject->getTag() == "EndOfLevelTriggerDemo")
 				{
 					object.getComponents<DemoManagerBehaviourScript>()[0].get().nextScene("2");
 				}
-				else
+				else if (mGameObject->getTag() == "EndOfLevelTriggerStressTest")
 				{
 					object.getComponents<DemoManagerBehaviourScript>()[0].get().nextScene("3");
 				}
