@@ -1,9 +1,9 @@
 #include "BSCoinPrefab.h"
 
 BSCoinPrefab::BSCoinPrefab() {
-    mCoinWidth = 6;
-    mCoinHeight = 6;
-    mCoinSpritePosition = {0, 0}; // Adjust the sprite position as needed
+    mCoinWidth = 6.0f;
+    mCoinHeight = 6.0f;
+    mCoinSpritePosition = {0.0f, 0.0f}; // Adjust the sprite position as needed
 
     FSConverter fsConverter;
     std::string coinSpritePath = fsConverter.getResourcePath("Coins/Money.png");
