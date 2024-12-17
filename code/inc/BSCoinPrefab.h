@@ -13,8 +13,8 @@ public:
     BSCoinPrefab();
     GameObject* createBSCoinPrefab(GameObject& objDroppingCoin);
 private:
-    int mCoinWidth;
-    int mCoinHeight;
+    float mCoinWidth;
+    float mCoinHeight;
     Vector2 mCoinSpritePosition;
     SpriteDef mCoinSpriteDef;
 

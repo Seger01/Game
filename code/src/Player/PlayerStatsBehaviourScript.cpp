@@ -18,13 +18,13 @@ void PlayerStatsBehaviourScript::onStart()
 	// Camera& camera = scene->getActiveCamera();
 
 	Sprite* playerStatBackgroundSprite = engine.getResourceManager().createSprite(playerStatBackgroundDef);
-	playerStatBackgroundSprite->setLayer(4);
+	playerStatBackgroundSprite->setLayer(7);
 	playerStatBackgroundSprite->setWidth(playerStatBackgroundSprite->getWidth());
 	playerStatBackgroundSprite->setHeight(playerStatBackgroundSprite->getHeight());
 
 	Sprite* playerStatHealthBarBackgroundSprite =
 		engine.getResourceManager().createSprite(playerStatHealthBarBackgroundDef);
-	playerStatHealthBarBackgroundSprite->setLayer(4);
+	playerStatHealthBarBackgroundSprite->setLayer(8);
 	playerStatHealthBarBackgroundSprite->setWidth(playerStatHealthBarBackgroundSprite->getWidth());
 	playerStatHealthBarBackgroundSprite->setHeight(playerStatHealthBarBackgroundSprite->getHeight());
 	playerStatHealthBarBackgroundSprite->setRelativePosition(Transform(Vector2(39, 0)));
@@ -37,14 +37,14 @@ void PlayerStatsBehaviourScript::onStart()
 	// playerStatHealthBarSprite->setTag("playerHealthBar");
 
 	Sprite* playerStatHealthBarSprite = engine.getResourceManager().createSprite(playerStatHealthBarDef);
-	playerStatHealthBarSprite->setLayer(5);
+	playerStatHealthBarSprite->setLayer(9);
 	playerStatHealthBarSprite->setWidth(playerStatHealthBarSprite->getWidth());
 	playerStatHealthBarSprite->setHeight(playerStatHealthBarSprite->getHeight());
 	playerStatHealthBarSprite->setRelativePosition(Transform(Vector2(42, 5)));
 	playerStatHealthBarSprite->setTag("playerHealthBar");
 
 	Sprite* BSSprite = engine.getResourceManager().createSprite(playerStatBSCountDef);
-	BSSprite->setLayer(5);
+	BSSprite->setLayer(9);
 	BSSprite->setWidth(BSSprite->getWidth());
 	BSSprite->setHeight(BSSprite->getHeight());
 	BSSprite->setRelativePosition(Transform(Vector2(38, 22)));

@@ -52,6 +52,7 @@ void DemoLevel2Behaviour::onUpdate()
 	moveWithPathfinding();
 	moveEnemy();
 	rotateEnemy();
+	scaleEnemy();
 }
 
 void DemoLevel2Behaviour::onCollide(GameObject* aGameObject) {}

@@ -25,6 +25,112 @@
 #include <Text.h>
 #include <iostream>
 
+void DemoManagerBehaviourScript::createDemoStartScene()
+{
+	EngineBravo& engine = EngineBravo::getInstance();
+	SceneManager& sceneManager = engine.getSceneManager();
+	Scene& scene = sceneManager.createScene("DemoStartScene");
+
+	Camera* camera = new Camera;
+	camera->setTag("MainCamera");
+	camera->setActive(true);
+
+	camera->setBackgroundColor(Color(0, 0, 0));
+
+	camera->setRenderOrder(0);
+
+	camera->setTransform(Transform(Vector2(80, 96)));
+	camera->setWidth(16 * 30);
+	camera->setHeight(9 * 30);
+
+	scene.addGameObject(camera);
+
+	FSConverter fsconverter;
+	std::string path = fsconverter.getResourcePath("LevelDefs/demostartLevel.json");
+	TileMapParser tileMapParser(path);
+	tileMapParser.parse();
+	mTileMapData = tileMapParser.getTileMapData();
+
+	LevelCreatorBehaviourScript().createLevel(&scene, mTileMapData);
+	GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
+
+	for (const auto& mapObject : mTileMapData.mMapObjects) {
+		auto it = mapObject.properties.find("isPlayerSpawn");
+		if (it != mapObject.properties.end() && it->second == "true") {
+			defaultPlayerPrefab->setTransform(Transform(Vector2(mapObject.x, mapObject.y)));
+			break; // Assuming there's only one player spawn point
+		}
+	}
+
+	scene.addPersistentGameObject(defaultPlayerPrefab);
+
+	//Trigger for stress test
+	GameObject* endOfLevelTriggerStressTest = new GameObject;
+	endOfLevelTriggerStressTest->setTransform(Transform(Vector2(224, 64)));
+	endOfLevelTriggerStressTest->setTag("EndOfLevelTriggerStressTest");
+	endOfLevelTriggerStressTest->addComponent<DemoEndOfLevelTriggerBehaviourScript>();
+
+	endOfLevelTriggerStressTest->addComponent<RigidBody>();
+	BoxCollider* endOfLevelTriggerColliderStressTest = new BoxCollider();
+	endOfLevelTriggerColliderStressTest->setWidth(16);
+	endOfLevelTriggerColliderStressTest->setHeight(16);
+	endOfLevelTriggerColliderStressTest->setTrigger(true);
+	endOfLevelTriggerStressTest->addComponent(endOfLevelTriggerColliderStressTest);
+
+	scene.addGameObject(endOfLevelTriggerStressTest);
+
+	//Button for stress test
+	GameObject* buttonStressTest = DemoButtonPrefab().createButtonPrefab();
+	buttonStressTest->setTransform(Transform(Vector2(224, 64)));
+	if (buttonStressTest->hasComponent<RigidBody>()) {
+		buttonStressTest->getComponents<RigidBody>()[0].get().setActive(false);
+	}
+	
+	scene.addGameObject(buttonStressTest);
+	
+	Text* textStressTest = new Text("Stress test", "Arial", Color(255, 255, 255), Vector2(-15, 17), Vector2(0.3, 0.3));
+	textStressTest->setLayer(2);
+	textStressTest->setParent(buttonStressTest);
+	textStressTest->setTag("StressTestText");
+
+	scene.addGameObject(textStressTest);
+
+
+	//Trigger for demo start
+	GameObject* startDemoTrigger = new GameObject;
+	startDemoTrigger->setTransform(Transform(Vector2(224, 144)));
+	startDemoTrigger->setTag("startDemoTrigger");
+	startDemoTrigger->addComponent<DemoEndOfLevelTriggerBehaviourScript>();
+
+	startDemoTrigger->addComponent<RigidBody>();
+	BoxCollider* startDemoTriggerCollider = new BoxCollider();
+	startDemoTriggerCollider->setWidth(16);
+	startDemoTriggerCollider->setHeight(16);
+	startDemoTriggerCollider->setTrigger(true);
+	startDemoTrigger->addComponent(startDemoTriggerCollider);
+
+	scene.addGameObject(startDemoTrigger);
+
+	//Button for demo start
+	GameObject* buttonDemoStart = DemoButtonPrefab().createButtonPrefab();
+	buttonDemoStart->setTransform(Transform(Vector2(224, 144)));
+	if (buttonDemoStart->hasComponent<RigidBody>()) {
+		buttonDemoStart->getComponents<RigidBody>()[0].get().setActive(false);
+	}
+
+	scene.addGameObject(buttonDemoStart);
+
+	Text* text = new Text("Demo", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.3, 0.3));
+	text->setLayer(2);
+	text->setParent(buttonDemoStart);
+	text->setTag("StartDemoText");
+
+	scene.addGameObject(text);
+
+
+	sceneManager.requestSceneChange("DemoStartScene");
+}
+
 void DemoManagerBehaviourScript::createFirstScene()
 {
 	EngineBravo& engine = EngineBravo::getInstance();
@@ -49,7 +155,7 @@ void DemoManagerBehaviourScript::createFirstScene()
 	Camera* miniMapCamera = new Camera;
 	miniMapCamera->setTag("MiniMapCamera");
 	miniMapCamera->setActive(true);
-	miniMapCamera->setMainCamera(false);
+	//miniMapCamera->setMainCamera(false);
 	miniMapCamera->setRenderOrder(1);
 
 	miniMapCamera->setViewport(FRect{0.7, 0.7, 0.3, 0.3});
@@ -72,14 +178,17 @@ void DemoManagerBehaviourScript::createFirstScene()
 	mTileMapData = tileMapParser.getTileMapData();
 
 	LevelCreatorBehaviourScript().createLevel(&scene, mTileMapData);
-	GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
+	// GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
 
 	// defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
 
-	defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
+	// defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
 
-	scene.addPersistentGameObject(defaultPlayerPrefab);
+	// scene.addPersistentGameObject(defaultPlayerPrefab);
 
+	GameObject& playerObject =
+		EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("Player").at(0);
+	playerObject.setTransform(Transform(Vector2(40, 40)));
 	GameObject* button = DemoButtonPrefab().createButtonPrefab();
 	button->setTransform(Transform(Vector2(208, 128)));
 
@@ -100,20 +209,6 @@ void DemoManagerBehaviourScript::createFirstScene()
 	endOfLevelTrigger->addComponent(endOfLevelTriggerCollider);
 
 	scene.addGameObject(endOfLevelTrigger);
-
-	GameObject* endOfLevelTriggerStressTest = new GameObject;
-	endOfLevelTriggerStressTest->setTransform(Transform(Vector2(208, 176)));
-	endOfLevelTriggerStressTest->setTag("EndOfLevelTriggerStressTest");
-	endOfLevelTriggerStressTest->addComponent<DemoEndOfLevelTriggerBehaviourScript>();
-
-	endOfLevelTriggerStressTest->addComponent<RigidBody>();
-	BoxCollider* endOfLevelTriggerColliderStressTest = new BoxCollider();
-	endOfLevelTriggerColliderStressTest->setWidth(16);
-	endOfLevelTriggerColliderStressTest->setHeight(16);
-	endOfLevelTriggerColliderStressTest->setTrigger(true);
-	endOfLevelTriggerStressTest->addComponent(endOfLevelTriggerColliderStressTest);
-
-	scene.addGameObject(endOfLevelTriggerStressTest);
 
 	sceneManager.requestSceneChange("DemoScene1");
 
@@ -383,7 +478,15 @@ void DemoManagerBehaviourScript::createStressTest()
 
 void DemoManagerBehaviourScript::nextScene(const std::string& aSceneName)
 {
-	if (aSceneName == "2")
+	if (aSceneName == "DemoStartScene")
+	{
+		createDemoStartScene();
+	}
+	else if (aSceneName == "1")
+	{
+		createFirstScene();
+	}
+	else if (aSceneName == "2")
 	{
 		createSecondScene();
 	}
@@ -396,7 +499,7 @@ void DemoManagerBehaviourScript::nextScene(const std::string& aSceneName)
 void DemoManagerBehaviourScript::onStart()
 {
 	mCurrentScene = 0;
-	createFirstScene();
+	nextScene("DemoStartScene");
 	// createSecondScene();
 }
 
@@ -414,22 +517,36 @@ void DemoManagerBehaviourScript::onUpdate()
 
 	handleSaveGame();
 
-	if (!mPlayerPositionSet)
-	{
-		EngineBravo& engine = EngineBravo::getInstance();
-		SceneManager& sceneManager = engine.getSceneManager();
-		Scene& currentScene = sceneManager.getCurrentScene();
+	// if (!mPlayerPositionSet)
+	// {
+	// 	EngineBravo& engine = EngineBravo::getInstance();
+	// 	SceneManager& sceneManager = engine.getSceneManager();
+	// 	Scene& currentScene = sceneManager.getCurrentScene();
 
-		std::vector<std::reference_wrapper<GameObject>> persistentObjects = currentScene.getPersistentGameObjects();
-		auto playerIt = std::find_if(persistentObjects.begin(), persistentObjects.end(),
-									 [](GameObject& obj) { return obj.getTag() == "Player"; });
+	// 	std::vector<std::reference_wrapper<GameObject>> persistentObjects = currentScene.getPersistentGameObjects();
+	// 	auto playerIt = std::find_if(persistentObjects.begin(), persistentObjects.end(),
+	// 								 [](GameObject& obj) { return obj.getTag() == "Player"; });
 
-		if (playerIt != persistentObjects.end())
-		{
-			LevelCreatorBehaviourScript().setPlayerStartPosition(&currentScene, mTileMapData);
-			mPlayerPositionSet = true; // Set the flag to true
-		}
-	}
+	// 	if (playerIt != persistentObjects.end())
+	// 	{
+	// 		LevelCreatorBehaviourScript().setPlayerStartPosition(&currentScene, mTileMapData);
+	// 		mPlayerPositionSet = true; // Set the flag to true
+	// 	}
+	// }
+
+	// if (input.GetKeyDown(Key::Key_Q)) {
+	// 	EngineBravo& engine = EngineBravo::getInstance();
+	// 	SceneManager& sceneManager = engine.getSceneManager();
+	// 	Scene& currentScene = sceneManager.getCurrentScene();
+	// 	// std::vector<std::reference_wrapper<GameObject>> players = currentScene.getGameObjectsWithTag("Player");
+		
+	// 	// if (players.size() > 0) {
+	// 	// 	currentScene.removePersistentGameObject(&players[0].get());
+	// 	// }
+	// 	currentScene.clearPersistentGameObjects();
+
+	// 	sceneManager.requestSceneChange("MainMenuScene");
+	// }
 }
 
 void DemoManagerBehaviourScript::handleSaveGame()

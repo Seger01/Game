@@ -10,6 +10,7 @@ public:
     void onStart() override;
     void onUpdate() override;
 
+    void createDemoStartScene();
     void createFirstScene();
     void createSecondScene();
     void createStressTest();
