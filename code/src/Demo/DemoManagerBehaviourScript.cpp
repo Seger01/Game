@@ -155,7 +155,7 @@ void DemoManagerBehaviourScript::createFirstScene()
 	Camera* miniMapCamera = new Camera;
 	miniMapCamera->setTag("MiniMapCamera");
 	miniMapCamera->setActive(true);
-	miniMapCamera->setMainCamera(false);
+	//miniMapCamera->setMainCamera(false);
 	miniMapCamera->setRenderOrder(1);
 
 	miniMapCamera->setViewport(FRect{0.7, 0.7, 0.3, 0.3});

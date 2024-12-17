@@ -16,10 +16,10 @@
 
 void CanvasBehaviourScript::onStart()
 {
-	// EngineBravo& engine = EngineBravo::getInstance();
-	// SceneManager& sceneManager = engine.getSceneManager();
-	// Scene* scene = sceneManager.getCurrentScene();
-	// Camera& camera = scene->getActiveCamera();
+	EngineBravo& engine = EngineBravo::getInstance();
+	SceneManager& sceneManager = engine.getSceneManager();
+	Scene& scene = sceneManager.getCurrentScene();
+	Camera* camera = scene.getCameraWithTag("MainCamera");
 
 	// Button* buttonObject = new Button;
 	// buttonObject->setTransform(Transform(Vector2(10, 50)));
@@ -34,12 +34,12 @@ void CanvasBehaviourScript::onStart()
 	// GameObject* textObject = new Text("Canvas", "undefined", Color(15, 110, 47), Vector2(10, 10), Vector2(1, 1));
 	// textObject->setParent(mGameObject);
 
-	// GameObject* playerStats = new GameObject;
-	// playerStats->addComponent<PlayerStatsBehaviourScript>();
-	// playerStats->setTransform(Transform(Vector2(5, camera.getHeight() - 45)));
-	// playerStats->setParent(mGameObject);
+	GameObject* playerStats = new GameObject;
+	playerStats->addComponent<PlayerStatsBehaviourScript>();
+	playerStats->setTransform(Transform(Vector2(5, camera->getHeight() - 45)));
+	playerStats->setParent(mGameObject);
 
-	// scene->addGameObject(playerStats);
+	scene.addGameObject(playerStats);
 	// scene->addGameObject(textObject);
 	// scene->addGameObject(buttonObject);
 	// scene->addGameObject(buttonText);
