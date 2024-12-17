@@ -80,16 +80,22 @@ void PlayerStatsBehaviourScript::onUpdate()
 		return;
 	}
 
-	GameObject* playerObject = &scene.getGameObjectsWithTag("Player")[0].get();
-	if (playerObject == nullptr)
+	std::vector <std::reference_wrapper<GameObject>> playerObjects = scene.getGameObjectsWithTag("Player");
+	if (playerObjects.size() == 0)
 	{
 		return;
 	}
+	// GameObject* playerObject = &scene.getGameObjectsWithTag("Player")[0].get();
+	// if (playerObject == nullptr)
+	// {
+	// 	return;
+	// }
 
-	if (playerObject->getComponentsWithTag<PlayerBehaviourScript>("PlayerBehaviourScript").size() == 0)
+	if (playerObjects[0].get().getComponents<PlayerBehaviourScript>().size() == 0)
 	{
 		return;
 	}
+	
 	float playerHealth = mPlayerBehaviourScript->getHealth();
 	float playerMaxHealth = mPlayerBehaviourScript->getMaxHealth();
 	int playerBSCount = mPlayerBehaviourScript->getBSCount();
