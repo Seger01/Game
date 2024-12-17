@@ -53,7 +53,7 @@ void DemoBulletSpawner::onUpdate()
 		{
 			RigidBody& rigidBody = bullet.getComponents<RigidBody>()[0];
 			rigidBody.setRestitution(1.0f);
-			rigidBody.addForce(Vector2(rand() % 2000 - 1000, rand() % 2000 - 1000));
+			rigidBody.addForce(Vector2(rand() % 32000 - 16000, rand() % 32000 - 16000));
 		}
 
 		if (bullet.hasComponent<CircleCollider>())

@@ -187,7 +187,7 @@ void PlayerBehaviourScript::handleAnimations()
 
 void PlayerBehaviourScript::handleMovement()
 {
-	static const float movementSpeed = 10000.0f;
+	static const float movementSpeed = 160000.0f;
 
 	if (mGameObject->hasComponent<NetworkObject>())
 	{
@@ -330,7 +330,7 @@ void PlayerBehaviourScript::fireBullet(Point mousePosition)
 
 	// Add force to bullet
 	RigidBody& bulletRigidBody = bulletObject->getComponents<RigidBody>()[0];
-	float bulletSpeed = 1000.0f;
+	float bulletSpeed = 16000.0f;
 	bulletRigidBody.addForce(direction * bulletSpeed);
 
 	sceneManager.getCurrentScene().addGameObject(bulletObject);

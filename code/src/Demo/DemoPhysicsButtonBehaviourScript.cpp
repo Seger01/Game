@@ -51,7 +51,7 @@ void DemoPhysicsButtonBehaviourScript::updateButtonState(const std::string& butt
 	{
 		if (!mButtonPressedBox)
 		{
-			spawnBox(Vector2(176, 488), "Box", Vector2(-2000, -10000));
+			spawnBox(Vector2(176, 488), "Box", Vector2(-32000, -160000));
 			mButtonPressedBox = true;
 		}
 		else
@@ -65,7 +65,7 @@ void DemoPhysicsButtonBehaviourScript::updateButtonState(const std::string& butt
 	{
 		if (!mButtonPressedCircle)
 		{
-			spawnCircle(Vector2(176, 512), "Circle1", Vector2(200, -1000));
+			spawnCircle(Vector2(176, 512), "Circle1", Vector2(3200, -16000));
 			mButtonPressedCircle = true;
 		}
 		else
@@ -85,10 +85,10 @@ void DemoPhysicsButtonBehaviourScript::updateButtonState(const std::string& butt
 		std::cout << "ButtonFilter" << std::endl;
 		if (!mButtonPressedFilter)
 		{
-			spawnBox(Vector2(96, 624), "ButtonFilterBox", Vector2(-400, -1000));
-			spawnBox(Vector2(112, 624), "ButtonFilterBox", Vector2(400, -1000));
-			spawnCircle(Vector2(128, 624), "ButtonFilterCircle", Vector2(-200, 1000));
-			spawnCircle(Vector2(144, 624), "ButtonFilterCircle", Vector2(200, -1000));
+			spawnBox(Vector2(96, 624), "ButtonFilterBox", Vector2(-6400, -16000));
+			spawnBox(Vector2(112, 624), "ButtonFilterBox", Vector2(6400, -16000));
+			spawnCircle(Vector2(128, 624), "ButtonFilterCircle", Vector2(-3200, 16000));
+			spawnCircle(Vector2(144, 624), "ButtonFilterCircle", Vector2(3200, -16000));
 
 			std::vector<std::reference_wrapper<GameObject>> boxes =
 				EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("Box");
@@ -265,8 +265,9 @@ void DemoPhysicsButtonBehaviourScript::toggleGravity()
 		{
 			RigidBody& rigidBody = box.getComponents<RigidBody>()[0];
 			rigidBody.setHasGravity(mButtonPressedGravity);
-			rigidBody.setGravityScale(mButtonPressedGravity ? 1.0f : 0.0f);
-			rigidBody.setRestitution(0.8f);
+			rigidBody.setGravityScale(mButtonPressedGravity ? 5.0f : 0.0f);
+			rigidBody.setDensity(1.0f);
+			rigidBody.setRestitution(0.5f);
 		}
 	}
 }
