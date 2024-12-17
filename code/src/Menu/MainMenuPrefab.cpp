@@ -30,7 +30,7 @@ void MainMenuPrefabFactory::setBackground(GameObject* gameObject)
 
 	backgroundSprite->setLayer(0);
 
-	Camera* camera = EngineBravo::getInstance().getSceneManager().getCurrentScene()->getCameraWithTag("MainCamera");
+	Camera* camera = EngineBravo::getInstance().getSceneManager().getCurrentScene().getCameraWithTag("MainCamera");
 
 	backgroundSprite->setWidth(camera->getWidth());
 	backgroundSprite->setHeight(camera->getHeight());
@@ -44,19 +44,19 @@ void MainMenuPrefabFactory::addBehaviour(GameObject* gameObject)
 }
 
 Button* MainMenuPrefabFactory::createDefaultButton(GameObject* gameObject, Scene* aScene, const std::string& text,
-												   const std::string& tag, const std::string& buttonText,
+												   const std::string& tagButton, const std::string& tagText,
 												   int menuStartX, int menuStartY)
 {
 	EngineBravo& engine = EngineBravo::getInstance();
 	Button* buttonObject = new Button;
-	buttonObject->setTag(tag);
-
+	buttonObject->setTag(tagButton);
 	buttonObject->addComponent<MainMenuButtonBehaviour>();
 	buttonObject->setParent(gameObject);
+
 	Text* buttonTextObj = new Text(text, "werkt niet", Color(255, 255, 255, 150), Vector2(0, 0), Vector2(0.5, 0.5));
 	buttonTextObj->setLayer(2);
 	buttonTextObj->setParent(buttonObject);
-	buttonTextObj->setTag(buttonText);
+	buttonTextObj->setTag(tagText);
 
 	Sprite* buttonSprite = engine.getResourceManager().createSprite(buttonSpriteDef);
 	buttonSprite->setLayer(1);

@@ -1,15 +1,15 @@
 #include "ECCoinPrefab.h"
 
 ECCoinPrefab::ECCoinPrefab() {
-    mCoinWidth = 16;
-    mCoinHeight = 16;
-    mCoinSpritePosition = {0, 0}; // Adjust the sprite position as needed
+    mCoinWidth = 16.0f;
+    mCoinHeight = 16.0f;
+    mCoinSpritePosition = {0.0f, 0.0f}; // Adjust the sprite position as needed
 
     FSConverter fsConverter;
     std::string coinSpritePath = fsConverter.getResourcePath("Coins/ec_coin_circle.png");
     mCoinSpriteDef = {
         coinSpritePath,
-        Rect{mCoinSpritePosition.x, mCoinSpritePosition.y, mCoinWidth, mCoinHeight},
+        Rect{static_cast<int>(mCoinSpritePosition.x), static_cast<int>(mCoinSpritePosition.y), static_cast<int>(mCoinWidth), static_cast<int>(mCoinHeight)},
         mCoinWidth, mCoinHeight
     };
 }

@@ -1,8 +1,10 @@
 #include "DemoLevel2Behaviour.h"
+
 #include <Animation.h>
 #include <EnemyBehaviourScript.h>
 #include <EngineBravo.h>
 #include <Input.h>
+#include <RigidBody.h>
 #include <cmath>
 
 void DemoLevel2Behaviour::onStart()
@@ -10,37 +12,39 @@ void DemoLevel2Behaviour::onStart()
 	mGameObject->setTag("DemoLevel2");
 
 	EngineBravo& engine = EngineBravo::getInstance();
-	Scene* scene = engine.getSceneManager().getCurrentScene();
+	Scene& scene = engine.getSceneManager().getCurrentScene();
 
-	GameObject* enemy = scene->getGameObjectsWithTag("EnemyMoving")[0];
+	GameObject* enemy = &scene.getGameObjectsWithTag("EnemyMoving")[0].get();
 	if (enemy != nullptr)
 	{
 		mInitialY = enemy->getTransform().position.y;
 		if (enemy->hasComponent<RigidBody>())
 		{
-			enemy->getComponents<RigidBody>()[0]->setActive(false);
+			enemy->getComponents<RigidBody>()[0].get().setActive(false);
 		}
 	}
 
-	GameObject* enemyStatic = scene->getGameObjectsWithTag("EnemyStatic")[0];
+	GameObject* enemyStatic = &scene.getGameObjectsWithTag("EnemyStatic")[0].get();
 	if (enemyStatic != nullptr)
 	{
 		if (enemyStatic->hasComponent<EnemyBehaviourScript>())
 		{
-			enemyStatic->getComponents<EnemyBehaviourScript>()[0]->deactivateAllAnimations();
+			enemyStatic->getComponents<EnemyBehaviourScript>()[0].get().deactivateAllAnimations();
 			if (enemy->hasComponent<RigidBody>())
 			{
-				enemy->getComponents<RigidBody>()[0]->setActive(false);
+				enemy->getComponents<RigidBody>()[0].get().setActive(false);
 			}
 		}
 	}
 
-    GameObject* enemyWithPathfinding = scene->getGameObjectsWithTag("EnemyWithPathfinding")[0];
-    if (enemyWithPathfinding != nullptr) {
-        if (enemyWithPathfinding->hasComponent<RigidBody>()) {
-            enemyWithPathfinding->getComponents<RigidBody>()[0]->setActive(true);
-        }
-    }
+	GameObject* enemyWithPathfinding = &scene.getGameObjectsWithTag("EnemyWithPathfinding")[0].get();
+	if (enemyWithPathfinding != nullptr)
+	{
+		if (enemyWithPathfinding->hasComponent<RigidBody>())
+		{
+			enemyWithPathfinding->getComponents<RigidBody>()[0].get().setActive(true);
+		}
+	}
 }
 
 void DemoLevel2Behaviour::onUpdate()
@@ -48,6 +52,7 @@ void DemoLevel2Behaviour::onUpdate()
 	moveWithPathfinding();
 	moveEnemy();
 	rotateEnemy();
+	scaleEnemy();
 }
 
 void DemoLevel2Behaviour::onCollide(GameObject* aGameObject) {}
@@ -55,7 +60,7 @@ void DemoLevel2Behaviour::onCollide(GameObject* aGameObject) {}
 void DemoLevel2Behaviour::moveEnemy()
 {
 	EngineBravo& engine = EngineBravo::getInstance();
-	Scene* scene = engine.getSceneManager().getCurrentScene();
+	Scene& scene = engine.getSceneManager().getCurrentScene();
 	Input& input = Input::getInstance();
 
 	if (input.GetKeyDown(Key::Key_PageUp))
@@ -68,7 +73,7 @@ void DemoLevel2Behaviour::moveEnemy()
 		Time::timeDilation = Time::timeDilation - 0.1f;
 	}
 
-	GameObject* enemy = scene->getGameObjectsWithTag("EnemyMoving")[0];
+	GameObject* enemy = &scene.getGameObjectsWithTag("EnemyMoving")[0].get();
 	if (enemy == nullptr)
 	{
 		std::cout << "Enemy not found" << std::endl;
@@ -93,8 +98,8 @@ void DemoLevel2Behaviour::moveEnemy()
 			mMovingUp = true;
 		}
 	}
-	enemy->getComponentsWithTag<Animation>("enemyWalking")[0]->setActive(true);
-	enemy->getComponentsWithTag<Sprite>("idleSprite")[0]->setActive(false);
+	enemy->getComponentsWithTag<Animation>("enemyWalking")[0].get().setActive(true);
+	enemy->getComponentsWithTag<Sprite>("idleSprite")[0].get().setActive(false);
 
 	enemy->setTransform(transform);
 }
@@ -102,9 +107,9 @@ void DemoLevel2Behaviour::moveEnemy()
 void DemoLevel2Behaviour::scaleEnemy()
 {
 	EngineBravo& engine = EngineBravo::getInstance();
-	Scene* scene = engine.getSceneManager().getCurrentScene();
+	Scene& scene = engine.getSceneManager().getCurrentScene();
 
-	GameObject* enemy = scene->getGameObjectsWithTag("EnemyStatic")[0];
+	GameObject* enemy = &scene.getGameObjectsWithTag("EnemyStatic")[0].get();
 	if (enemy == nullptr)
 	{
 		std::cout << "Enemy not found" << std::endl;
@@ -139,9 +144,9 @@ void DemoLevel2Behaviour::scaleEnemy()
 void DemoLevel2Behaviour::rotateEnemy()
 {
 	EngineBravo& engine = EngineBravo::getInstance();
-	Scene* scene = engine.getSceneManager().getCurrentScene();
+	Scene& scene = engine.getSceneManager().getCurrentScene();
 
-	GameObject* enemy = scene->getGameObjectsWithTag("EnemyStatic")[0];
+	GameObject* enemy = &scene.getGameObjectsWithTag("EnemyStatic")[0].get();
 	if (enemy == nullptr)
 	{
 		std::cout << "Enemy not found" << std::endl;
@@ -152,20 +157,21 @@ void DemoLevel2Behaviour::rotateEnemy()
 	enemy->setTransform(transform);
 }
 
+void DemoLevel2Behaviour::moveWithPathfinding()
+{
+	EngineBravo& engine = EngineBravo::getInstance();
+	Scene& scene = engine.getSceneManager().getCurrentScene();
 
-void DemoLevel2Behaviour::moveWithPathfinding() {
-    EngineBravo& engine = EngineBravo::getInstance();
-    Scene* scene = engine.getSceneManager().getCurrentScene();
-
-    GameObject* enemy = scene->getGameObjectsWithTag("EnemyWithPathfinding")[0];
-    if (enemy == nullptr) {
-        std::cout << "Enemy not found" << std::endl;
-        return;
-    }
+	GameObject* enemy = &scene.getGameObjectsWithTag("EnemyWithPathfinding")[0].get();
+	if (enemy == nullptr)
+	{
+		std::cout << "Enemy not found" << std::endl;
+		return;
+	}
 
 	if (enemy->hasComponent<EnemyBehaviourScript>())
 	{
-		enemy->getComponents<EnemyBehaviourScript>()[0]->moveWithPathfinding();
+		enemy->getComponents<EnemyBehaviourScript>()[0].get().moveWithPathfinding();
 	}
 	else
 	{

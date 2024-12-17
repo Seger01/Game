@@ -11,35 +11,50 @@ MainMenuBehaviourScript::~MainMenuBehaviourScript() {}
 
 void MainMenuBehaviourScript::onStart()
 {
-	for (GameObject* button :
-		 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("PlayButton"))
+	for (GameObject& button :
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("PlayButton"))
 	{
-		Button* buttonObject = dynamic_cast<Button*>(button);
-		buttonObject->setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onPlayRelease, this));
+		Button& buttonObject = dynamic_cast<Button&>(button);
+		buttonObject.setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onPlayRelease, this));
+		Transform transform = buttonObject.getTransform();
+		transform.scale = Vector2(1, 1);
+		buttonObject.setTransform(transform);
 	}
-	for (GameObject* button :
-		 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("MultiplayerButton"))
+	for (GameObject& button :
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("MultiplayerButton"))
 	{
-		Button* buttonObject = dynamic_cast<Button*>(button);
-		buttonObject->setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onMultiplayerRelease, this));
+		Button& buttonObject = dynamic_cast<Button&>(button);
+		buttonObject.setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onMultiplayerRelease, this));
+		Transform transform = buttonObject.getTransform();
+		transform.scale = Vector2(1, 1);
+		buttonObject.setTransform(transform);
 	}
-	for (GameObject* button :
-		 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("DemoButton"))
+	for (GameObject& button :
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("DemoButton"))
 	{
-		Button* buttonObject = dynamic_cast<Button*>(button);
-		buttonObject->setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onDemoRelease, this));
+		Button& buttonObject = dynamic_cast<Button&>(button);
+		buttonObject.setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onDemoRelease, this));
+		Transform transform = buttonObject.getTransform();
+		transform.scale = Vector2(1, 1);
+		buttonObject.setTransform(transform);
 	}
-	for (GameObject* button :
-		 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("ExitButton"))
+	for (GameObject& button :
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("ExitButton"))
 	{
-		Button* buttonObject = dynamic_cast<Button*>(button);
-		buttonObject->setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onExitRelease, this));
+		Button& buttonObject = dynamic_cast<Button&>(button);
+		buttonObject.setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onExitRelease, this));
+		Transform transform = buttonObject.getTransform();
+		transform.scale = Vector2(1, 1);
+		buttonObject.setTransform(transform);
 	}
-	for (GameObject* button :
-		 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("DemoMultiButton"))
+	for (GameObject& button :
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("DemoMultiButton"))
 	{
-		Button* buttonObject = dynamic_cast<Button*>(button);
-		buttonObject->setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onDemoMultiRelease, this));
+		Button& buttonObject = dynamic_cast<Button&>(button);
+		buttonObject.setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onDemoMultiRelease, this));
+		Transform transform = buttonObject.getTransform();
+		transform.scale = Vector2(1, 1);
+		buttonObject.setTransform(transform);
 	}
 }
 
@@ -47,13 +62,12 @@ void MainMenuBehaviourScript::onUpdate() {}
 
 void MainMenuBehaviourScript::onPlayRelease()
 {
-	std::cout << "Wanted to play the game" << std::endl;
-	for (GameObject* object :
-		 EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("LevelManager"))
+	for (GameObject& object :
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("LevelManager"))
 	{
-		if (object->hasComponent<LevelManagerBehaviourScript>())
+		if (object.hasComponent<LevelManagerBehaviourScript>())
 		{
-			object->getComponents<LevelManagerBehaviourScript>()[0]->beginGame();
+			object.getComponents<LevelManagerBehaviourScript>()[0].get().beginGame();
 		}
 	}
 }
@@ -62,17 +76,13 @@ void MainMenuBehaviourScript::onMultiplayerRelease() { std::cout << "Wanted to m
 
 void MainMenuBehaviourScript::onDemoRelease()
 {
-	GameObject* demoManagerObject = new GameObject;
-	demoManagerObject->addComponent<DemoManagerBehaviourScript>();
-	demoManagerObject->setTag("DemoManager");
+	GameObject& demoManagerObject = *(new GameObject);
+	demoManagerObject.addComponent<DemoManagerBehaviourScript>();
+	demoManagerObject.setTag("DemoManager");
 
-	Scene* scene = EngineBravo::getInstance().getSceneManager().getCurrentScene();
+	Scene& scene = EngineBravo::getInstance().getSceneManager().getCurrentScene();
 
-	std::cout << "Current scene: " << scene->getName() << std::endl;
-
-	scene->addPersistentGameObject(demoManagerObject);
-
-	std::cout << "Wanted to play demo" << std::endl;
+	scene.addPersistentGameObject(&demoManagerObject);
 }
 
 void MainMenuBehaviourScript::onExitRelease() { std::cout << "adfljasdflkjafds to exit game" << std::endl; }
@@ -80,26 +90,17 @@ void MainMenuBehaviourScript::onExitRelease() { std::cout << "adfljasdflkjafds t
 void MainMenuBehaviourScript::onDemoMultiRelease()
 {
 	std::cout << "Wanted to play demo multiplayer" << std::endl;
-	Scene* scene = EngineBravo::getInstance().getSceneManager().createScene("networkSelectionScene");
-	GameObject* networkSelectionObject = new GameObject;
-	networkSelectionObject->addComponent<NetworkSelectionBehaviourScript>();
-	scene->addGameObject(networkSelectionObject);
+	Scene& scene = EngineBravo::getInstance().getSceneManager().createScene("networkSelectionScene");
+	GameObject& networkSelectionObject = *(new GameObject);
+	networkSelectionObject.addComponent<NetworkSelectionBehaviourScript>();
+	scene.addGameObject(&networkSelectionObject);
 
-	// int cameraID = scene->addCamera();
-	// scene->setActiveCamera(cameraID);
-	//
-	// scene->getActiveCamera().setTransform(Transform(Vector2(100, 100)));
-	// scene->getActiveCamera().setWidth(200);
-	// scene->getActiveCamera().setHeight(200);
-	Camera* camera = new Camera;
+	Camera* camera =
+		new Camera(*EngineBravo::getInstance().getSceneManager().getCurrentScene().getCameraWithTag("MainCamera"));
 	camera->setTag("MainCamera");
 	camera->setActive(true);
 
-	camera->setTransform(Transform(Vector2(100, 100)));
-	camera->setWidth(200);
-	camera->setHeight(200);
-
-	scene->addGameObject(camera);
+	scene.addGameObject(camera);
 
 	EngineBravo::getInstance().getSceneManager().requestSceneChange("networkSelectionScene");
 }

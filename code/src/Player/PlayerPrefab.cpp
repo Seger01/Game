@@ -200,8 +200,8 @@ void PlayerPrefabFactory::addAnimations(GameObject* gameObject)
 
 	for (auto animation : gameObject->getComponents<Animation>())
 	{
-		animation->setActive(false);
-		animation->setLayer(2);
+		animation.get().setActive(false);
+		animation.get().setLayer(2);
 	}
 
 	playerIdleFrontAnimation->setActive(true);
@@ -224,12 +224,13 @@ void PlayerPrefabFactory::addParticleEmitter(GameObject* gameObject)
 								 Color(0, 0, 0, 90)};
 
 	ParticleEmitter* emitter =
-		new ParticleEmitter(emitterMode, speed, acceleration, minLifeTimeMs, maxLifeTimeMs, startSize, endSize,
-							rotation, rotationSpeed, rotationAcceleration, colors);
+		new ParticleEmitter(emitterMode, speed, acceleration, minLifeTimeMs, maxLifeTimeMs, startSize, endSize, colors,
+							rotation, rotationSpeed, rotationAcceleration);
 
 	emitter->setParticlesPerSecond(300);
 	emitter->setAngle(0, 45);
 	emitter->setLayer(4);
+	emitter->setActive(false);
 	gameObject->addComponent(emitter);
 }
 

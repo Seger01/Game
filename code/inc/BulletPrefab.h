@@ -23,6 +23,7 @@ private:
   void addSprite(GameObject *gameObject);
   void addRigidBody(GameObject *gameObject);
   void addCollider(GameObject *gameObject);
+  void addParticleEmitter(GameObject *gameObject);
 
 private:
   SpriteDef mBulletSpriteDef;

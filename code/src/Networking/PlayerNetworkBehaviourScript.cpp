@@ -20,9 +20,9 @@ std::string PlayerNetworkBehaviourScript::currentActiveAnimationTag()
 {
 	for (auto animation : mGameObject->getComponents<Animation>())
 	{
-		if (animation->isActive())
+		if (animation.get().isActive())
 		{
-			return animation->getTag();
+			return animation.get().getTag();
 		}
 	}
 	return "";
@@ -34,14 +34,14 @@ void PlayerNetworkBehaviourScript::setFlipX(bool aState)
 	{
 		for (auto animation : mGameObject->getComponents<Animation>())
 		{
-			animation->setFlipX(aState);
+			animation.get().setFlipX(aState);
 		}
 	}
 	else if (mGameObject->hasComponent<Sprite>())
 	{
 		for (auto sprite : mGameObject->getComponents<Sprite>())
 		{
-			sprite->setFlipX(aState);
+			sprite.get().setFlipX(aState);
 		}
 	}
 }
@@ -52,14 +52,14 @@ void PlayerNetworkBehaviourScript::setFlipY(bool aState)
 	{
 		for (auto animation : mGameObject->getComponents<Animation>())
 		{
-			animation->setFlipY(aState);
+			animation.get().setFlipY(aState);
 		}
 	}
 	else if (mGameObject->hasComponent<Sprite>())
 	{
 		for (auto sprite : mGameObject->getComponents<Sprite>())
 		{
-			sprite->setFlipY(aState);
+			sprite.get().setFlipY(aState);
 		}
 	}
 }
@@ -68,7 +68,7 @@ void PlayerNetworkBehaviourScript::deactivateAllAnimations()
 {
 	for (auto animation : mGameObject->getComponents<Animation>())
 	{
-		animation->setActive(false);
+		animation.get().setActive(false);
 	}
 }
 
@@ -76,9 +76,9 @@ void PlayerNetworkBehaviourScript::setAnimationActive(std::string aAnimationTag,
 {
 	for (auto animation : mGameObject->getComponents<Animation>())
 	{
-		if (animation->getTag() == aAnimationTag)
+		if (animation.get().getTag() == aAnimationTag)
 		{
-			animation->setActive(aState);
+			animation.get().setActive(aState);
 		}
 	}
 }
@@ -95,12 +95,8 @@ void PlayerNetworkBehaviourScript::handleAnimations()
 {
 	if (mGameObject->hasComponent<NetworkObject>())
 	{
-		NetworkObject* networkObject = mGameObject->getComponents<NetworkObject>()[0];
-		if (!networkObject)
-		{
-			return;
-		}
-		if (!networkObject->isOwner())
+		NetworkObject& networkObject = mGameObject->getComponents<NetworkObject>()[0];
+		if (!networkObject.isOwner())
 		{
 			return;
 		}
@@ -201,12 +197,8 @@ void PlayerNetworkBehaviourScript::handleMovement()
 
 	if (mGameObject->hasComponent<NetworkObject>())
 	{
-		NetworkObject* networkObject = mGameObject->getComponents<NetworkObject>()[0];
-		if (!networkObject)
-		{
-			return;
-		}
-		if (!networkObject->isOwner())
+		NetworkObject& networkObject = mGameObject->getComponents<NetworkObject>()[0];
+		if (!networkObject.isOwner())
 		{
 			return;
 		}
@@ -232,19 +224,19 @@ void PlayerNetworkBehaviourScript::handleMovement()
 
 	if (input.GetKey(Key::Key_W))
 	{
-		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(0, -200));
+		mGameObject->getComponents<RigidBody>()[0].get().addForce(Vector2(0, -200));
 	}
 	if (input.GetKey(Key::Key_A))
 	{
-		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(-200, 0));
+		mGameObject->getComponents<RigidBody>()[0].get().addForce(Vector2(-200, 0));
 	}
 	if (input.GetKey(Key::Key_S))
 	{
-		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(0, 200));
+		mGameObject->getComponents<RigidBody>()[0].get().addForce(Vector2(0, 200));
 	}
 	if (input.GetKey(Key::Key_D))
 	{
-		mGameObject->getComponents<RigidBody>()[0]->addForce(Vector2(200, 0));
+		mGameObject->getComponents<RigidBody>()[0].get().addForce(Vector2(200, 0));
 	}
 	this->mGameObject->setTransform(parentTransform);
 }
@@ -253,18 +245,14 @@ void PlayerNetworkBehaviourScript::hanldeCameraMovement()
 {
 	if (mGameObject->hasComponent<NetworkObject>())
 	{
-		NetworkObject* networkObject = mGameObject->getComponents<NetworkObject>()[0];
-		if (!networkObject)
-		{
-			return;
-		}
-		if (!networkObject->isOwner())
+		NetworkObject& networkObject = mGameObject->getComponents<NetworkObject>()[0];
+		if (!networkObject.isOwner())
 		{
 			return;
 		}
 	}
 
-	Camera* currentCam = EngineBravo::getInstance().getSceneManager().getCurrentScene()->getCameraWithTag("MainCamera");
+	Camera* currentCam = EngineBravo::getInstance().getSceneManager().getCurrentScene().getCameraWithTag("MainCamera");
 
 	Transform playerTransform = this->mGameObject->getTransform();
 
@@ -277,7 +265,7 @@ void PlayerNetworkBehaviourScript::fireBullet(Point mousePosition)
 	SceneManager& sceneManager = engine.getSceneManager();
 
 	// Get the camera
-	Camera* currentCam = sceneManager.getCurrentScene()->getCameraWithTag("MainCamera");
+	Camera* currentCam = sceneManager.getCurrentScene().getCameraWithTag("MainCamera");
 	Vector2 cameraOrigin = currentCam->getOrigin();
 
 	// Get window dimensions
@@ -324,11 +312,11 @@ void PlayerNetworkBehaviourScript::fireBullet(Point mousePosition)
 	bulletObject->getTransform().position = bulletSpawnPosition;
 
 	// Add force to bullet
-	RigidBody* bulletRigidBody = bulletObject->getComponents<RigidBody>()[0];
+	RigidBody& bulletRigidBody = bulletObject->getComponents<RigidBody>()[0];
 	float bulletSpeed = 1000.0f;
-	bulletRigidBody->addForce(direction * bulletSpeed);
+	bulletRigidBody.addForce(direction * bulletSpeed);
 
-	sceneManager.getCurrentScene()->addGameObject(bulletObject);
+	sceneManager.getCurrentScene().addGameObject(bulletObject);
 }
 
 void PlayerNetworkBehaviourScript::onUpdate()
@@ -366,11 +354,11 @@ void PlayerNetworkBehaviourScript::onUpdate()
 	{
 		static bool emitterMode = false;
 
-		ParticleEmitter* emitter = mGameObject->getComponents<ParticleEmitter>()[0];
+		ParticleEmitter& emitter = mGameObject->getComponents<ParticleEmitter>()[0];
 
 		if (input.GetKeyDown(Key::Key_P))
 		{
-			emitter->setActive(!emitter->isActive());
+			emitter.setActive(!emitter.isActive());
 		}
 
 		if (input.GetKeyDown(Key::Key_Space))
@@ -380,13 +368,13 @@ void PlayerNetworkBehaviourScript::onUpdate()
 
 		if (emitterMode)
 		{
-			emitter->setAngle(0, 45);
-			emitter->getRelativeTransform().rotation += 1.0f * Time::deltaTime;
+			emitter.setAngle(0, 45);
+			emitter.getRelativeTransform().rotation += 1.0f * Time::deltaTime;
 		}
 		else
 		{
-			emitter->setAngle(0, 360);
-			emitter->getRelativeTransform().rotation = 0.0f;
+			emitter.setAngle(0, 360);
+			emitter.getRelativeTransform().rotation = 0.0f;
 		}
 	}
 }

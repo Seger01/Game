@@ -1,129 +1,217 @@
 #include "NetworkSelectionBehaviourScript.h"
 
 #include "InitBehaviourScript.h"
-#include "NetworkSelectionButtonScript.h"
 
 #include "Button.h"
 #include "Engine/EngineBravo.h"
 #include "LevelManagerBehaviourScript.h"
+#include "MainMenuPrefab.h"
 #include "Network/NetworkClient.h"
 #include "Network/NetworkManager.h"
+#include "NetworkManager.h"
 #include "PlayerPrefab.h"
 #include "Text.h"
 
-void NetworkSelectionBehaviourScript::onStart() {
-    EngineBravo& engine = EngineBravo::getInstance();
-    SceneManager& sceneManager = engine.getSceneManager();
-    Scene* scene = sceneManager.getCurrentScene();
+void NetworkSelectionBehaviourScript::onStart()
+{
+	EngineBravo& engine = EngineBravo::getInstance();
+	SceneManager& sceneManager = engine.getSceneManager();
+	Scene& scene = sceneManager.getCurrentScene();
 
-    int buttonHeight;
-    int buttonWidth;
+	// Create the menu
+	mMainMenuObject = MainMenuPrefabFactory().createMainMenuPrefab();
+	int menuIndexX = mMenuStartX;
+	int menuIndexY = mMenuStartY;
 
-    mServerButton = new Button;
-    mServerButton->setTransform(Transform(Vector2(0, 0)));
-    mServerButton->addComponent<NetworkSelectionButtonScript>();
-    mServerButton->setTag("Server");
-    Text* serverText = new Text("Server", "Server", Color(15, 110, 47), Vector2(0, 0), Vector2(0.5, 0.5));
-    serverText->setParent(mServerButton);
-    engine.getRenderSystem().getTextSize("Server", "Server", buttonWidth, buttonHeight, Vector2(0.5, 0.5));
-    mServerButton->setWidth(buttonWidth);
-    mServerButton->setHeight(buttonHeight);
+	// Create the buttons
+	mServerButton = MainMenuPrefabFactory().createDefaultButton(mMainMenuObject, &scene, "Server", "ServerButton",
+																"ServerText", menuIndexX, menuIndexY);
 
-    mClientButton = new Button;
-    mClientButton->setTransform(Transform(Vector2(0, 20)));
-    mClientButton->addComponent<NetworkSelectionButtonScript>();
-    mClientButton->setTag("Client");
-    Text* clientText = new Text("Client", "Client", Color(15, 110, 47), Vector2(0, 0), Vector2(0.5, 0.5));
-    clientText->setParent(mClientButton);
-    engine.getRenderSystem().getTextSize("Client", "Client", buttonWidth, buttonHeight, Vector2(0.5, 0.5));
-    mClientButton->setWidth(buttonWidth);
-    mClientButton->setHeight(buttonHeight);
+	mSearchButton = MainMenuPrefabFactory().createDefaultButton(
+		mMainMenuObject, &scene, "Search for servers", "SearchButton", "SearchServerText", menuIndexX, menuIndexY);
+	mSearchButton->setActive(false);
 
-    mHostButton = new Button;
-    mHostButton->setTransform(Transform(Vector2(0, 40)));
-    mHostButton->addComponent<NetworkSelectionButtonScript>();
-    mHostButton->setTag("Host");
-    Text* hostText = new Text("Host", "Host", Color(15, 110, 47), Vector2(0, 0), Vector2(0.5, 0.5));
-    hostText->setParent(mHostButton);
-    engine.getRenderSystem().getTextSize("Host", "Host", buttonWidth, buttonHeight, Vector2(0.5, 0.5));
-    mHostButton->setWidth(buttonWidth);
-    mHostButton->setHeight(buttonHeight);
+	menuIndexY += 20;
 
-    mSearchButton = new Button;
-    mSearchButton->setTransform(Transform(Vector2(0, 60)));
-    mSearchButton->addComponent<NetworkSelectionButtonScript>();
-    mSearchButton->setTag("Search");
-    mSearchButton->setInteractable(false);
-    Text* connectText = new Text("Connect", "Connect", Color(15, 110, 47), Vector2(0, 0), Vector2(0.5, 0.5));
-    connectText->setParent(mSearchButton);
-    connectText->setActive(false);
-    engine.getRenderSystem().getTextSize("Connect", "Connect", buttonWidth, buttonHeight, Vector2(0.5, 0.5));
-    mSearchButton->setWidth(buttonWidth);
-    mSearchButton->setHeight(buttonHeight);
+	mClientButton = MainMenuPrefabFactory().createDefaultButton(mMainMenuObject, &scene, "Client", "ClientButton",
+																"ClientText", menuIndexX, menuIndexY);
+	menuIndexY += 20;
 
-    scene->addGameObject(mServerButton);
-    scene->addGameObject(mClientButton);
-    scene->addGameObject(mHostButton);
-    scene->addGameObject(mSearchButton);
+	mHostButton = MainMenuPrefabFactory().createDefaultButton(mMainMenuObject, &scene, "Host", "HostButton", "HostText",
+															  menuIndexX, menuIndexY);
+	menuIndexY += 20;
+	scene.addGameObject(mMainMenuObject);
 
-    scene->addGameObject(serverText);
-    scene->addGameObject(clientText);
-    scene->addGameObject(hostText);
-    scene->addGameObject(connectText);
+	// Add the button callbacks
+	for (GameObject& button :
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("ServerButton"))
+	{
+		Button& buttonObject = dynamic_cast<Button&>(button);
+		buttonObject.setOnReleaseCallback(std::bind(&NetworkSelectionBehaviourScript::onServerRelease, this));
+	}
+	for (GameObject& button :
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("ClientButton"))
+	{
+		Button& buttonObject = dynamic_cast<Button&>(button);
+		buttonObject.setOnReleaseCallback(std::bind(&NetworkSelectionBehaviourScript::onClientRelease, this));
+	}
+	for (GameObject& button :
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("HostButton"))
+	{
+		Button& buttonObject = dynamic_cast<Button&>(button);
+		buttonObject.setOnReleaseCallback(std::bind(&NetworkSelectionBehaviourScript::onHostRelease, this));
+	}
+	for (GameObject& button :
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("SearchButton"))
+	{
+		Button& buttonObject = dynamic_cast<Button&>(button);
+		buttonObject.setOnReleaseCallback(std::bind(&NetworkSelectionBehaviourScript::onSearchRelease, this));
+	}
 }
 
-void NetworkSelectionBehaviourScript::onUpdate() {
-    EngineBravo& engine = EngineBravo::getInstance();
-    SceneManager& sceneManager = engine.getSceneManager();
-    NetworkManager& networkManager = engine.getNetworkManager();
+void NetworkSelectionBehaviourScript::onUpdate()
+{
+	EngineBravo& engine = EngineBravo::getInstance();
+	SceneManager& sceneManager = engine.getSceneManager();
+	NetworkManager& networkManager = engine.getNetworkManager();
 
-    if (networkManager.getRole() == NetworkRole::SERVER || networkManager.getRole() == NetworkRole::HOST) {
-        networkManager.setDefaultPlayerPrefab(PlayerPrefabFactory::createPlayerPrefab());
-        for (GameObject* object :
-             EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("LevelManager")) {
-            if (object->hasComponent<LevelManagerBehaviourScript>()) {
-                object->getComponents<LevelManagerBehaviourScript>()[0]->beginDemoNetworkingGame();
-            }
-        }
-    }
-    if (networkManager.getRole() == NetworkRole::CLIENT) {
-        if (networkManager.isConnected()) {
-            networkManager.setDefaultPlayerPrefab(PlayerPrefabFactory::createPlayerPrefab());
-            for (
-                GameObject* object :
-                EngineBravo::getInstance().getSceneManager().getCurrentScene()->getGameObjectsWithTag("LevelManager")) {
-                if (object->hasComponent<LevelManagerBehaviourScript>()) {
-                    object->getComponents<LevelManagerBehaviourScript>()[0]->beginDemoNetworkingGame();
-                }
-            }
-        }
-        NetworkClient& networkClient = engine.getNetworkManager().getClient();
-        std::vector<std::string> serverAddresses = networkClient.getServerAddresses();
-        for (std::string serverAddress : serverAddresses) {
-            auto it = std::find(mServerAddresses.begin(), mServerAddresses.end(), serverAddress);
-            if (it == mServerAddresses.end()) {
-                // Server address not found
-                mServerAddresses.push_back(serverAddress);
+	if (networkManager.getRole() == NetworkRole::CLIENT)
+	{
+		// If client is connected, load the networking demo
+		if (networkManager.isConnected())
+		{
+			networkManager.setDefaultPlayerPrefab(PlayerPrefabFactory::createPlayerPrefab());
+			for (GameObject& object :
+				 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("LevelManager"))
+			{
+				if (object.hasComponent<LevelManagerBehaviourScript>())
+				{
+					object.getComponents<LevelManagerBehaviourScript>()[0].get().beginDemoNetworkingGame();
+				}
+			}
+		}
+		else
+		{
+			// If client is selected but not yet connected, disable the other buttons
+			mServerButton->setActive(false);
+			mClientButton->setActive(false);
+			mHostButton->setActive(false);
+			mSearchButton->setActive(true);
+		}
+	}
+}
 
-                int buttonHeight;
-                int buttonWidth;
+void NetworkSelectionBehaviourScript::onServerRelease()
+{
+	NetworkManager& networkManager = EngineBravo::getInstance().getNetworkManager();
+	std::cout << "Server selected" << std::endl;
+	if (networkManager.isConnected())
+	{
+		std::cout << "Network is already connected" << std::endl;
+	}
+	else
+	{
+		networkManager.setRole(NetworkRole::SERVER);
+		networkManager.startNetwork();
+	}
+	networkManager.setDefaultPlayerPrefab(PlayerPrefabFactory::createPlayerPrefab());
+	for (GameObject& object :
+		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("LevelManager"))
+	{
+		if (object.hasComponent<LevelManagerBehaviourScript>())
+		{
+			object.getComponents<LevelManagerBehaviourScript>()[0].get().beginDemoNetworkingGame();
+		}
+	}
+}
 
-                Button* ipButton = new Button;
-                ipButton->setTransform(Transform(Vector2(100, mServerAddresses.size() * 20)));
-                ipButton->setTag(serverAddress);
-                Text* ipText =
-                    new Text(serverAddress, serverAddress, Color(15, 110, 47), Vector2(0, 0), Vector2(0.5, 0.5));
-                ipText->setParent(ipButton);
-                ipButton->addComponent<ConnectButtonScript>(ipText);
-                engine.getRenderSystem().getTextSize(serverAddress, serverAddress, buttonWidth, buttonHeight,
-                                                     Vector2(0.5, 0.5));
-                ipButton->setWidth(buttonWidth);
-                ipButton->setHeight(buttonHeight);
+void NetworkSelectionBehaviourScript::onClientRelease()
+{
+	NetworkManager& networkManager = EngineBravo::getInstance().getNetworkManager();
+	std::cout << "Client selected" << std::endl;
+	if (networkManager.isConnected())
+	{
+		std::cout << "Network is already connected" << std::endl;
+	}
+	else
+	{
+		networkManager.setRole(NetworkRole::CLIENT);
+		networkManager.startNetwork();
+		NetworkClient& networkClient = EngineBravo::getInstance().getNetworkManager().getClient();
+		networkClient.discoverServers();
+		for (GameObject& button :
+			 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("ServerButton"))
+		{
+			Button& buttonObject = dynamic_cast<Button&>(button);
+			buttonObject.setInteractable(false);
+		}
+		for (GameObject& button :
+			 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("ClientButton"))
+		{
+			Button& buttonObject = dynamic_cast<Button&>(button);
+			buttonObject.setInteractable(false);
+		}
+		for (GameObject& button :
+			 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("HostButton"))
+		{
+			Button& buttonObject = dynamic_cast<Button&>(button);
+			buttonObject.setInteractable(false);
+		}
+		for (GameObject& button :
+			 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("SearchButton"))
+		{
+			Button& buttonObject = dynamic_cast<Button&>(button);
+			buttonObject.setActive(true);
+		}
+	}
+}
 
-                Scene* scene = sceneManager.getCurrentScene();
-                scene->addGameObject(ipButton);
-                scene->addGameObject(ipText);
-            }
-        }
-    }
+void NetworkSelectionBehaviourScript::onHostRelease()
+{
+	NetworkManager& networkManager = EngineBravo::getInstance().getNetworkManager();
+	std::cout << "Host selected" << std::endl;
+	if (networkManager.isConnected())
+	{
+		std::cout << "Network is already connected" << std::endl;
+	}
+	else
+	{
+		networkManager.setRole(NetworkRole::HOST);
+		networkManager.startNetwork();
+	}
+}
+
+void NetworkSelectionBehaviourScript::onSearchRelease()
+{
+	EngineBravo& engine = EngineBravo::getInstance();
+	SceneManager& sceneManager = engine.getSceneManager();
+
+	NetworkClient& networkClient = engine.getNetworkManager().getClient();
+	std::vector<std::string> serverAddresses = networkClient.getServerAddresses();
+	for (std::string serverAddress : serverAddresses)
+	{
+		int menuIndexX = mMenuStartX;
+		int menuIndexY = mMenuStartY + 20;
+
+		std::string buttonTag = "button" + serverAddress;
+
+		Button* button =
+			MainMenuPrefabFactory::createDefaultButton(mMainMenuObject, &sceneManager.getCurrentScene(), serverAddress,
+													   buttonTag, serverAddress, menuIndexX, menuIndexY);
+		mServerAdressButtons.push_back(button);
+		button->getComponents<Animation>();
+
+		button->setOnReleaseCallback(
+			std::bind(&NetworkSelectionBehaviourScript::onConnectRelease, this, serverAddress));
+
+		menuIndexY += 20;
+	}
+}
+
+void NetworkSelectionBehaviourScript::onConnectRelease(const std::string& aServerAdress)
+{
+	std::cout << "Connect button released" << std::endl;
+	NetworkClient& networkClient = EngineBravo::getInstance().getNetworkManager().getClient();
+	networkClient.setServerAddress(aServerAdress);
+	networkClient.connectToServer();
 }

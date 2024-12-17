@@ -20,19 +20,17 @@ void DemoMusicButtonBehaviourScript::onCollide(GameObject* aGameObject)
 
 	EngineBravo& engine = EngineBravo::getInstance();
 	SceneManager& sceneManager = engine.getSceneManager();
-	Scene* scene = sceneManager.getCurrentScene();
-	if (!scene)
-		return;
+	Scene& scene = sceneManager.getCurrentScene();
 
 	// Handle Start/Stop button
 	if (mGameObject->getTag() == "ButtonStartStopMusic")
 	{
-		togglePlayStop(scene);
+		togglePlayStop(&scene);
 	}
 	// Handle Reset button
 	else if (mGameObject->getTag() == "ButtonResetMusic")
 	{
-		resetAll(scene);
+		resetAll(&scene);
 	}
 }
 
@@ -126,15 +124,15 @@ void DemoMusicButtonBehaviourScript::stopMusic()
 // Set button visual state
 void DemoMusicButtonBehaviourScript::setButtonState(GameObject* button, bool isDown)
 {
-	for (Component* component : button->getComponents<Sprite>())
+	for (Component& component : button->getComponents<Sprite>())
 	{
-		if (component->getTag() == "ButtonDownSprite")
+		if (component.getTag() == "ButtonDownSprite")
 		{
-			component->setActive(isDown);
+			component.setActive(isDown);
 		}
-		else if (component->getTag() == "ButtonUpSprite")
+		else if (component.getTag() == "ButtonUpSprite")
 		{
-			component->setActive(!isDown);
+			component.setActive(!isDown);
 		}
 	}
 }
@@ -143,5 +141,5 @@ void DemoMusicButtonBehaviourScript::setButtonState(GameObject* button, bool isD
 GameObject* DemoMusicButtonBehaviourScript::getButton(Scene* scene, const std::string& tag)
 {
 	auto buttons = scene->getGameObjectsWithTag(tag);
-	return !buttons.empty() ? buttons[0] : nullptr;
+	return !buttons.empty() ? &buttons[0].get() : nullptr;
 }
