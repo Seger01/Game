@@ -12,6 +12,9 @@
 #include <Time.h>
 #include <functional>
 #include <iostream>
+#include <chrono>
+#include <thread>
+
 
 EnemyBehaviourScript::EnemyBehaviourScript(float aHealth) : mHealth(aHealth) {}
 
@@ -83,6 +86,15 @@ void EnemyBehaviourScript::onCollide(GameObject* aGameObject)
 	{
 		BulletBehaviourScript& bullet = aGameObject->getComponents<BulletBehaviourScript>().at(0);
 		takeDamage(bullet.getDamage());
+		setGlowRed(true);
+
+		// Reset the color after 0.5 seconds
+        std::thread([this]() {
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+			if (!mIsDead) {
+            	setGlowRed(false);
+			}
+        }).detach();
 	}
 }
 
@@ -174,6 +186,22 @@ void EnemyBehaviourScript::onDeath()
 	{
 		std::cerr << "Error: mGameObject is already null!" << std::endl;
 	}
+}
+
+void EnemyBehaviourScript::setGlowRed(bool aState)
+{
+    if (mGameObject->hasComponent<Sprite>())
+    {
+        Sprite& sprite = mGameObject->getComponents<Sprite>()[0].get();
+        if (aState)
+        {
+            sprite.setColorFilter(Color(255, 0, 0, 255)); // Set color to red
+        }
+        else
+        {
+            sprite.setColorFilter(Color(255, 255, 255, 255)); // Reset to original color
+        }
+    }
 }
 
 int EnemyBehaviourScript::getGridPosition(const Vector2& position) const
