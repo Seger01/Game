@@ -47,7 +47,6 @@ void MainMenuBehaviourScript::onUpdate() {}
 
 void MainMenuBehaviourScript::onPlayRelease()
 {
-	std::cout << "Wanted to play the game" << std::endl;
 	for (GameObject& object :
 		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("LevelManager"))
 	{
@@ -68,11 +67,7 @@ void MainMenuBehaviourScript::onDemoRelease()
 
 	Scene& scene = EngineBravo::getInstance().getSceneManager().getCurrentScene();
 
-	std::cout << "Current scene: " << scene.getName() << std::endl;
-
 	scene.addPersistentGameObject(&demoManagerObject);
-
-	std::cout << "Wanted to play demo" << std::endl;
 }
 
 void MainMenuBehaviourScript::onExitRelease() { std::cout << "adfljasdflkjafds to exit game" << std::endl; }
