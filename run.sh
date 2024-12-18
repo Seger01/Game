@@ -1,8 +1,8 @@
 #!/bin/bash
 
-mkdir build
+mkdir code/build
 
-cd build || exit 1
+cd code/build || exit 1
 
 cmake .. -DENABLE_DEBUG=ON
 if [ $? -ne 0 ]; then
