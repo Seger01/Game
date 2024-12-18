@@ -49,13 +49,13 @@ void CanvasBehaviourScript::onStart()
 
 void CanvasBehaviourScript::onUpdate()
 {
-	// constantly retrieve the current camera and update the canvas position to the camera origin
+
 	Camera* camera = EngineBravo::getInstance().getSceneManager().getCurrentScene().getCameraWithTag("MainCamera");
-
-	Transform newTransform;
-	newTransform.position = camera->getOrigin();
-
-	mGameObject->setTransform(newTransform);
+	if (!camera->hasParent())
+	{
+		mGameObject->setParent(*camera);
+		mGameObject->setTransform(Transform(Vector2(-(camera->getWidth() / 2), -(camera->getHeight() / 2))));
+	}
 }
 
 void CanvasBehaviourScript::onCollide(GameObject* aGameObject)
