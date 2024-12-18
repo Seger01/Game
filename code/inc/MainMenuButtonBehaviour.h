@@ -26,16 +26,16 @@ public:
 			sprite.setColorFilter({255, 255, 255, 255});
 		}
 
-		for (GameObject* child : mGameObject->getChildren())
+		for (GameObject& child : mGameObject->getChildren())
 		{
-			if (dynamic_cast<Text*>(child))
+			if (dynamic_cast<Text*>(&child))
 			{
-				Text* textobj = dynamic_cast<Text*>(child);
+				Text& textobj = dynamic_cast<Text&>(child);
 
-				Color textColor = textobj->getColor();
+				Color textColor = textobj.getColor();
 				textColor.a = 255;
 
-				textobj->setColor(textColor);
+				textobj.setColor(textColor);
 			}
 		}
 	}
@@ -47,16 +47,16 @@ public:
 			sprite.setColorFilter({255, 255, 255, 100});
 		}
 
-		for (GameObject* child : mGameObject->getChildren())
+		for (GameObject& child : mGameObject->getChildren())
 		{
-			if (dynamic_cast<Text*>(child))
+			if (dynamic_cast<Text*>(&child))
 			{
-				Text* textobj = dynamic_cast<Text*>(child);
+				Text& textobj = dynamic_cast<Text&>(child);
 
-				Color textColor = textobj->getColor();
+				Color textColor = textobj.getColor();
 				textColor.a = 150;
 
-				textobj->setColor(textColor);
+				textobj.setColor(textColor);
 			}
 		}
 	}

@@ -54,9 +54,11 @@ void DemoManagerBehaviourScript::createDemoStartScene()
 	LevelCreatorBehaviourScript().createLevel(&scene, mTileMapData);
 	GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
 
-	for (const auto& mapObject : mTileMapData.mMapObjects) {
+	for (const auto& mapObject : mTileMapData.mMapObjects)
+	{
 		auto it = mapObject.properties.find("isPlayerSpawn");
-		if (it != mapObject.properties.end() && it->second == "true") {
+		if (it != mapObject.properties.end() && it->second == "true")
+		{
 			defaultPlayerPrefab->setTransform(Transform(Vector2(mapObject.x, mapObject.y)));
 			break; // Assuming there's only one player spawn point
 		}
@@ -64,7 +66,7 @@ void DemoManagerBehaviourScript::createDemoStartScene()
 
 	scene.addPersistentGameObject(defaultPlayerPrefab);
 
-	//Trigger for stress test
+	// Trigger for stress test
 	GameObject* endOfLevelTriggerStressTest = new GameObject;
 	endOfLevelTriggerStressTest->setTransform(Transform(Vector2(224, 64)));
 	endOfLevelTriggerStressTest->setTag("EndOfLevelTriggerStressTest");
@@ -79,24 +81,24 @@ void DemoManagerBehaviourScript::createDemoStartScene()
 
 	scene.addGameObject(endOfLevelTriggerStressTest);
 
-	//Button for stress test
+	// Button for stress test
 	GameObject* buttonStressTest = DemoButtonPrefab().createButtonPrefab();
 	buttonStressTest->setTransform(Transform(Vector2(224, 64)));
-	if (buttonStressTest->hasComponent<RigidBody>()) {
+	if (buttonStressTest->hasComponent<RigidBody>())
+	{
 		buttonStressTest->getComponents<RigidBody>()[0].get().setActive(false);
 	}
-	
+
 	scene.addGameObject(buttonStressTest);
-	
+
 	Text* textStressTest = new Text("Stress test", "Arial", Color(255, 255, 255), Vector2(-15, 17), Vector2(0.3, 0.3));
 	textStressTest->setLayer(2);
-	textStressTest->setParent(buttonStressTest);
+	textStressTest->setParent(*buttonStressTest);
 	textStressTest->setTag("StressTestText");
 
 	scene.addGameObject(textStressTest);
 
-
-	//Trigger for demo start
+	// Trigger for demo start
 	GameObject* startDemoTrigger = new GameObject;
 	startDemoTrigger->setTransform(Transform(Vector2(224, 144)));
 	startDemoTrigger->setTag("startDemoTrigger");
@@ -111,10 +113,11 @@ void DemoManagerBehaviourScript::createDemoStartScene()
 
 	scene.addGameObject(startDemoTrigger);
 
-	//Button for demo start
+	// Button for demo start
 	GameObject* buttonDemoStart = DemoButtonPrefab().createButtonPrefab();
 	buttonDemoStart->setTransform(Transform(Vector2(224, 144)));
-	if (buttonDemoStart->hasComponent<RigidBody>()) {
+	if (buttonDemoStart->hasComponent<RigidBody>())
+	{
 		buttonDemoStart->getComponents<RigidBody>()[0].get().setActive(false);
 	}
 
@@ -122,11 +125,10 @@ void DemoManagerBehaviourScript::createDemoStartScene()
 
 	Text* text = new Text("Demo", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.3, 0.3));
 	text->setLayer(2);
-	text->setParent(buttonDemoStart);
+	text->setParent(*buttonDemoStart);
 	text->setTag("StartDemoText");
 
 	scene.addGameObject(text);
-
 
 	sceneManager.requestSceneChange("DemoStartScene");
 }
@@ -155,7 +157,7 @@ void DemoManagerBehaviourScript::createFirstScene()
 	Camera* miniMapCamera = new Camera;
 	miniMapCamera->setTag("MiniMapCamera");
 	miniMapCamera->setActive(true);
-	//miniMapCamera->setMainCamera(false);
+	// miniMapCamera->setMainCamera(false);
 	miniMapCamera->setRenderOrder(1);
 
 	miniMapCamera->setViewport(FRect{0.7, 0.7, 0.3, 0.3});
@@ -264,7 +266,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 	Text* text = new Text("Play/Stop", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.4, 0.4));
 	text->setLayer(5);
 	text->setTag("ButtonStartStopMusicText");
-	text->setParent(buttonMusic);
+	text->setParent(*buttonMusic);
 
 	scene.addGameObject(text);
 	scene.addGameObject(buttonMusic);
@@ -278,7 +280,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 	Text* textReset = new Text("Reset", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.4, 0.4));
 	textReset->setLayer(5);
 	textReset->setTag("ButtonResetMusicText");
-	textReset->setParent(buttonResetMusic);
+	textReset->setParent(*buttonResetMusic);
 
 	scene.addGameObject(textReset);
 	scene.addGameObject(buttonResetMusic);
@@ -292,7 +294,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 	Text* textSFX = new Text("SFX", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.4, 0.4));
 	textSFX->setLayer(5);
 	textSFX->setTag("ButtonSFXText");
-	textSFX->setParent(buttonSFX);
+	textSFX->setParent(*buttonSFX);
 
 	scene.addGameObject(textSFX);
 	scene.addGameObject(buttonSFX);
@@ -306,7 +308,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 	Text* text1 = new Text("Box object", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.3, 0.3));
 	text1->setLayer(5);
 	text1->setTag("ButtonBoxText");
-	text1->setParent(button1);
+	text1->setParent(*button1);
 
 	scene.addGameObject(text1);
 	scene.addGameObject(button1);
@@ -319,7 +321,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 	Text* text2 = new Text("Circle object", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.3, 0.3));
 	text2->setLayer(5);
 	text2->setTag("Button2Text");
-	text2->setParent(button2);
+	text2->setParent(*button2);
 
 	scene.addGameObject(text2);
 	scene.addGameObject(button2);
@@ -332,7 +334,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 	Text* text3 = new Text("Filters", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.3, 0.3));
 	text3->setLayer(5);
 	text3->setTag("Button3Text");
-	text3->setParent(button3);
+	text3->setParent(*button3);
 
 	scene.addGameObject(text3);
 	scene.addGameObject(button3);
@@ -346,7 +348,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 	Text* textPar = new Text("Fireworks", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.2, 0.2));
 	textPar->setLayer(5);
 	textPar->setTag("ButtonParText");
-	textPar->setParent(buttonPar);
+	textPar->setParent(*buttonPar);
 
 	scene.addGameObject(textPar);
 	scene.addGameObject(buttonPar);
@@ -360,7 +362,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 	Text* textGravity = new Text("Toggle Gravity", "Arial", Color(255, 255, 255), Vector2(0, 17), Vector2(0.3, 0.3));
 	textGravity->setLayer(5);
 	textGravity->setTag("ButtonGravityText");
-	textGravity->setParent(buttonGravity);
+	textGravity->setParent(*buttonGravity);
 
 	scene.addGameObject(textGravity);
 	scene.addGameObject(buttonGravity);
@@ -539,7 +541,7 @@ void DemoManagerBehaviourScript::onUpdate()
 	// 	SceneManager& sceneManager = engine.getSceneManager();
 	// 	Scene& currentScene = sceneManager.getCurrentScene();
 	// 	// std::vector<std::reference_wrapper<GameObject>> players = currentScene.getGameObjectsWithTag("Player");
-		
+
 	// 	// if (players.size() > 0) {
 	// 	// 	currentScene.removePersistentGameObject(&players[0].get());
 	// 	// }

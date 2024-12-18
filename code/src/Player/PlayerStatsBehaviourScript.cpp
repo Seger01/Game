@@ -54,7 +54,7 @@ void PlayerStatsBehaviourScript::onStart()
 																							   // scale as needed
 	mBSCountText->setLayer(5);
 	mBSCountText->setTag("playerBSCountText");
-	mBSCountText->setParent(mGameObject);
+	mBSCountText->setParent(*mGameObject);
 
 	mGameObject->addComponent(playerStatBackgroundSprite);
 	mGameObject->addComponent(playerStatHealthBarBackgroundSprite);
@@ -80,7 +80,7 @@ void PlayerStatsBehaviourScript::onUpdate()
 		return;
 	}
 
-	std::vector <std::reference_wrapper<GameObject>> playerObjects = scene.getGameObjectsWithTag("Player");
+	std::vector<std::reference_wrapper<GameObject>> playerObjects = scene.getGameObjectsWithTag("Player");
 	if (playerObjects.size() == 0)
 	{
 		return;
@@ -95,7 +95,7 @@ void PlayerStatsBehaviourScript::onUpdate()
 	{
 		return;
 	}
-	
+
 	float playerHealth = mPlayerBehaviourScript->getHealth();
 	float playerMaxHealth = mPlayerBehaviourScript->getMaxHealth();
 	int playerBSCount = mPlayerBehaviourScript->getBSCount();
