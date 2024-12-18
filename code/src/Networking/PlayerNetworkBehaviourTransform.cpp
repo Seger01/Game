@@ -15,15 +15,18 @@ PlayerNetworkBehaviourTransform::PlayerNetworkBehaviourTransform(const PlayerNet
 
 void PlayerNetworkBehaviourTransform::onUpdate()
 {
-	if (isOwner())
+	if (!isOwner())
 	{
 		mTransformSerialize.getValue().setPosition(mGameObject->getTransform().position); // Set the network variable
 		mTransformSerialize.getValue().setRotation(mGameObject->getTransform().rotation); // Set the network variable
 	}
 	else
 	{
-		Transform transform(mTransformSerialize.getValue().getPosition());
-		transform.rotation = mTransformSerialize.getValue().getRotation();
-		mGameObject->setTransform(transform); // Read the network variable
+		Transform networkTransform(mTransformSerialize.getValue().getPosition());
+		networkTransform.rotation = mTransformSerialize.getValue().getRotation();
+		Transform localTransform(mGameObject->getTransform());
+		Transform avgTransform;
+		avgTransform = (networkTransform + localTransform) / 2;
+		mGameObject->setTransform(avgTransform); // Read the network variable
 	}
 }

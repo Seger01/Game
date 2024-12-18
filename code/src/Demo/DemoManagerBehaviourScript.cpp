@@ -500,6 +500,7 @@ void DemoManagerBehaviourScript::nextScene(const std::string& aSceneName)
 
 void DemoManagerBehaviourScript::onStart()
 {
+
 	mCurrentScene = 0;
 	nextScene("DemoStartScene");
 	// createSecondScene();

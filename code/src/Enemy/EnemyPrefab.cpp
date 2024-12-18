@@ -1,6 +1,7 @@
 #include "EnemyPrefab.h"
 #include "EnemyBehaviourScript.h"
 #include "EnemyNetworkBehaviourScript.h"
+#include "EnemyNetworkBehaviourTransform.h"
 #include <Animation.h>
 #include <EngineBravo.h>
 #include <GameObject.h>
@@ -10,6 +11,8 @@
 #include <SpriteDef.h>
 #include <SpriteDefUtil.h>
 #include <Transform.h>
+
+REGISTER_NETWORK_PREFAB(EnemyPrefab);
 
 const int enemySpriteWidth = 20;  // Width of each sprite
 const int enemySpriteHeight = 27; // Height of each sprite
@@ -32,7 +35,7 @@ GameObject* EnemyPrefab::createEnemyPrefab()
 	if (EngineBravo::getInstance().getNetworkManager().isNetworked())
 	{
 		enemy->addComponent<NetworkObject>();
-		enemy->addComponent<NetworkTransform>(true, true, false, false, false);
+		enemy->addComponent<EnemyNetworkBehaviourTransform>();
 		enemy->addComponent<EnemyNetworkBehaviourScript>(100.0f);
 	}
 	else
@@ -43,8 +46,11 @@ GameObject* EnemyPrefab::createEnemyPrefab()
 	addRigidBody(enemy);
 	addCollider(enemy);
 	addAnimations(enemy);
+	enemy->setTag("enemy");
 	return enemy;
 }
+
+int EnemyPrefab::getPrefabID() const { return GetTypeId<EnemyPrefab>(); }
 
 void EnemyPrefab::setTransform(GameObject* gameObject)
 {

@@ -34,12 +34,21 @@ void CanvasBehaviourScript::onStart()
 	// GameObject* textObject = new Text("Canvas", "undefined", Color(15, 110, 47), Vector2(10, 10), Vector2(1, 1));
 	// textObject->setParent(mGameObject);
 
+<<<<<<< HEAD
 	GameObject* playerStats = new GameObject;
 	playerStats->addComponent<PlayerStatsBehaviourScript>();
 	playerStats->setTransform(Transform(Vector2(5, camera->getHeight() - 45)));
 	playerStats->setParent(*mGameObject);
 
 	scene.addGameObject(playerStats);
+=======
+	// GameObject* playerStats = new GameObject;
+	// playerStats->addComponent<PlayerStatsBehaviourScript>();
+	// playerStats->setTransform(Transform(Vector2(5, camera->getHeight() - 45)));
+	// playerStats->setParent(mGameObject);
+	//
+	// scene.addGameObject(playerStats);
+>>>>>>> 4e371caea3d52a4d253ebd6b6dcc59abd5fb06c0
 	// scene->addGameObject(textObject);
 	// scene->addGameObject(buttonObject);
 	// scene->addGameObject(buttonText);
