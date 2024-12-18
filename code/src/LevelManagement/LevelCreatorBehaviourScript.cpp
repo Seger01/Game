@@ -1,5 +1,8 @@
 #include "LevelCreatorBehaviourScript.h"
 #include "CanvasBehaviourScript.h"
+#include "EnemyPrefab.h"
+#include "NetworkDemoSceneBehaviour.h"
+#include "NetworkObject.h"
 #include <BoxCollider.h>
 #include <EngineBravo.h>
 #include <FSConverter.h>
@@ -153,9 +156,6 @@ void LevelCreatorBehaviourScript::createDemoNetworkingLevel()
 		height = 9 * 16;
 	}
 
-	// scene->getActiveCamera().setTransform(Transform(Vector2(11 * 16, 12 * 16)));
-	// scene->getActiveCamera().setWidth(width);
-	// scene->getActiveCamera().setHeight(height);
 	camera->setTransform(Transform(Vector2(11 * 16, 12 * 16)));
 	camera->setWidth(width);
 	camera->setHeight(height);
@@ -169,6 +169,12 @@ void LevelCreatorBehaviourScript::createDemoNetworkingLevel()
 	const TileMapData& tileMapData = tileMapParser.getTileMapData();
 
 	createLevel(&scene, tileMapData);
+
+	GameObject* sceneBehaviour = new GameObject;
+	sceneBehaviour->setTag("SceneBehaviour");
+	sceneBehaviour->addComponent(new NetworkDemoSceneBehaviour());
+	scene.addGameObject(sceneBehaviour);
+
 	sceneManager.requestSceneChange("DemoNetworkingLevel");
 }
 

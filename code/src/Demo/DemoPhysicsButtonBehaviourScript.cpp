@@ -24,7 +24,7 @@ void DemoPhysicsButtonBehaviourScript::onStart()
 	mBoxGravitySpawned = false;
 	mBoxSpriteDef = {"Dungeontileset/0x72_DungeonTilesetII_v1.7.png", Rect{304, 402, 16, 14}, 16, 14};
 	mCircleSpriteDef = {"Dungeontileset/0x72_DungeonTilesetII_v1.7.png", Rect{292, 439, 7, 6}, 16, 14};
-	physicsManager.getPhysicsEngine().getWorld().setGravity(Vector2(0.0f, 9.8f));
+	physicsManager.getPhysicsEngine().setGravity({0.0f, 9.8f});
 }
 
 void DemoPhysicsButtonBehaviourScript::onUpdate() {}

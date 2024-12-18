@@ -24,7 +24,7 @@ void DemoBulletSpawner::onStart()
 	Text* textPar = new Text("Spawned Bullets: 0", "Arial", Color(0, 255, 0), Vector2(0, 0), Vector2(1, 1));
 	textPar->setLayer(5);
 	textPar->setTag("SpawnedBulletsText");
-	textPar->setParent(mTextObject);
+	textPar->setParent(*mTextObject);
 
 	scene.addGameObject(textPar);
 	scene.addGameObject(mTextObject);
@@ -70,16 +70,13 @@ void DemoBulletSpawner::onUpdate()
 
 		if (mTextObject)
 		{
-			std::vector<GameObject*> children = mTextObject->getChildren();
-			for (GameObject* child : children)
+			std::vector<std::reference_wrapper<GameObject>> children = mTextObject->getChildren();
+			for (GameObject& child : children)
 			{
-				if (child->getTag() == "SpawnedBulletsText")
+				if (child.getTag() == "SpawnedBulletsText")
 				{
-					Text* textComponent = dynamic_cast<Text*>(child);
-					if (textComponent)
-					{
-						textComponent->setText("Spawned Bullets: " + std::to_string(mBullets.size()));
-					}
+					Text& textComponent = dynamic_cast<Text&>(child);
+					textComponent.setText("Spawned Bullets: " + std::to_string(mBullets.size()));
 				}
 			}
 		}

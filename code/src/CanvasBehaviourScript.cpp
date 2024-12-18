@@ -37,7 +37,7 @@ void CanvasBehaviourScript::onStart()
 	GameObject* playerStats = new GameObject;
 	playerStats->addComponent<PlayerStatsBehaviourScript>();
 	playerStats->setTransform(Transform(Vector2(5, camera->getHeight() - 45)));
-	playerStats->setParent(mGameObject);
+	playerStats->setParent(*mGameObject);
 
 	scene.addGameObject(playerStats);
 	// scene->addGameObject(textObject);

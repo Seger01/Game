@@ -42,6 +42,7 @@ private:
     void visualizeGraph();
     void removePathVisualization();
     void removeGraphVisualization();
+    void setGlowRed(bool aState);
 
 private :
     float mHealth;

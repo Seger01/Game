@@ -16,45 +16,30 @@ void MainMenuBehaviourScript::onStart()
 	{
 		Button& buttonObject = dynamic_cast<Button&>(button);
 		buttonObject.setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onPlayRelease, this));
-		Transform transform = buttonObject.getTransform();
-		transform.scale = Vector2(1, 1);
-		buttonObject.setTransform(transform);
 	}
 	for (GameObject& button :
 		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("MultiplayerButton"))
 	{
 		Button& buttonObject = dynamic_cast<Button&>(button);
 		buttonObject.setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onMultiplayerRelease, this));
-		Transform transform = buttonObject.getTransform();
-		transform.scale = Vector2(1, 1);
-		buttonObject.setTransform(transform);
 	}
 	for (GameObject& button :
 		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("DemoButton"))
 	{
 		Button& buttonObject = dynamic_cast<Button&>(button);
 		buttonObject.setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onDemoRelease, this));
-		Transform transform = buttonObject.getTransform();
-		transform.scale = Vector2(1, 1);
-		buttonObject.setTransform(transform);
 	}
 	for (GameObject& button :
 		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("ExitButton"))
 	{
 		Button& buttonObject = dynamic_cast<Button&>(button);
 		buttonObject.setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onExitRelease, this));
-		Transform transform = buttonObject.getTransform();
-		transform.scale = Vector2(1, 1);
-		buttonObject.setTransform(transform);
 	}
 	for (GameObject& button :
 		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("DemoMultiButton"))
 	{
 		Button& buttonObject = dynamic_cast<Button&>(button);
 		buttonObject.setOnReleaseCallback(std::bind(&MainMenuBehaviourScript::onDemoMultiRelease, this));
-		Transform transform = buttonObject.getTransform();
-		transform.scale = Vector2(1, 1);
-		buttonObject.setTransform(transform);
 	}
 }
 
