@@ -64,6 +64,12 @@ void PlayerStatsBehaviourScript::onStart()
 	mHealthBarWidth = playerStatHealthBarSprite->getWidth();
 	mFullHealthBarForegroundSourceRect = playerStatHealthBarSprite->getSource();
 
+	std::vector<std::reference_wrapper<GameObject>> playerObjects = scene.getGameObjectsWithTag("Player");
+	if (playerObjects[0].get().getComponents<PlayerBehaviourScript>().size() == 0)
+	{
+		return;
+	}
+
 	GameObject& playerObject = scene.getGameObjectsWithTag("Player")[0].get();
 
 	mPlayerBehaviourScript = &playerObject.getComponents<PlayerBehaviourScript>()[0].get();
@@ -85,11 +91,6 @@ void PlayerStatsBehaviourScript::onUpdate()
 	{
 		return;
 	}
-	// GameObject* playerObject = &scene.getGameObjectsWithTag("Player")[0].get();
-	// if (playerObject == nullptr)
-	// {
-	// 	return;
-	// }
 
 	if (playerObjects[0].get().getComponents<PlayerBehaviourScript>().size() == 0)
 	{
