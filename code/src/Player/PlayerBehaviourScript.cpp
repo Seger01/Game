@@ -95,11 +95,18 @@ void PlayerBehaviourScript::handleAnimations()
 			return;
 		}
 	}
-	static Transform previousTransform = this->mGameObject->getTransform();
-	Transform currentTransform = this->mGameObject->getTransform();
 
-	if (abs(previousTransform.position.x - currentTransform.position.x) < 0.1 &&
-		abs(previousTransform.position.y - currentTransform.position.y) < 0.1)
+	Vector2 currentVelocity;
+	if (mGameObject->hasComponent<RigidBody>())
+	{
+		currentVelocity = mGameObject->getComponents<RigidBody>()[0].get().getLinearVelocity();
+	}
+	else
+	{
+		return;
+	}
+
+	if (abs(currentVelocity.x) < 0.1 && abs(currentVelocity.y) < 0.1)
 	{
 		if ((currentActiveAnimationTag() == "playerIdleFront") || (currentActiveAnimationTag() == "playerIdleBack") ||
 			(currentActiveAnimationTag() == "playerIdleSide"))
@@ -134,25 +141,25 @@ void PlayerBehaviourScript::handleAnimations()
 			}
 		}
 
-		if (previousTransform.position.x > currentTransform.position.x)
+		if (currentVelocity.x > 0)
 		{
 			setFlipX(true);
 		}
-		else if (currentTransform.position.x > previousTransform.position.x)
+		else if (currentVelocity.x < 0)
 		{
 			setFlipX(false);
 		}
 	}
 	else
 	{
-		if (currentTransform.position.y < previousTransform.position.y)
+		if (currentVelocity.y < 0)
 		{
-			if (abs(currentTransform.position.x - previousTransform.position.x) > 0.1)
+			if (abs(currentVelocity.x) > 5)
 			{
 				deactivateAllAnimations();
 				setAnimationActive("playerWalkingBackSide", true);
 			}
-			else if (abs(currentTransform.position.x - previousTransform.position.x) < 0.1)
+			else if (abs(currentVelocity.x) < 5)
 			{
 				deactivateAllAnimations();
 				setAnimationActive("playerWalkingBack", true);
@@ -160,34 +167,32 @@ void PlayerBehaviourScript::handleAnimations()
 		}
 		else
 		{
-			if (abs(currentTransform.position.x - previousTransform.position.x) > 0.1)
+			if (abs(currentVelocity.x) > 5)
 			{
 				deactivateAllAnimations();
 				setAnimationActive("playerWalkingFrontSide", true);
 			}
-			else if (abs(currentTransform.position.x - previousTransform.position.x) < 0.1)
+			else if (abs(currentVelocity.x) < 5)
 			{
 				deactivateAllAnimations();
 				setAnimationActive("playerWalkingFront", true);
 			}
 		}
 
-		if ((currentTransform.position.x - previousTransform.position.x) < -0.1)
+		if ((currentVelocity.x) < -5)
 		{
 			setFlipX(false);
 		}
-		else if ((currentTransform.position.x - previousTransform.position.x) > 0.1)
+		else if ((currentVelocity.x) > 5)
 		{
 			setFlipX(true);
 		}
 	}
-
-	previousTransform = this->mGameObject->getTransform();
 }
 
 void PlayerBehaviourScript::handleMovement()
 {
-	static const float movementSpeed = 10000.0f;
+	static const float movementSpeed = 160000.0f;
 
 	if (mGameObject->hasComponent<NetworkObject>())
 	{
@@ -248,9 +253,15 @@ void PlayerBehaviourScript::hanldeCameraMovement()
 
 	Camera* currentCam = EngineBravo::getInstance().getSceneManager().getCurrentScene().getCameraWithTag("MainCamera");
 
-	Transform playerTransform = this->mGameObject->getTransform();
+	if (!currentCam->hasParent())
+	{
+		currentCam->setParent(*mGameObject);
+		currentCam->setTransform(Transform(Vector2(0, 0)));
+	}
 
-	currentCam->setTransform(playerTransform);
+	// Transform playerTransform = this->mGameObject->getTransform();
+	//
+	// currentCam->setTransform(playerTransform);
 
 	Input& input = Input::getInstance();
 
@@ -330,7 +341,7 @@ void PlayerBehaviourScript::fireBullet(Point mousePosition)
 
 	// Add force to bullet
 	RigidBody& bulletRigidBody = bulletObject->getComponents<RigidBody>()[0];
-	float bulletSpeed = 1000.0f;
+	float bulletSpeed = 16000.0f;
 	bulletRigidBody.addForce(direction * bulletSpeed);
 
 	sceneManager.getCurrentScene().addGameObject(bulletObject);

@@ -39,7 +39,7 @@ void DemoManagerBehaviourScript::createDemoStartScene()
 
 	camera->setRenderOrder(0);
 
-	camera->setTransform(Transform(Vector2(80, 96)));
+	camera->setTransform(Transform(Vector2(0, 0)));
 	camera->setWidth(16 * 30);
 	camera->setHeight(9 * 30);
 

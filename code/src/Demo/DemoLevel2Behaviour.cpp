@@ -63,12 +63,12 @@ void DemoLevel2Behaviour::moveEnemy()
 	Scene& scene = engine.getSceneManager().getCurrentScene();
 	Input& input = Input::getInstance();
 
-	if (input.GetKeyDown(Key::Key_PageUp))
+	if (input.GetKeyDown(Key::Key_8))
 	{
 		Time::timeDilation = Time::timeDilation + 0.1f;
 	}
 
-	if (input.GetKeyDown(Key::Key_PageDown))
+	if (input.GetKeyDown(Key::Key_9))
 	{
 		Time::timeDilation = Time::timeDilation - 0.1f;
 	}
