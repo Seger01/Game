@@ -219,8 +219,6 @@ void DemoManagerBehaviourScript::createFirstScene()
 
 void DemoManagerBehaviourScript::createSecondScene()
 {
-	std::cout << "creating second scene" << std::endl;
-
 	EngineBravo& engine = EngineBravo::getInstance();
 	SceneManager& sceneManager = engine.getSceneManager();
 
