@@ -18,7 +18,6 @@ void NetworkDemoSceneBehaviour::onUpdate()
 	{
 		if (Input::getInstance().GetKeyDown(Key::Key_Space))
 		{
-			std::cout << "Creating enemy" << std::endl;
 			EngineBravo& engine = EngineBravo::getInstance();
 			NetworkManager& networkManager = engine.getNetworkManager();
 			EnemyPrefab enemyPrefab;
@@ -26,7 +25,6 @@ void NetworkDemoSceneBehaviour::onUpdate()
 		}
 		if (Input::getInstance().GetKeyDown(Key::Key_LControl))
 		{
-			std::cout << "Destroying enemy" << std::endl;
 			EngineBravo& engine = EngineBravo::getInstance();
 			NetworkManager& networkManager = engine.getNetworkManager();
 			for (auto gameObject : engine.getSceneManager().getCurrentScene().getGameObjects())

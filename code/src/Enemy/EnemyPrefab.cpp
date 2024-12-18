@@ -31,7 +31,6 @@ EnemyPrefab::EnemyPrefab() {}
 GameObject* EnemyPrefab::createEnemyPrefab()
 {
 	GameObject* enemy = new GameObject;
-	// setTransform(enemy);
 	if (EngineBravo::getInstance().getNetworkManager().isNetworked())
 	{
 		enemy->addComponent<NetworkObject>();
