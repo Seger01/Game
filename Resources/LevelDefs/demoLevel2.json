@@ -82,6 +82,12 @@
          "id":15,
          "name":"Graph",
          "opacity":1,
+         "properties":[
+                {
+                 "name":"isGraphLayer",
+                 "type":"bool",
+                 "value":true
+                }],
          "type":"tilelayer",
          "visible":true,
          "width":75,

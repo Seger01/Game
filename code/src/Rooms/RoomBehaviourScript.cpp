@@ -119,7 +119,7 @@ void RoomBehaviourScript::updateDoors(const SpriteDef& spriteDef)
 	EngineBravo& engine = EngineBravo::getInstance();
 	SceneManager& sceneManager = engine.getSceneManager();
 	std::vector<std::reference_wrapper<GameObject>> doorGameObjects =
-		sceneManager.getCurrentScene().getGameObjectsWithTag("Door");
+		sceneManager.getCurrentScene().getGameObjectsWithTag("Doors");
 	int spriteWidth = 16;
 	int spriteHeight = 16;
 
