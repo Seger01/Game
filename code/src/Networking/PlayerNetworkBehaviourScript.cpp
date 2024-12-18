@@ -5,7 +5,6 @@
 #include "BulletBehaviourScript.h"
 #include "BulletPrefab.h"
 #include <Animation.h>
-#include <Configuration.h>
 #include <EngineBravo.h>
 #include <GameObject.h>
 #include <Input.h>
@@ -335,14 +334,10 @@ void PlayerNetworkBehaviourScript::onUpdate()
 
 	if (input.GetKeyDown(Key::Key_C))
 	{
-		Configuration& config = EngineBravo::getInstance().getConfiguration();
-		config.setConfig(SHOW_COLLIDERS, !config.getConfig(SHOW_COLLIDERS));
 	}
 
 	if (input.GetKeyDown(Key::Key_F))
 	{
-		Configuration& config = EngineBravo::getInstance().getConfiguration();
-		config.setConfig(SHOW_FPS, !config.getConfig(SHOW_FPS));
 	}
 
 	if (input.GetMouseButtonDown(MouseButton::LEFT))
