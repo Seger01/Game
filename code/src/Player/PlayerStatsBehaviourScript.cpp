@@ -63,10 +63,6 @@ void PlayerStatsBehaviourScript::onStart()
 
 	mHealthBarWidth = playerStatHealthBarSprite->getWidth();
 	mFullHealthBarForegroundSourceRect = playerStatHealthBarSprite->getSource();
-
-	GameObject& playerObject = scene.getGameObjectsWithTag("Player")[0].get();
-
-	mPlayerBehaviourScript = &playerObject.getComponents<PlayerBehaviourScript>()[0].get();
 }
 
 void PlayerStatsBehaviourScript::onUpdate()
@@ -75,59 +71,52 @@ void PlayerStatsBehaviourScript::onUpdate()
 	SceneManager& sceneManager = engine.getSceneManager();
 	Scene& scene = sceneManager.getCurrentScene();
 
-	if (mPlayerBehaviourScript == nullptr)
-	{
-		return;
-	}
+	int playerBSCount = 0;
 
-	std::vector<std::reference_wrapper<GameObject>> playerObjects = scene.getGameObjectsWithTag("Player");
-	if (playerObjects.size() == 0)
+	if (scene.getGameObjectsWithTag("player").size() > 0)
 	{
-		return;
-	}
-	// GameObject* playerObject = &scene.getGameObjectsWithTag("Player")[0].get();
-	// if (playerObject == nullptr)
-	// {
-	// 	return;
-	// }
+		GameObject& player = scene.getGameObjectsWithTag("player")[0].get();
 
-	if (playerObjects[0].get().getComponents<PlayerBehaviourScript>().size() == 0)
-	{
-		return;
-	}
-
-	float playerHealth = mPlayerBehaviourScript->getHealth();
-	float playerMaxHealth = mPlayerBehaviourScript->getMaxHealth();
-	int playerBSCount = mPlayerBehaviourScript->getBSCount();
-
-	if (playerHealth > 0)
-	{
-		if (playerHealth < 0)
+		if (player.getComponents<PlayerBehaviourScript>().size() > 0)
 		{
-			playerHealth = 0;
-		}
+			PlayerBehaviourScript& behaviourscript = player.getComponents<PlayerBehaviourScript>()[0].get();
 
-		if (mGameObject->getComponentsWithTag<Sprite>("playerHealthBar").size() > 0)
-		{
-			Sprite* sprite = &mGameObject->getComponentsWithTag<Sprite>("playerHealthBar")[0].get();
+			float playerHealth = behaviourscript.getHealth();
+			float playerMaxHealth = behaviourscript.getMaxHealth();
+			playerBSCount = behaviourscript.getBSCount();
 
-			Rect sourceRect = sprite->getSource();
-			sourceRect.w = mFullHealthBarForegroundSourceRect.w * (playerHealth / playerMaxHealth);
-
-			if (sourceRect.w < 1)
+			if (playerHealth > 0)
 			{
-				sourceRect.w = 1;
+				if (playerHealth < 0)
+				{
+					playerHealth = 0;
+				}
+
+				if (mGameObject->getComponentsWithTag<Sprite>("playerHealthBar").size() > 0)
+				{
+					Sprite* sprite = &mGameObject->getComponentsWithTag<Sprite>("playerHealthBar")[0].get();
+
+					Rect sourceRect = sprite->getSource();
+					sourceRect.w = mFullHealthBarForegroundSourceRect.w * (playerHealth / playerMaxHealth);
+
+					if (sourceRect.w < 1)
+					{
+						sourceRect.w = 1;
+					}
+
+					sourceRect.x =
+						mFullHealthBarForegroundSourceRect.x + mFullHealthBarForegroundSourceRect.w - sourceRect.w;
+					sprite->setSource(sourceRect);
+
+					sprite->setWidth(mHealthBarWidth * (playerHealth / playerMaxHealth));
+				}
 			}
-
-			sourceRect.x = mFullHealthBarForegroundSourceRect.x + mFullHealthBarForegroundSourceRect.w - sourceRect.w;
-			sprite->setSource(sourceRect);
-
-			sprite->setWidth(mHealthBarWidth * (playerHealth / playerMaxHealth));
+			else
+			{
+				playerHealth = playerMaxHealth;
+			}
+			return;
 		}
-	}
-	else
-	{
-		playerHealth = playerMaxHealth;
 	}
 
 	if (scene.getGameObjectsWithTag("playerBSCountText").size() > 0)
