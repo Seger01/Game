@@ -238,11 +238,15 @@ void PlayerBehaviourScript::handleMovement()
 	}
 	if (input.GetKey(Key::Key_1))
 	{
-		parentTransform.scale = Vector2(10, 10);
+		parentTransform.scale = Vector2(2.3, 2.3);
 	}
 	if (input.GetKey(Key::Key_2))
 	{
 		parentTransform.scale = Vector2(0.5, 0.5);
+	}
+	if (input.GetKey(Key::Key_3))
+	{
+		parentTransform.scale = Vector2(1.0, 1.0);
 	}
 	this->mGameObject->setTransform(parentTransform);
 }

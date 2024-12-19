@@ -258,7 +258,12 @@ void PlayerPrefabFactory::addCollider(GameObject* gameObject)
 	boxCollider->setWidth(firstFramePlayerIdleFront.width);
 	boxCollider->setHeight(firstFramePlayerIdleFront.height);
 
-	gameObject->addComponent(boxCollider);
+	CircleCollider* circleCollider = new CircleCollider();
+	circleCollider->setRadius(10);
+
+	gameObject->addComponent(circleCollider);
+
+	// gameObject->addComponent(boxCollider);
 }
 
 void PlayerPrefabFactory::addSound(GameObject* gameObject)
