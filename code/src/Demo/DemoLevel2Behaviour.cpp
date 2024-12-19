@@ -25,26 +25,6 @@ void DemoLevel2Behaviour::onStart()
 	}
 
 	GameObject* enemyStatic = &scene.getGameObjectsWithTag("EnemyStatic")[0].get();
-	RigidBody* rigidBody = new RigidBody();
-
-	rigidBody->setCanRotate(true);
-	rigidBody->setIsMoveableByForce(true);
-	rigidBody->setDensity(1.0f);
-	rigidBody->setFriction(0.0f);
-	rigidBody->setRestitution(0.0f);
-	rigidBody->setGravityScale(0.0f);
-	rigidBody->setMass(5.0f);
-	rigidBody->setLinearDamping(0.3f);
-	rigidBody->setAngularDamping(0.3f);
-
-	enemyStatic->addComponent(rigidBody);
-
-	BoxCollider* boxCollider = new BoxCollider();
-	// boxCollider->setTrigger(true);
-	boxCollider->setWidth(20);
-	boxCollider->setHeight(20);
-
-	enemyStatic->addComponent(boxCollider);
 
 	if (enemyStatic != nullptr)
 	{
@@ -174,8 +154,7 @@ void DemoLevel2Behaviour::rotateEnemy()
 		return;
 	}
 	Transform transform = enemy->getTransform();
-	// enemy->getComponents<RigidBody>()[0].get().addTorque(100.0f * Time::deltaTime);
-	// transform.rotate(100.0f * Time::deltaTime);
+	transform.rotate(100.0f * Time::deltaTime);
 	enemy->setTransform(transform);
 }
 
