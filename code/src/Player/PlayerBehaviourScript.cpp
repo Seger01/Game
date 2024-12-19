@@ -206,9 +206,28 @@ void PlayerBehaviourScript::handleMovement()
 	Input& input = Input::getInstance();
 	static Controller controller(0);
 
-	std::cout << "Controller connected: " << (controller.isConnected() ? "true" : "false") << std::endl;
+	controller.update();
 
-	// std::cout << "Controller buttons: " << controllar.getLeftStickUp() << std::endl;
+	if (controller.getLeftStickUp() > 0)
+	{
+		mGameObject->getComponents<RigidBody>()[0].get().addForce(
+			Vector2(0, -(movementSpeed * controller.getLeftStickUp()) * Time::deltaTime));
+	}
+	if (controller.getLeftStickLeft() > 0)
+	{
+		mGameObject->getComponents<RigidBody>()[0].get().addForce(
+			Vector2(-(movementSpeed * controller.getLeftStickLeft()) * Time::deltaTime, 0));
+	}
+	if (controller.getLeftStickDown() > 0)
+	{
+		mGameObject->getComponents<RigidBody>()[0].get().addForce(
+			Vector2(0, (movementSpeed * controller.getLeftStickDown()) * Time::deltaTime));
+	}
+	if (controller.getLeftStickRight() > 0)
+	{
+		mGameObject->getComponents<RigidBody>()[0].get().addForce(
+			Vector2((movementSpeed * controller.getLeftStickRight()) * Time::deltaTime, 0));
+	}
 
 	Transform parentTransform = this->mGameObject->getTransform();
 
