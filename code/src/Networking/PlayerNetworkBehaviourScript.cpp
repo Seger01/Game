@@ -82,13 +82,7 @@ void PlayerNetworkBehaviourScript::setAnimationActive(std::string aAnimationTag,
 	}
 }
 
-void PlayerNetworkBehaviourScript::onStart()
-{
-	if (!isOwner())
-	{
-		destroy();
-	}
-}
+void PlayerNetworkBehaviourScript::onStart() {}
 
 void PlayerNetworkBehaviourScript::handleAnimations()
 {
@@ -221,6 +215,18 @@ void PlayerNetworkBehaviourScript::handleMovement()
 		parentTransform.rotate(-1.0f);
 	}
 
+	void setFlipX(bool aState);
+	void setFlipY(bool aState);
+
+	void toggleAnimaionEnabled();
+	void setAnimationActive(std::string aAnimationTag, bool aState);
+	void deactivateAllAnimations();
+
+	void handleAnimations();
+	void handleMovement();
+	void hanldeCameraMovement();
+	void fireBullet(Point mousePosition);
+
 	if (input.GetKey(Key::Key_W))
 	{
 		mGameObject->getComponents<RigidBody>()[0].get().addForce(Vector2(0, -200));
@@ -320,6 +326,10 @@ void PlayerNetworkBehaviourScript::fireBullet(Point mousePosition)
 
 void PlayerNetworkBehaviourScript::onUpdate()
 {
+	if (!isOwner())
+	{
+		return;
+	}
 	Input& input = Input::getInstance();
 
 	// std::cout << "Player Position: " << mGameObject->getTransform().position.x << ", "
