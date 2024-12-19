@@ -4,6 +4,7 @@
 
 #include "BulletBehaviourScript.h"
 #include "BulletPrefab.h"
+#include "Controller.h"
 #include <Animation.h>
 #include <EngineBravo.h>
 #include <GameObject.h>
@@ -203,6 +204,63 @@ void PlayerBehaviourScript::handleMovement()
 	}
 
 	Input& input = Input::getInstance();
+	static Controller controller(0);
+
+	controller.update();
+
+	if (controller.getLeftStickUp() > 0)
+	{
+		mGameObject->getComponents<RigidBody>()[0].get().addForce(
+			Vector2(0, -(movementSpeed * controller.getLeftStickUp()) * Time::deltaTime));
+	}
+	if (controller.getLeftStickLeft() > 0)
+	{
+		mGameObject->getComponents<RigidBody>()[0].get().addForce(
+			Vector2(-(movementSpeed * controller.getLeftStickLeft()) * Time::deltaTime, 0));
+	}
+	if (controller.getLeftStickDown() > 0)
+	{
+		mGameObject->getComponents<RigidBody>()[0].get().addForce(
+			Vector2(0, (movementSpeed * controller.getLeftStickDown()) * Time::deltaTime));
+	}
+	if (controller.getLeftStickRight() > 0)
+	{
+		mGameObject->getComponents<RigidBody>()[0].get().addForce(
+			Vector2((movementSpeed * controller.getLeftStickRight()) * Time::deltaTime, 0));
+	}
+	//
+	// std::cout << "Right stick up: " << controller.getRightStickUp() << std::endl;
+	// std::cout << "Right stick left: " << controller.getRightStickLeft() << std::endl;
+	// std::cout << "Right stick down: " << controller.getRightStickDown() << std::endl;
+	// std::cout << "Right stick right: " << controller.getRightStickRight() << std::endl;
+	controller.print();
+
+	if (controller.isButtonPressed(Key::Controller_R1))
+	{
+		if (controller.getRightStickUp() == 0 && controller.getRightStickLeft() == 0 &&
+			controller.getRightStickDown() == 0 && controller.getRightStickRight() == 0)
+		{
+			return;
+		}
+
+		// Create and setup the bullet
+		GameObject* bulletObject = BulletPrefabFactory().createBulletPrefab(*this->mGameObject);
+
+		// Set bullet's initial position
+		bulletObject->getTransformRef().position = mGameObject->getTransform().position;
+
+		// Add force to bullet
+		RigidBody& bulletRigidBody = bulletObject->getComponents<RigidBody>()[0];
+		float bulletSpeed = 16000.0f;
+		Vector2 direction = {-controller.getRightStickLeft() + controller.getRightStickRight(),
+							 -controller.getRightStickUp() + controller.getRightStickDown()};
+
+		bulletRigidBody.addForce(direction * bulletSpeed);
+
+		EngineBravo::getInstance().getSceneManager().getCurrentScene().addGameObject(bulletObject);
+	}
+
+	// controller.print();
 
 	Transform parentTransform = this->mGameObject->getTransform();
 
