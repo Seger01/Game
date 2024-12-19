@@ -88,7 +88,7 @@ void PlayerPrefabFactory::addNetworkBehaviourScript(GameObject* gameObject)
 	gameObject->addComponent<NetworkObject>();
 	gameObject->addComponent<PlayerNetworkBehaviourInputs>();
 	gameObject->addComponent<PlayerNetworkBehaviourScript>();
-	// gameObject->addComponent<PlayerNetworkBehaviourTransform>();
+	gameObject->addComponent<PlayerNetworkBehaviourTransform>();
 }
 
 void PlayerPrefabFactory::setTag(GameObject* gameObject) { gameObject->setTag("Player"); }

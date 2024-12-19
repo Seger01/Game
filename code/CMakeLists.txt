@@ -8,20 +8,6 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Add an option to enable debug mode
-option(ENABLE_DEBUG "Enable debug mode" OFF)
-
-# if(ENABLE_DEBUG)
-#     message(STATUS "Debug mode enabled")
-#     set(CMAKE_BUILD_TYPE Debug)
-#     add_compile_options(-g -O0)
-# else()
-#     message(STATUS "Debug mode disabled")
-#     set(CMAKE_BUILD_TYPE Release)
-# endif()
-
-add_compile_options(-O3 -g)  # Optimization flag for Release build
-
 # Disable the ENABLE_TESTGAME option for the Engine-Bravo library
 set(ENABLE_TESTGAME OFF CACHE BOOL "Disable building the testGame" FORCE)
 
