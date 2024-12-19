@@ -4,6 +4,7 @@
 
 #include "BulletBehaviourScript.h"
 #include "BulletPrefab.h"
+#include "Controller.h"
 #include <Animation.h>
 #include <EngineBravo.h>
 #include <GameObject.h>
@@ -203,6 +204,11 @@ void PlayerBehaviourScript::handleMovement()
 	}
 
 	Input& input = Input::getInstance();
+	static Controller controller(0);
+
+	std::cout << "Controller connected: " << (controller.isConnected() ? "true" : "false") << std::endl;
+
+	// std::cout << "Controller buttons: " << controllar.getLeftStickUp() << std::endl;
 
 	Transform parentTransform = this->mGameObject->getTransform();
 
