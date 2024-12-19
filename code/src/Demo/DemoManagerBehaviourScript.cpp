@@ -19,6 +19,7 @@
 #include "PlayerPrefab.h"
 #include <EngineBravo.h>
 #include <GameObject.h>
+#include <LevelBuilder.h>
 #include <MapToGraph.h>
 #include <Scene.h>
 #include <SceneManager.h>
@@ -51,7 +52,11 @@ void DemoManagerBehaviourScript::createDemoStartScene()
 	tileMapParser.parse();
 	mTileMapData = tileMapParser.getTileMapData();
 
-	LevelCreatorBehaviourScript().createLevel(&scene, mTileMapData);
+	LevelBuilder levelBuilder;
+	levelBuilder.createLevel(scene, mTileMapData, 16, 16);
+	LevelCreatorBehaviourScript levelCreatorBehaviourScript;
+	levelCreatorBehaviourScript.createObjects(&scene, mTileMapData);
+
 	GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
 
 	for (const auto& mapObject : mTileMapData.mMapObjects)
@@ -179,14 +184,10 @@ void DemoManagerBehaviourScript::createFirstScene()
 	tileMapParser.parse();
 	mTileMapData = tileMapParser.getTileMapData();
 
-	LevelCreatorBehaviourScript().createLevel(&scene, mTileMapData);
-	// GameObject* defaultPlayerPrefab = PlayerPrefabFactory().createPlayerPrefab();
-
-	// defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
-
-	// defaultPlayerPrefab->setTransform(Transform(Vector2(40, 40)));
-
-	// scene.addPersistentGameObject(defaultPlayerPrefab);
+	LevelBuilder levelBuilder;
+	levelBuilder.createLevel(scene, mTileMapData, 16, 16);
+	LevelCreatorBehaviourScript levelCreatorBehaviourScript;
+	levelCreatorBehaviourScript.createObjects(&scene, mTileMapData);
 
 	GameObject& playerObject =
 		EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("Player").at(0);
@@ -225,12 +226,9 @@ void DemoManagerBehaviourScript::createSecondScene()
 	Scene& scene = sceneManager.createScene("DemoScene2");
 
 	// set starting pos for player in this scene
-	// GameObject* playerObject = sceneManager.getCurrentScene()->getGameObjectsWithTag("Player").at(0);
-	// playerObject->setTransform(Transform(Vector2(40, 40)));
 	GameObject& playerObject =
 		EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("Player").at(0);
 	playerObject.setTransform(Transform(Vector2(40, 40)));
-	//  playerObject->setTransform(Transform(Vector2(40, 40)));
 
 	Camera* camera = new Camera;
 	camera->setTag("MainCamera");
@@ -248,7 +246,10 @@ void DemoManagerBehaviourScript::createSecondScene()
 	tileMapParser.parse();
 	mTileMapData = tileMapParser.getTileMapData();
 
-	LevelCreatorBehaviourScript().createLevel(&scene, mTileMapData);
+	LevelBuilder levelBuilder;
+	levelBuilder.createLevel(scene, mTileMapData, 16, 16);
+	LevelCreatorBehaviourScript levelCreatorBehaviourScript;
+	levelCreatorBehaviourScript.createObjects(&scene, mTileMapData);
 
 	MapToGraph mapToGraph(mTileMapData);
 	mapToGraph.convertToGraph();
@@ -430,8 +431,6 @@ void DemoManagerBehaviourScript::createSecondScene()
 	sceneManager.requestSceneChange("DemoScene2");
 
 	mPlayerPositionSet = true;
-
-	// saveGame();
 }
 
 void DemoManagerBehaviourScript::createStressTest()
@@ -465,7 +464,10 @@ void DemoManagerBehaviourScript::createStressTest()
 	tileMapParser.parse();
 	mTileMapData = tileMapParser.getTileMapData();
 
-	LevelCreatorBehaviourScript().createLevel(&scene, mTileMapData);
+	LevelBuilder levelBuilder;
+	levelBuilder.createLevel(scene, mTileMapData, 16, 16);
+	LevelCreatorBehaviourScript levelCreatorBehaviourScript;
+	levelCreatorBehaviourScript.createObjects(&scene, mTileMapData);
 
 	GameObject* spawner = new GameObject();
 	spawner->addComponent<DemoBulletSpawner>();

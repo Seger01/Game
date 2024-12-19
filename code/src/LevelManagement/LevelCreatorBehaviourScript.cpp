@@ -1,12 +1,18 @@
 #include "LevelCreatorBehaviourScript.h"
 #include "CanvasBehaviourScript.h"
 #include "EnemyPrefab.h"
+#include "LevelEndBehaviourScript.h"
 #include "NetworkDemoSceneBehaviour.h"
 #include "NetworkObject.h"
+#include "PlayerPrefab.h"
+#include "RoomBehaviourScript.h"
+#include <AudioSource.h>
 #include <BoxCollider.h>
+#include <CircleCollider.h>
 #include <EngineBravo.h>
 #include <FSConverter.h>
 #include <GameObject.h>
+#include <LevelBuilder.h>
 #include <RigidBody.h>
 #include <Scene.h>
 #include <SceneManager.h>
@@ -14,15 +20,9 @@
 #include <SpriteDef.h>
 #include <Text.h>
 #include <TileMapParser.h>
-#include <iostream>
-// #include <FPSCounterBehaviourScript.h>
-#include "LevelEndBehaviourScript.h"
-#include "PlayerPrefab.h"
-#include "RoomBehaviourScript.h"
-#include <AudioSource.h>
-#include <CircleCollider.h>
 #include <Transform.h>
 #include <algorithm>
+#include <iostream>
 
 void LevelCreatorBehaviourScript::onStart() {}
 
@@ -53,6 +53,14 @@ void LevelCreatorBehaviourScript::createLevel1()
 
 	Scene& scene = sceneManager.createScene("Level-1");
 
+	GameObject* musicObject = new GameObject;
+	AudioSource* music = new AudioSource("Audio/music.wav", true);
+	music->setPlayOnWake(true);
+	music->setVolume(10);
+	music->setXDirection(0);
+	musicObject->addComponent(music);
+	scene.addGameObject(musicObject);
+
 	Camera* camera = new Camera;
 	camera->setTag("MainCamera");
 	camera->setActive(true);
@@ -69,7 +77,14 @@ void LevelCreatorBehaviourScript::createLevel1()
 	tileMapParser.parse();
 	mTileMapData = tileMapParser.getTileMapData();
 
-	createLevel(&scene, mTileMapData);
+	LevelBuilder levelBuilder;
+	levelBuilder.createLevel(scene, mTileMapData, 16, 16);
+	createObjects(&scene, mTileMapData);
+    setDoorsLayer(&scene);
+	// Add specific components
+	addRoomEntries(&scene, mTileMapData);
+	addLevelEndTriggers(&scene, mTileMapData);
+
 	createPlayer(&scene, mTileMapData);
 	sceneManager.requestSceneChange("Level-1");
 	mPlayerPositionSet = false;
@@ -98,7 +113,14 @@ void LevelCreatorBehaviourScript::createLevel2()
 	tileMapParser.parse();
 	mTileMapData = tileMapParser.getTileMapData();
 
-	createLevel(&scene, mTileMapData);
+	LevelBuilder levelBuilder;
+	levelBuilder.createLevel(scene, mTileMapData, 16, 16);
+	createObjects(&scene, mTileMapData);
+    setDoorsLayer(&scene);
+	// Add specific components
+	addRoomEntries(&scene, mTileMapData);
+	addLevelEndTriggers(&scene, mTileMapData);
+
 	sceneManager.requestSceneChange("Level-2");
 	mPlayerPositionSet = false;
 }
@@ -126,7 +148,14 @@ void LevelCreatorBehaviourScript::createLevel3()
 	tileMapParser.parse();
 	mTileMapData = tileMapParser.getTileMapData();
 
-	createLevel(&scene, mTileMapData);
+	LevelBuilder levelBuilder;
+	levelBuilder.createLevel(scene, mTileMapData, 16, 16);
+	createObjects(&scene, mTileMapData);
+    setDoorsLayer(&scene);
+	// Add specific components
+	addRoomEntries(&scene, mTileMapData);
+	addLevelEndTriggers(&scene, mTileMapData);
+
 	sceneManager.requestSceneChange("Level-3");
 	mPlayerPositionSet = false;
 }
@@ -168,7 +197,13 @@ void LevelCreatorBehaviourScript::createDemoNetworkingLevel()
 	tileMapParser.parse();
 	const TileMapData& tileMapData = tileMapParser.getTileMapData();
 
-	createLevel(&scene, tileMapData);
+	LevelBuilder levelBuilder;
+	levelBuilder.createLevel(scene, tileMapData, 16, 16);
+	createObjects(&scene, tileMapData);
+    setDoorsLayer(&scene);
+	// Add specific components
+	addRoomEntries(&scene, tileMapData);
+	addLevelEndTriggers(&scene, tileMapData);
 
 	GameObject* sceneBehaviour = new GameObject;
 	sceneBehaviour->setTag("SceneBehaviour");
@@ -227,184 +262,157 @@ void LevelCreatorBehaviourScript::setPlayerStartPosition(Scene* scene, const Til
 	}
 }
 
-void LevelCreatorBehaviourScript::createEnemy() {}
-
-void LevelCreatorBehaviourScript::createBoss() {}
-
-void LevelCreatorBehaviourScript::createLevel(Scene* scene, const TileMapData& tileMapData)
+void LevelCreatorBehaviourScript::addRoomEntries(Scene* scene, const TileMapData& tileMapData)
 {
-	if (scene == nullptr)
+	for (const auto& mapObject : tileMapData.mMapObjects)
 	{
-		throw std::runtime_error("Scene is null in LevelCreatorBehaviourScript::createLevel");
+		if (mapObject.type == "room_entry")
+		{
+			std::vector<MapObject> enemySpawns;
+			for (const auto& spawnPoint : tileMapData.mMapObjects)
+			{
+				if (spawnPoint.properties.find("isEnemySpawn") != spawnPoint.properties.end() &&
+					spawnPoint.properties.at("isEnemySpawn") == "true" &&
+					spawnPoint.properties.at("roomID") == mapObject.properties.at("roomID"))
+				{
+					enemySpawns.push_back(spawnPoint);
+				}
+			}
+
+			if (!scene->getGameObjectsWithTag("RoomTrigger").empty())
+			{
+				std::vector<std::reference_wrapper<GameObject>> roomTriggers =
+					scene->getGameObjectsWithTag("RoomTrigger");
+				for (auto& roomTrigger : roomTriggers)
+				{
+					if (roomTrigger.get().getName() == "RoomTrigger" + mapObject.properties.at("roomID"))
+					{
+						roomTrigger.get().addComponent(
+							new RoomBehaviourScript(mapObject.properties.at("roomID"), enemySpawns));
+					}
+				}
+			}
+		}
 	}
+}
 
-	EngineBravo& engine = EngineBravo::getInstance();
+void LevelCreatorBehaviourScript::addLevelEndTriggers(Scene* scene, const TileMapData& tileMapData)
+{
+	for (const auto& mapObject : tileMapData.mMapObjects)
+	{
+		if (mapObject.type == "LevelEndTrigger")
+		{
+			if (!scene->getGameObjectsWithTag("LevelEnd").empty())
+			{
+				GameObject& levelEndObject = scene->getGameObjectsWithTag("LevelEnd").back().get();
+				levelEndObject.addComponent(new LevelEndBehaviourScript());
+			}
+		}
+	}
+}
 
+void LevelCreatorBehaviourScript::createObjects(Scene* scene, const TileMapData& tileMapData)
+{
 	for (const auto& mapObject : tileMapData.mMapObjects)
 	{
 		if (!mapObject.type.empty())
 		{
 			std::string type = mapObject.type;
 			if (type == "room_entry")
-			{ // Collect enemy spawns for this room
-				std::vector<MapObject> enemySpawns;
-				for (const auto& spawnPoint : tileMapData.mMapObjects)
-				{
-					if (spawnPoint.properties.find("isEnemySpawn") != spawnPoint.properties.end() &&
-						spawnPoint.properties.at("isEnemySpawn") == "true" &&
-						spawnPoint.properties.at("roomID") == mapObject.properties.at("roomID"))
-					{
-						enemySpawns.push_back(spawnPoint);
-					}
-				}
-
-				GameObject* roomObject = new GameObject;
-				roomObject->addComponent(new RoomBehaviourScript(mapObject.properties.at("roomID"), enemySpawns));
-				BoxCollider* boxCollider = new BoxCollider();
-				Transform transform;
-				transform.position.x = mapObject.x;
-				transform.position.y = mapObject.y;
-				boxCollider->setTransform(transform);
-				boxCollider->setWidth(mapObject.width);
-				boxCollider->setHeight(mapObject.height);
-				boxCollider->setTrigger(true);
-				roomObject->addComponent(boxCollider);
-				RigidBody* rigidBody = new RigidBody();
-				rigidBody->setTransform(transform);
-				roomObject->addComponent(rigidBody);
-				roomObject->setName("RoomTrigger");
-				scene->addGameObject(roomObject);
+			{
+				createRoomEntry(scene, mapObject, tileMapData);
 			}
-
-			// Add a trigger for the level end
 			else if (type == "LevelEndTrigger")
 			{
-				std::cout << "Creating LevelEndTrigger" << std::endl;
-				GameObject* levelEndObject = new GameObject;
-				BoxCollider* boxCollider = new BoxCollider();
-				Transform transform;
-				transform.position.x = mapObject.x;
-				transform.position.y = mapObject.y;
-				boxCollider->setTransform(transform);
-				boxCollider->setWidth(mapObject.width);
-				boxCollider->setHeight(mapObject.height);
-				boxCollider->setTrigger(true);
-				levelEndObject->addComponent(boxCollider);
-				RigidBody* rigidBody = new RigidBody();
-				rigidBody->setTransform(transform);
-				levelEndObject->addComponent(rigidBody);
-				levelEndObject->setName("LevelEndTrigger");
-				levelEndObject->setTag("LevelEnd");
-				levelEndObject->addComponent(new LevelEndBehaviourScript());
-				scene->addGameObject(levelEndObject);
+				createLevelEndTrigger(scene, mapObject);
 			}
 		}
 	}
+}
 
-	GameObject* canvasObject = new GameObject;
-
-	canvasObject->addComponent<CanvasBehaviourScript>();
-
-	scene->addGameObject(canvasObject);
-
-	GameObject* musicObject = new GameObject;
-
-	// Add music
-	AudioSource* music = new AudioSource("Audio/music.wav", true);
-	music->setPlayOnWake(true);
-	music->setVolume(10);
-	music->setXDirection(0);
-	musicObject->addComponent(music);
-
-	scene->addGameObject(musicObject);
-
-	// Assuming tileMapData is a const reference to TileMapData
-	for (size_t layerIndex = 0; layerIndex < tileMapData.mLayers.size(); ++layerIndex)
+/**
+ * @brief This function creates the room entry triggers
+ *
+ * @param scene
+ * @param mapObject
+ * @param tileMapData
+ */
+void LevelCreatorBehaviourScript::createRoomEntry(Scene* scene, const MapObject& mapObject,
+												  const TileMapData& tileMapData) const
+{
+	std::vector<MapObject> enemySpawns;
+	for (const auto& spawnPoint : tileMapData.mMapObjects)
 	{
-		bool isDoorsLayer = (tileMapData.mLayerNames[layerIndex] == "Doors");
-		bool isGraphLayer = (tileMapData.mLayerNames[layerIndex] == "Graph");
-		// Access rows within the layer by index
-		for (size_t rowIndex = 0; rowIndex < tileMapData.mLayers[layerIndex].size(); ++rowIndex)
+		if (spawnPoint.properties.find("isEnemySpawn") != spawnPoint.properties.end() &&
+			spawnPoint.properties.at("isEnemySpawn") == "true" &&
+			spawnPoint.properties.at("roomID") == mapObject.properties.at("roomID"))
 		{
-			// Access each tile in the row by index
-			for (size_t colIndex = 0; colIndex < tileMapData.mLayers[layerIndex][rowIndex].size(); ++colIndex)
-			{
-				int tile = tileMapData.mLayers[layerIndex][rowIndex][colIndex];
-				if (tile != 0)
-				{
-					// Check if the tile exists in mTileInfoMap (read-only)
-					auto it = tileMapData.mTileInfoMap.find(tile);
-					if (it != tileMapData.mTileInfoMap.end())
-					{
-						const TileInfo& tileInfo = it->second; // Access as const
-
-						SpriteDef spriteDef = {tileInfo.mTilesetName,
-											   Rect{tileInfo.mCoordinates.first, tileInfo.mCoordinates.second, 16, 16},
-											   16, 16};
-
-						GameObject* gameObject = new GameObject;
-
-						Transform objectTransform;
-						objectTransform.position.x = static_cast<int>(colIndex * 16);
-						objectTransform.position.y = static_cast<int>(rowIndex * 16);
-						gameObject->setTransform(objectTransform);
-
-						if (!isGraphLayer)
-						{
-							// Add a Sprite component to the GameObject
-							Sprite* sprite = engine.getResourceManager().createSprite(spriteDef);
-
-							sprite->setLayer(layerIndex);
-
-							gameObject->addComponent(sprite);
-						}
-						// Add BoxCollider components to the GameObject
-						for (const auto& collider : tileInfo.mColliders)
-						{
-							BoxCollider* boxCollider = new BoxCollider();
-							Transform transform;
-							transform.position.x = collider.x;
-							transform.position.y = collider.y;
-							boxCollider->setTransform(transform);
-							boxCollider->setWidth(collider.mWidth + 0.1f);
-							boxCollider->setHeight(collider.mHeight + 0.1f);
-							boxCollider->setCollideCategory(1);
-							boxCollider->setCollideWithCategory({1, 2, 3});
-							if (isDoorsLayer)
-							{
-								boxCollider->setActive(false);
-							}
-							gameObject->addComponent(boxCollider);
-						}
-
-						if (!tileInfo.mColliders.empty())
-						{
-							RigidBody* rigidBody = new RigidBody();
-							rigidBody->setTransform(objectTransform);
-							if (isDoorsLayer)
-							{
-								if (rigidBody != nullptr)
-								{
-									rigidBody->setActive(false);
-								}
-							}
-							rigidBody->setFriction(1.0f);
-							gameObject->addComponent(rigidBody);
-							gameObject->setName("Tile");
-						}
-						if (isDoorsLayer)
-						{
-							gameObject->setTag("Door");
-						}
-						scene->addGameObject(gameObject);
-					}
-					else
-					{
-						// Handle the case where tileId does not exist in the map
-						std::cout << "Tile ID " << tile << " not found in mTileInfoMap.\n";
-					}
-				}
-			}
+			enemySpawns.push_back(spawnPoint);
 		}
 	}
+
+	GameObject* roomObject = new GameObject;
+	roomObject->setName("RoomTrigger" + mapObject.properties.at("roomID"));
+	roomObject->setTag("RoomTrigger");
+
+	addTriggerCollider(roomObject, mapObject);
+
+	scene->addGameObject(roomObject);
+}
+
+/**
+ * @brief This function creates the level end trigger
+ *
+ * @param scene
+ * @param mapObject
+ */
+void LevelCreatorBehaviourScript::createLevelEndTrigger(Scene* scene, const MapObject& mapObject) const
+{
+	GameObject* levelEndObject = new GameObject;
+	levelEndObject->setName("LevelEndTrigger");
+	levelEndObject->setTag("LevelEnd");
+
+	addTriggerCollider(levelEndObject, mapObject);
+
+	scene->addGameObject(levelEndObject);
+}
+
+/**
+ * @brief This function adds a collider and rigidbody to a trigger game object (Like room entry or level end)
+ *
+ * @param gameObject
+ * @param mapObject
+ */
+void LevelCreatorBehaviourScript::addTriggerCollider(GameObject* gameObject, const MapObject& mapObject) const
+{
+	BoxCollider* boxCollider = new BoxCollider();
+	Transform transform;
+	transform.position.x = mapObject.x;
+	transform.position.y = mapObject.y;
+	boxCollider->setTransform(transform);
+	boxCollider->setWidth(mapObject.width);
+	boxCollider->setHeight(mapObject.height);
+	boxCollider->setTrigger(true);
+	gameObject->addComponent(boxCollider);
+
+	RigidBody* rigidBody = new RigidBody();
+	rigidBody->setTransform(transform);
+	gameObject->addComponent(rigidBody);
+}
+
+void LevelCreatorBehaviourScript::setDoorsLayer(Scene* scene) const
+{
+	std::vector<std::reference_wrapper<GameObject>> gameObjects = scene->getGameObjectsWithTag("Doors");
+	for (auto& gameObject : gameObjects)
+	{
+		if (gameObject.get().hasComponent<BoxCollider>())
+		{
+			gameObject.get().getComponents<BoxCollider>()[0].get().setActive(false);
+		}
+
+		if (gameObject.get().hasComponent<RigidBody>())
+        {
+            gameObject.get().getComponents<RigidBody>()[0].get().setActive(false);
+        }
+    }
 }
