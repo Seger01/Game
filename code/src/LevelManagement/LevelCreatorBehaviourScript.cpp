@@ -78,7 +78,7 @@ void LevelCreatorBehaviourScript::createLevel1()
 	mTileMapData = tileMapParser.getTileMapData();
 
 	LevelBuilder levelBuilder;
-	levelBuilder.createLevel(&scene, mTileMapData);
+	levelBuilder.createLevel(&scene, mTileMapData, 16, 16);
 	createObjects(&scene, mTileMapData);
     setDoorsLayer(&scene);
 	// Add specific components
@@ -114,7 +114,7 @@ void LevelCreatorBehaviourScript::createLevel2()
 	mTileMapData = tileMapParser.getTileMapData();
 
 	LevelBuilder levelBuilder;
-	levelBuilder.createLevel(&scene, mTileMapData);
+	levelBuilder.createLevel(&scene, mTileMapData, 16, 16);
 	createObjects(&scene, mTileMapData);
     setDoorsLayer(&scene);
 	// Add specific components
@@ -149,7 +149,7 @@ void LevelCreatorBehaviourScript::createLevel3()
 	mTileMapData = tileMapParser.getTileMapData();
 
 	LevelBuilder levelBuilder;
-	levelBuilder.createLevel(&scene, mTileMapData);
+	levelBuilder.createLevel(&scene, mTileMapData, 16, 16);
 	createObjects(&scene, mTileMapData);
     setDoorsLayer(&scene);
 	// Add specific components
@@ -198,7 +198,7 @@ void LevelCreatorBehaviourScript::createDemoNetworkingLevel()
 	const TileMapData& tileMapData = tileMapParser.getTileMapData();
 
 	LevelBuilder levelBuilder;
-	levelBuilder.createLevel(&scene, tileMapData);
+	levelBuilder.createLevel(&scene, tileMapData, 16, 16);
 	createObjects(&scene, tileMapData);
     setDoorsLayer(&scene);
 	// Add specific components
