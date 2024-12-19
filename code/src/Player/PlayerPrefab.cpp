@@ -242,12 +242,12 @@ void PlayerPrefabFactory::addRigidBody(GameObject* gameObject)
 	rigidBody->setHasGravity(false);
 	rigidBody->setIsMoveableByForce(true);
 	rigidBody->setDensity(1.0f);
-	rigidBody->setFriction(0.6f);
+	rigidBody->setFriction(0.0f);
 	rigidBody->setRestitution(0.0f);
 	rigidBody->setGravityScale(0.0f);
 	rigidBody->setMass(5.0f);
-	rigidBody->setLinearDamping(0.5f);
-	rigidBody->setAngularDamping(0.5f);
+	rigidBody->setLinearDamping(5.0f);
+	rigidBody->setAngularDamping(5.0f);
 
 	gameObject->addComponent(rigidBody);
 }
