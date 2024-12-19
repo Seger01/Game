@@ -38,7 +38,7 @@ void PlayerNetworkBehaviourInputs::onUpdate()
 	}
 	else
 	{
-		static const float movementSpeed = 10000.0f;
+		static const float movementSpeed = 160000.0f;
 
 		// Read the network variable
 		w = mInputsSerialize.getValue().getW();

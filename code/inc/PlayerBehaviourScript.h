@@ -2,11 +2,11 @@
 #define PLAYERBEHAVIOURSCRIPT_H
 
 #include <Animation.h>
-#include <Components/IBehaviourScript.h>
 #include <GameObject.h>
+#include <INetworkBehaviour.h>
 #include <Point.h>
 
-class PlayerBehaviourScript : public IBehaviourScript
+class PlayerBehaviourScript : public INetworkBehaviour
 {
 public:
 	void onStart() override;

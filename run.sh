@@ -4,7 +4,7 @@ mkdir code/build
 
 cd code/build || exit 1
 
-cmake .. -DCMAKE_BUILD_TYPE=Debug
+cmake .. -DCMAKE_BUILD_TYPE=Release
 if [ $? -ne 0 ]; then
     echo "CMake configuration failed."
     exit 1

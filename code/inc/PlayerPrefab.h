@@ -1,17 +1,7 @@
 #ifndef PLAYERPREFAB_H
 #define PLAYERPREFAB_H
 
-#include <Animation.h>
-#include <EngineBravo.h>
-#include <GameObject.h>
-#include <NetworkTransform.h>
-#include <ParticleEmitter.h>
-#include <PlayerBehaviourScript.h>
-#include <PlayerNetworkBehaviourScript.h>
-#include <SpriteDefUtil.h>
-#include <Transform.h>
-#include <iostream>
-#include <vector>
+class GameObject;
 
 class PlayerPrefabFactory {
 public:

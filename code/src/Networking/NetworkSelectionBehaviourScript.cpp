@@ -11,6 +11,7 @@
 #include "NetworkManager.h"
 #include "PlayerPrefab.h"
 #include "Text.h"
+#include <Animation.h>
 
 void NetworkSelectionBehaviourScript::onStart()
 {

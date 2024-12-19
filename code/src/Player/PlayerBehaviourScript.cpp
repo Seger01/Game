@@ -348,6 +348,14 @@ void PlayerBehaviourScript::fireBullet(Point mousePosition)
 
 void PlayerBehaviourScript::onUpdate()
 {
+	if (mGameObject->hasComponent<NetworkObject>())
+	{
+		NetworkObject& networkObject = mGameObject->getComponents<NetworkObject>().at(0);
+		if (!networkObject.isOwner())
+		{
+			return;
+		}
+	}
 	Input& input = Input::getInstance();
 
 	handleMovement();
