@@ -4,7 +4,7 @@ mkdir code/build
 
 cd code/build || exit 1
 
-cmake .. -DENABLE_DEBUG=ON
+cmake .. -DCMAKE_BUILD_TYPE=Debug
 if [ $? -ne 0 ]; then
     echo "CMake configuration failed."
     exit 1

@@ -5,7 +5,6 @@
 #include "BulletBehaviourScript.h"
 #include "BulletPrefab.h"
 #include <Animation.h>
-#include <Configuration.h>
 #include <EngineBravo.h>
 #include <GameObject.h>
 #include <Input.h>
@@ -83,13 +82,7 @@ void PlayerNetworkBehaviourScript::setAnimationActive(std::string aAnimationTag,
 	}
 }
 
-void PlayerNetworkBehaviourScript::onStart()
-{
-	if (!isOwner())
-	{
-		destroy();
-	}
-}
+void PlayerNetworkBehaviourScript::onStart() {}
 
 void PlayerNetworkBehaviourScript::handleAnimations()
 {
@@ -222,6 +215,18 @@ void PlayerNetworkBehaviourScript::handleMovement()
 		parentTransform.rotate(-1.0f);
 	}
 
+	void setFlipX(bool aState);
+	void setFlipY(bool aState);
+
+	void toggleAnimaionEnabled();
+	void setAnimationActive(std::string aAnimationTag, bool aState);
+	void deactivateAllAnimations();
+
+	void handleAnimations();
+	void handleMovement();
+	void hanldeCameraMovement();
+	void fireBullet(Point mousePosition);
+
 	if (input.GetKey(Key::Key_W))
 	{
 		mGameObject->getComponents<RigidBody>()[0].get().addForce(Vector2(0, -200));
@@ -321,6 +326,10 @@ void PlayerNetworkBehaviourScript::fireBullet(Point mousePosition)
 
 void PlayerNetworkBehaviourScript::onUpdate()
 {
+	if (!isOwner())
+	{
+		return;
+	}
 	Input& input = Input::getInstance();
 
 	// std::cout << "Player Position: " << mGameObject->getTransform().position.x << ", "
@@ -335,14 +344,10 @@ void PlayerNetworkBehaviourScript::onUpdate()
 
 	if (input.GetKeyDown(Key::Key_C))
 	{
-		Configuration& config = EngineBravo::getInstance().getConfiguration();
-		config.setConfig(SHOW_COLLIDERS, !config.getConfig(SHOW_COLLIDERS));
 	}
 
 	if (input.GetKeyDown(Key::Key_F))
 	{
-		Configuration& config = EngineBravo::getInstance().getConfiguration();
-		config.setConfig(SHOW_FPS, !config.getConfig(SHOW_FPS));
 	}
 
 	if (input.GetMouseButtonDown(MouseButton::LEFT))
