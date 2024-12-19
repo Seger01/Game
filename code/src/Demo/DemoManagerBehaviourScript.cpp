@@ -471,9 +471,9 @@ void DemoManagerBehaviourScript::createStressTest()
 
 	GameObject* spawner = new GameObject();
 	spawner->addComponent<DemoBulletSpawner>();
-	Transform transform;
-	transform.position = Vector2(100, 100);
-	spawner->setTransform(transform);
+	Transform spawnerTransform;
+	spawnerTransform.position = Vector2(100, 100);
+	spawner->setTransform(spawnerTransform);
 
 	scene.addGameObject(spawner);
 

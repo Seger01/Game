@@ -63,6 +63,9 @@ void DemoBulletSpawner::onUpdate()
 			boxCollider.setCollideCategory(2);
 			boxCollider.setCollideWithCategory({1});
 		}
+		Transform transform;
+		transform.position = Vector2(240, 240);
+		bullet.setTransform(transform);
 		scene.addGameObject(&bullet);
 
 		mBullets.push_back(&bullet);
