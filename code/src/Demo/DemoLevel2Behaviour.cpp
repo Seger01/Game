@@ -162,7 +162,13 @@ void DemoLevel2Behaviour::moveWithPathfinding()
 	EngineBravo& engine = EngineBravo::getInstance();
 	Scene& scene = engine.getSceneManager().getCurrentScene();
 
-	GameObject* enemy = &scene.getGameObjectsWithTag("EnemyWithPathfinding")[0].get();
+	auto objects = scene.getGameObjectsWithTag("EnemyWithPathfinding");
+	if (objects.size() == 0)
+	{
+		// Enemy not found
+		return;
+	}
+	GameObject* enemy = &scene.getGameObjectsWithTag("EnemyWithPathfinding").at(0).get();
 	if (enemy == nullptr)
 	{
 		std::cout << "Enemy not found" << std::endl;
