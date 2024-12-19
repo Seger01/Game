@@ -53,7 +53,7 @@ void DemoManagerBehaviourScript::createDemoStartScene()
 	mTileMapData = tileMapParser.getTileMapData();
 
 	LevelBuilder levelBuilder;
-	levelBuilder.createLevel(&scene, mTileMapData, 16, 16);
+	levelBuilder.createLevel(scene, mTileMapData, 16, 16);
 	LevelCreatorBehaviourScript levelCreatorBehaviourScript;
 	levelCreatorBehaviourScript.createObjects(&scene, mTileMapData);
 
@@ -185,7 +185,7 @@ void DemoManagerBehaviourScript::createFirstScene()
 	mTileMapData = tileMapParser.getTileMapData();
 
 	LevelBuilder levelBuilder;
-	levelBuilder.createLevel(&scene, mTileMapData, 16, 16);
+	levelBuilder.createLevel(scene, mTileMapData, 16, 16);
 	LevelCreatorBehaviourScript levelCreatorBehaviourScript;
 	levelCreatorBehaviourScript.createObjects(&scene, mTileMapData);
 
@@ -247,7 +247,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 	mTileMapData = tileMapParser.getTileMapData();
 
 	LevelBuilder levelBuilder;
-	levelBuilder.createLevel(&scene, mTileMapData, 16, 16);
+	levelBuilder.createLevel(scene, mTileMapData, 16, 16);
 	LevelCreatorBehaviourScript levelCreatorBehaviourScript;
 	levelCreatorBehaviourScript.createObjects(&scene, mTileMapData);
 
@@ -465,7 +465,7 @@ void DemoManagerBehaviourScript::createStressTest()
 	mTileMapData = tileMapParser.getTileMapData();
 
 	LevelBuilder levelBuilder;
-	levelBuilder.createLevel(&scene, mTileMapData, 16, 16);
+	levelBuilder.createLevel(scene, mTileMapData, 16, 16);
 	LevelCreatorBehaviourScript levelCreatorBehaviourScript;
 	levelCreatorBehaviourScript.createObjects(&scene, mTileMapData);
 
