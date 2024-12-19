@@ -208,52 +208,55 @@ void PlayerBehaviourScript::handleMovement()
 
 	controller.update();
 
-	if (controller.getLeftStickUp() > 0)
+	if (controller.isConnected())
 	{
-		mGameObject->getComponents<RigidBody>()[0].get().addForce(
-			Vector2(0, -(movementSpeed * controller.getLeftStickUp()) * Time::deltaTime));
-	}
-	if (controller.getLeftStickLeft() > 0)
-	{
-		mGameObject->getComponents<RigidBody>()[0].get().addForce(
-			Vector2(-(movementSpeed * controller.getLeftStickLeft()) * Time::deltaTime, 0));
-	}
-	if (controller.getLeftStickDown() > 0)
-	{
-		mGameObject->getComponents<RigidBody>()[0].get().addForce(
-			Vector2(0, (movementSpeed * controller.getLeftStickDown()) * Time::deltaTime));
-	}
-	if (controller.getLeftStickRight() > 0)
-	{
-		mGameObject->getComponents<RigidBody>()[0].get().addForce(
-			Vector2((movementSpeed * controller.getLeftStickRight()) * Time::deltaTime, 0));
-	}
-
-	// controller.print();
-
-	if (controller.isButtonPressed(Key::Controller_R1))
-	{
-		if (controller.getRightStickUp() == 0 && controller.getRightStickLeft() == 0 &&
-			controller.getRightStickDown() == 0 && controller.getRightStickRight() == 0)
+		if (controller.getLeftStickUp() > 0)
 		{
-			return;
+			mGameObject->getComponents<RigidBody>()[0].get().addForce(
+				Vector2(0, -(movementSpeed * controller.getLeftStickUp()) * Time::deltaTime));
+		}
+		if (controller.getLeftStickLeft() > 0)
+		{
+			mGameObject->getComponents<RigidBody>()[0].get().addForce(
+				Vector2(-(movementSpeed * controller.getLeftStickLeft()) * Time::deltaTime, 0));
+		}
+		if (controller.getLeftStickDown() > 0)
+		{
+			mGameObject->getComponents<RigidBody>()[0].get().addForce(
+				Vector2(0, (movementSpeed * controller.getLeftStickDown()) * Time::deltaTime));
+		}
+		if (controller.getLeftStickRight() > 0)
+		{
+			mGameObject->getComponents<RigidBody>()[0].get().addForce(
+				Vector2((movementSpeed * controller.getLeftStickRight()) * Time::deltaTime, 0));
 		}
 
-		// Create and setup the bullet
-		GameObject* bulletObject = BulletPrefabFactory().createBulletPrefab(*this->mGameObject);
+		// controller.print();
 
-		// Set bullet's initial position
-		bulletObject->getTransformRef().position = mGameObject->getTransform().position;
+		if (controller.isButton(Key::Controller_R1))
+		{
+			if (controller.getRightStickUp() == 0 && controller.getRightStickLeft() == 0 &&
+				controller.getRightStickDown() == 0 && controller.getRightStickRight() == 0)
+			{
+				return;
+			}
 
-		// Add force to bullet
-		RigidBody& bulletRigidBody = bulletObject->getComponents<RigidBody>()[0];
-		float bulletSpeed = 16000.0f;
-		Vector2 direction = {-controller.getRightStickLeft() + controller.getRightStickRight(),
-							 -controller.getRightStickUp() + controller.getRightStickDown()};
+			// Create and setup the bullet
+			GameObject* bulletObject = BulletPrefabFactory().createBulletPrefab(*this->mGameObject);
 
-		bulletRigidBody.addForce(direction * bulletSpeed);
+			// Set bullet's initial position
+			bulletObject->getTransformRef().position = mGameObject->getTransform().position;
 
-		EngineBravo::getInstance().getSceneManager().getCurrentScene().addGameObject(bulletObject);
+			// Add force to bullet
+			RigidBody& bulletRigidBody = bulletObject->getComponents<RigidBody>()[0];
+			float bulletSpeed = 16000.0f;
+			Vector2 direction = {-controller.getRightStickLeft() + controller.getRightStickRight(),
+								 -controller.getRightStickUp() + controller.getRightStickDown()};
+
+			bulletRigidBody.addForce(direction * bulletSpeed);
+
+			EngineBravo::getInstance().getSceneManager().getCurrentScene().addGameObject(bulletObject);
+		}
 	}
 
 	// controller.print();
