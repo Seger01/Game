@@ -237,6 +237,14 @@ void PlayerBehaviourScript::handleMovement()
 	{
 		mGameObject->getComponents<RigidBody>()[0].get().addForce(Vector2(movementSpeed * Time::deltaTime, 0));
 	}
+	if (input.GetKey(Key::Key_1))
+	{
+		parentTransform.scale = Vector2(10, 10);
+	}
+	if (input.GetKey(Key::Key_2))
+	{
+		parentTransform.scale = Vector2(0.5, 0.5);
+	}
 	this->mGameObject->setTransform(parentTransform);
 }
 
