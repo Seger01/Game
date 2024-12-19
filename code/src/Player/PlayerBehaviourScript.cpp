@@ -228,12 +228,8 @@ void PlayerBehaviourScript::handleMovement()
 		mGameObject->getComponents<RigidBody>()[0].get().addForce(
 			Vector2((movementSpeed * controller.getLeftStickRight()) * Time::deltaTime, 0));
 	}
-	//
-	// std::cout << "Right stick up: " << controller.getRightStickUp() << std::endl;
-	// std::cout << "Right stick left: " << controller.getRightStickLeft() << std::endl;
-	// std::cout << "Right stick down: " << controller.getRightStickDown() << std::endl;
-	// std::cout << "Right stick right: " << controller.getRightStickRight() << std::endl;
-	controller.print();
+
+	// controller.print();
 
 	if (controller.isButtonPressed(Key::Controller_R1))
 	{
