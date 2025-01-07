@@ -48,7 +48,7 @@ void DemoParticlesButtonBehaviourScript::onStart()
 
 	emitter->setRelativeTransform(transform);
 
-	emitter->setActive(true);
+	emitter->setActive(false);
 
 	mGameObject->addComponent(emitter);
 }
