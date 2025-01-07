@@ -11,6 +11,7 @@
 #include "EnemyBehaviourScript.h"
 #include "EnemyPrefab.h"
 #include "Input.h"
+#include "CanvasBehaviourScript.h"
 #include "LevelCreatorBehaviourScript.h"
 #include "LevelManagerBehaviourScript.h"
 #include "LevelManagerPrefab.h"
@@ -230,6 +231,7 @@ void DemoManagerBehaviourScript::createSecondScene()
 		EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("Player").at(0);
 	playerObject.setTransform(Transform(Vector2(40, 40)));
 
+
 	Camera* camera = new Camera;
 	camera->setTag("MainCamera");
 	camera->setActive(true);
@@ -239,6 +241,10 @@ void DemoManagerBehaviourScript::createSecondScene()
 	camera->setHeight(9 * 30);
 
 	scene.addGameObject(camera);
+
+	GameObject* canvas = new GameObject;
+	canvas->addComponent<CanvasBehaviourScript>();
+	scene.addGameObject(canvas);
 
 	FSConverter fsconverter;
 	std::string path = fsconverter.getResourcePath("LevelDefs/demoLevel2.json");
