@@ -1,4 +1,5 @@
 #include "DemoManagerBehaviourScript.h"
+#include "CanvasBehaviourScript.h"
 #include "DemoBulletSpawner.h"
 #include "DemoButtonBehaviourScript.h"
 #include "DemoButtonPrefab.h"
@@ -11,7 +12,6 @@
 #include "EnemyBehaviourScript.h"
 #include "EnemyPrefab.h"
 #include "Input.h"
-#include "CanvasBehaviourScript.h"
 #include "LevelCreatorBehaviourScript.h"
 #include "LevelManagerBehaviourScript.h"
 #include "LevelManagerPrefab.h"
@@ -179,6 +179,10 @@ void DemoManagerBehaviourScript::createFirstScene()
 
 	scene.addGameObject(miniMapCamera);
 
+	GameObject* canvas = new GameObject;
+	canvas->addComponent<CanvasBehaviourScript>();
+	scene.addGameObject(canvas);
+	
 	FSConverter fsconverter;
 	std::string path = fsconverter.getResourcePath("LevelDefs/demoLevel1.json");
 	TileMapParser tileMapParser(path);
@@ -230,7 +234,6 @@ void DemoManagerBehaviourScript::createSecondScene()
 	GameObject& playerObject =
 		EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("Player").at(0);
 	playerObject.setTransform(Transform(Vector2(40, 40)));
-
 
 	Camera* camera = new Camera;
 	camera->setTag("MainCamera");
