@@ -38,9 +38,8 @@ void NetworkSelectionBehaviourScript::onStart()
 																"ClientText", menuIndexX, menuIndexY);
 	menuIndexY += 20;
 
-	mHostButton = MainMenuPrefabFactory().createDefaultButton(mMainMenuObject, &scene, "Host", "HostButton", "HostText",
-															  menuIndexX, menuIndexY);
-	menuIndexY += 20;
+	// mHostButton = MainMenuPrefabFactory().createDefaultButton(mMainMenuObject, &scene, "Host", "HostButton",
+	// "HostText", 														  menuIndexX, menuIndexY); menuIndexY += 20;
 	scene.addGameObject(mMainMenuObject);
 
 	// Add the button callbacks
@@ -56,12 +55,12 @@ void NetworkSelectionBehaviourScript::onStart()
 		Button& buttonObject = dynamic_cast<Button&>(button);
 		buttonObject.setOnReleaseCallback(std::bind(&NetworkSelectionBehaviourScript::onClientRelease, this));
 	}
-	for (GameObject& button :
-		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("HostButton"))
-	{
-		Button& buttonObject = dynamic_cast<Button&>(button);
-		buttonObject.setOnReleaseCallback(std::bind(&NetworkSelectionBehaviourScript::onHostRelease, this));
-	}
+	// for (GameObject& button :
+	// 	 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("HostButton"))
+	// {
+	// 	Button& buttonObject = dynamic_cast<Button&>(button);
+	// 	buttonObject.setOnReleaseCallback(std::bind(&NetworkSelectionBehaviourScript::onHostRelease, this));
+	// }
 	for (GameObject& button :
 		 EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("SearchButton"))
 	{
@@ -96,7 +95,7 @@ void NetworkSelectionBehaviourScript::onUpdate()
 			// If client is selected but not yet connected, disable the other buttons
 			mServerButton->setActive(false);
 			mClientButton->setActive(false);
-			mHostButton->setActive(false);
+			// mHostButton->setActive(false);
 			mSearchButton->setActive(true);
 		}
 	}
