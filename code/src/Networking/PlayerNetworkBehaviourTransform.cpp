@@ -1,4 +1,6 @@
 #include "PlayerNetworkBehaviourTransform.h"
+#include "RigidBody.h"
+#include "Time.h"
 
 // Register the type
 REGISTER_NETWORK_SERIALIZABLE(transformSerializable);
@@ -22,12 +24,31 @@ void PlayerNetworkBehaviourTransform::onUpdate()
 	}
 	else
 	{
+		// Client-side prediction
+		Transform predictedTransform(mGameObject->getTransform());
+		predictedTransform.position +=
+			mGameObject->getComponents<RigidBody>()[0].get().getLinearVelocity() * Time::deltaTime;
+		mGameObject->setTransform(predictedTransform);
+
+		// Interpolation
 		Transform networkTransform(mTransformSerialize.getValue().getPosition());
 		networkTransform.rotation = mTransformSerialize.getValue().getRotation();
-		mGameObject->setTransform(networkTransform); // Read the network variable
-													 // Transform localTransform(mGameObject->getTransform());
-													 // Transform avgTransform;
-													 // avgTransform = (networkTransform + localTransform) / 2;
-		// mGameObject->setTransform(avgTransform); // Read the network variable
+
+		Transform localTransform(mGameObject->getTransform());
+
+		Vector2 interpolatedPosition;
+		interpolatedPosition.x = localTransform.position.x +
+								 (networkTransform.position.x - localTransform.position.x) * INTERPOLATION_FACTOR;
+		interpolatedPosition.y = localTransform.position.y +
+								 (networkTransform.position.y - localTransform.position.y) * INTERPOLATION_FACTOR;
+
+		Transform interpolatedTransform(interpolatedPosition);
+		interpolatedTransform.rotation = networkTransform.rotation;
+
+		// Reconciliation
+		if (predictedTransform.position != networkTransform.position)
+		{
+			mGameObject->setTransform(interpolatedTransform);
+		}
 	}
 }

@@ -6,6 +6,8 @@
 #include <Network/INetworkSerializable.h>
 #include <Network/NetworkVariable.h>
 
+#define INTERPOLATION_FACTOR 0.1f
+
 class transformSerializable : public INetworkSerializable
 {
 public:
