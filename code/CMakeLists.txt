@@ -1,18 +1,15 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Define the project name
-project(BulletBravo)
+project(Game)
 
 # Set the C++ standard
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Disable the ENABLE_TESTGAME option for the Engine-Bravo library
-set(ENABLE_TESTGAME OFF CACHE BOOL "Disable building the testGame" FORCE)
-
 # Add engine bravo library
-add_subdirectory(external/Engine-Bravo/code)
+add_subdirectory(external/GameEngine/code)
 
 # Specify the output directories
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -47,7 +44,7 @@ foreach(subdir ${SUBDIRS})
 endforeach()
 
 # Add a dependency to ensure the EngineBravo library is built before the GameProject executable
-add_dependencies(${PROJECT_NAME} Engine_BRAVO)
+add_dependencies(${PROJECT_NAME} GameEngine)
 
 # Link the Engine-Bravo library
-target_link_libraries(${PROJECT_NAME} PRIVATE Engine_BRAVO)
+target_link_libraries(${PROJECT_NAME} PRIVATE GameEngine)
