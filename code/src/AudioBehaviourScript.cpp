@@ -1,7 +1,7 @@
 #include "AudioBehaviourScript.h"
 
-#include <EngineBravo.h>
-#include <Input.h>
+#include <Engine/EngineBravo.h>
+#include <Input/Input.h>
 #include <SceneManager.h>
 
 void AudioBehaviourScript::onStart() {}
