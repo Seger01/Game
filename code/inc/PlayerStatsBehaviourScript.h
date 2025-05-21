@@ -3,7 +3,7 @@
 #include "Components/IBehaviourScript.h"
 #include "PlayerBehaviourScript.h"
 #include "Rect.h"
-#include "Text.h"
+#include "UI/Text.h"
 
 class PlayerStatsBehaviourScript : public IBehaviourScript
 {

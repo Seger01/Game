@@ -4,7 +4,7 @@
 
 #include "Components/Sprite.h"
 #include "GameObject.h"
-#include "Text.h"
+#include "UI/Text.h"
 
 class MainMenuButtonBehaviour : public IButtonBehaviourScript
 {

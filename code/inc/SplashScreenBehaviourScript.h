@@ -1,7 +1,7 @@
 #ifndef SPLASH_SCREEN_BEHAVIOUR_SCRIPT_H
 #define SPLASH_SCREEN_BEHAVIOUR_SCRIPT_H
 
-#include <IBehaviourScript.h>
+#include <Components/IBehaviourScript.h>
 #include <chrono>
 
 class SplashScreenBehaviourScript : public IBehaviourScript

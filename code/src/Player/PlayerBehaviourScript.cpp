@@ -6,13 +6,13 @@
 #include "BulletPrefab.h"
 #include "Controller.h"
 #include <Animation.h>
-#include <EngineBravo.h>
+#include <Components/ParticleEmitter.h>
+#include <Components/Sprite.h>
+#include <Engine/EngineBravo.h>
 #include <GameObject.h>
-#include <Input.h>
-#include <InputStructs.h>
+#include <Input/Input.h>
+#include <Input/InputStructs.h>
 #include <Network/NetworkObject.h>
-#include <ParticleEmitter.h>
-#include <Sprite.h>
 #include <SpriteDef.h>
 #include <SpriteDefUtil.h>
 

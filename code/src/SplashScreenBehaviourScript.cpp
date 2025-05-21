@@ -1,9 +1,9 @@
 #include "SplashScreenBehaviourScript.h"
 
 #include "InitBehaviourScript.h"
-#include "Input.h"
+#include "Input/Input.h"
 #include "SplashScreenPrefab.h"
-#include <EngineBravo.h>
+#include <Engine/EngineBravo.h>
 
 #include <iostream>
 

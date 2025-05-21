@@ -1,14 +1,14 @@
 #include "DemoParticlesButtonBehaviourScript.h"
-#include "Input.h"
-#include <EngineBravo.h>
+#include "Input/Input.h"
+#include <Components/ParticleEmitter.h>
+#include <Components/Sprite.h>
+#include <Engine/EngineBravo.h>
+#include <Engine/SceneManager.h>
 #include <GameObject.h>
+#include <Global/Time.h>
 #include <Particle.h>
-#include <ParticleEmitter.h>
 #include <ParticleSystem.h>
 #include <Scene.h>
-#include <SceneManager.h>
-#include <Sprite.h>
-#include <Time.h>
 #include <iostream>
 
 DemoParticlesButtonBehaviourScript::DemoParticlesButtonBehaviourScript() {}

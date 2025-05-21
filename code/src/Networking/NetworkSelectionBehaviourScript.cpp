@@ -2,15 +2,14 @@
 
 #include "InitBehaviourScript.h"
 
-#include "Button.h"
 #include "Engine/EngineBravo.h"
 #include "LevelManagerBehaviourScript.h"
 #include "MainMenuPrefab.h"
 #include "Network/NetworkClient.h"
 #include "Network/NetworkManager.h"
-#include "NetworkManager.h"
 #include "PlayerPrefab.h"
-#include "Text.h"
+#include "UI/Button.h"
+#include "UI/Text.h"
 #include <Animation.h>
 
 void NetworkSelectionBehaviourScript::onStart()

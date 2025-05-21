@@ -1,12 +1,12 @@
 #include "DemoBulletSpawner.h"
 #include "BulletBehaviourScript.h"
-#include "Text.h"
-#include <EngineBravo.h>
+#include "UI/Text.h"
+#include <Components/RigidBody.h>
+#include <Engine/EngineBravo.h>
+#include <Engine/SceneManager.h>
 #include <GameObject.h>
-#include <RigidBody.h>
+#include <Global/Time.h>
 #include <Scene.h>
-#include <SceneManager.h>
-#include <Time.h>
 #include <iostream>
 
 DemoBulletSpawner::DemoBulletSpawner() : mMaxBullets(1000), mSpawnInterval(0.016f), mTimeSinceLastSpawn(0.0f) {}

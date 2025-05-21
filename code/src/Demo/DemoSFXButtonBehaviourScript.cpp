@@ -1,7 +1,7 @@
 #include "DemoSFXButtonBehaviourScript.h"
-#include <AudioManager.h>
-#include <AudioSource.h>
-#include <EngineBravo.h>
+#include <Audio/AudioManager.h>
+#include <Components/AudioSource.h>
+#include <Engine/EngineBravo.h>
 
 DemoSFXButtonBehaviourScript::DemoSFXButtonBehaviourScript() {}
 

@@ -1,4 +1,5 @@
 #include "DemoManagerBehaviourScript.h"
+#include "AI/Pathfinding.h"
 #include "CanvasBehaviourScript.h"
 #include "DemoBulletSpawner.h"
 #include "DemoButtonBehaviourScript.h"
@@ -11,20 +12,19 @@
 #include "DemoSFXButtonBehaviourScript.h"
 #include "EnemyBehaviourScript.h"
 #include "EnemyPrefab.h"
-#include "Input.h"
+#include "Input/Input.h"
 #include "LevelCreatorBehaviourScript.h"
 #include "LevelManagerBehaviourScript.h"
 #include "LevelManagerPrefab.h"
 #include "MainMenuPrefab.h"
-#include "Pathfinding.h"
 #include "PlayerPrefab.h"
-#include <EngineBravo.h>
+#include <Engine/EngineBravo.h>
+#include <Engine/SceneManager.h>
 #include <GameObject.h>
 #include <LevelBuilder.h>
 #include <MapToGraph.h>
 #include <Scene.h>
-#include <SceneManager.h>
-#include <Text.h>
+#include <UI/Text.h>
 #include <iostream>
 
 void DemoManagerBehaviourScript::createDemoStartScene()
@@ -182,7 +182,7 @@ void DemoManagerBehaviourScript::createFirstScene()
 	GameObject* canvas = new GameObject;
 	canvas->addComponent<CanvasBehaviourScript>();
 	scene.addGameObject(canvas);
-	
+
 	FSConverter fsconverter;
 	std::string path = fsconverter.getResourcePath("LevelDefs/demoLevel1.json");
 	TileMapParser tileMapParser(path);

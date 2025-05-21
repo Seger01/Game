@@ -1,5 +1,5 @@
 #pragma once
-#include <IBehaviourScript.h>
+#include <Components/IBehaviourScript.h>
 
 class NetworkDemoSceneBehaviour : public IBehaviourScript
 {

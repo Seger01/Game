@@ -1,12 +1,12 @@
 #include "DemoPhysicsButtonBehaviourScript.h"
-#include <BoxCollider.h>
-#include <CircleCollider.h>
-#include <EngineBravo.h>
-#include <FSConverter.h>
-#include <RigidBody.h>
+#include <Components/BoxCollider.h>
+#include <Components/CircleCollider.h>
+#include <Components/RigidBody.h>
+#include <Components/Sprite.h>
+#include <Engine/EngineBravo.h>
+#include <Engine/SceneManager.h>
+#include <Global/FSConverter.h>
 #include <Scene.h>
-#include <SceneManager.h>
-#include <Sprite.h>
 #include <SpriteDef.h>
 #include <iostream>
 

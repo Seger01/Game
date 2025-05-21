@@ -1,14 +1,14 @@
 #include <iostream>
 
-#include "IBehaviourScript.h"
-#include "Input.h"
-#include "ParticleEmitter.h"
-#include "RigidBody.h"
+#include "Components/IBehaviourScript.h"
+#include "Components/ParticleEmitter.h"
+#include "Components/RigidBody.h"
+#include "Input/Input.h"
 #include "SplashScreenBehaviourScript.h"
-#include <EngineBravo.h>
+#include <Engine/EngineBravo.h>
+#include <Engine/SceneManager.h>
 #include <GameObject.h>
 #include <Scene.h>
-#include <SceneManager.h>
 
 void init()
 {

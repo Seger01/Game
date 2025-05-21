@@ -1,25 +1,29 @@
 #pragma once
 
-#include <EngineBravo.h>
+#include <Components/IBehaviourScript.h>
+#include <Components/ParticleEmitter.h>
+#include <Engine/EngineBravo.h>
+#include <Engine/SceneManager.h>
 #include <GameObject.h>
-#include <IBehaviourScript.h>
-#include <SceneManager.h>
 #include <iostream>
-#include <ParticleEmitter.h>
 
-class BulletBehaviourScript : public IBehaviourScript {
+class BulletBehaviourScript : public IBehaviourScript
+{
 public:
-  BulletBehaviourScript(float damage);
-  ~BulletBehaviourScript() {}
-  void onStart() override;
-  void onUpdate() override;
-  void onCollide(GameObject *aGameObject) override;
-  std::unique_ptr<Component> clone() const override {
-    return std::make_unique<BulletBehaviourScript>(*this);
-  }
-  float getDamage() const { return mDamage; }
+	BulletBehaviourScript(float damage);
+
+	~BulletBehaviourScript() {}
+
+	void onStart() override;
+	void onUpdate() override;
+	void onCollide(GameObject* aGameObject) override;
+
+	std::unique_ptr<Component> clone() const override { return std::make_unique<BulletBehaviourScript>(*this); }
+
+	float getDamage() const { return mDamage; }
+
 private:
-    float mDamage;
-    bool mIsMarkedForRemoval;
-    GameObject* mParticleObject;
+	float mDamage;
+	bool mIsMarkedForRemoval;
+	GameObject* mParticleObject;
 };

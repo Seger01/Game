@@ -1,8 +1,8 @@
 #include "PlayerNetworkBehaviourInputs.h"
-#include "Input.h"
-#include "InputStructs.h"
-#include "RigidBody.h"
-#include "Time.h"
+#include "Components/RigidBody.h"
+#include "Global/Time.h"
+#include "Input/Input.h"
+#include "Input/InputStructs.h"
 
 // Register the type
 REGISTER_NETWORK_SERIALIZABLE(inputsSerializable);
@@ -40,10 +40,14 @@ void PlayerNetworkBehaviourInputs::onUpdate()
 
 		// Client-side prediction
 		Vector2 predictedPosition = mGameObject->getTransform().position;
-		if (w) predictedPosition.y -= movementSpeed * Time::deltaTime;
-		if (a) predictedPosition.x -= movementSpeed * Time::deltaTime;
-		if (s) predictedPosition.y += movementSpeed * Time::deltaTime;
-		if (d) predictedPosition.x += movementSpeed * Time::deltaTime;
+		if (w)
+			predictedPosition.y -= movementSpeed * Time::deltaTime;
+		if (a)
+			predictedPosition.x -= movementSpeed * Time::deltaTime;
+		if (s)
+			predictedPosition.y += movementSpeed * Time::deltaTime;
+		if (d)
+			predictedPosition.x += movementSpeed * Time::deltaTime;
 		mGameObject->getTransform().position = predictedPosition;
 	}
 	else
@@ -73,10 +77,14 @@ void PlayerNetworkBehaviourInputs::onUpdate()
 
 		// Reconciliation
 		Vector2 networkPosition = mGameObject->getTransform().position;
-		if (w) networkPosition.y -= movementSpeed * Time::deltaTime;
-		if (a) networkPosition.x -= movementSpeed * Time::deltaTime;
-		if (s) networkPosition.y += movementSpeed * Time::deltaTime;
-		if (d) networkPosition.x += movementSpeed * Time::deltaTime;
+		if (w)
+			networkPosition.y -= movementSpeed * Time::deltaTime;
+		if (a)
+			networkPosition.x -= movementSpeed * Time::deltaTime;
+		if (s)
+			networkPosition.y += movementSpeed * Time::deltaTime;
+		if (d)
+			networkPosition.x += movementSpeed * Time::deltaTime;
 
 		if (mGameObject->getTransform().position != networkPosition)
 		{

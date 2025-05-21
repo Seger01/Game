@@ -2,10 +2,10 @@
 #include "LevelManagerBehaviourScript.h"
 #include "LevelManagerPrefab.h"
 #include "MainMenuPrefab.h"
-#include <EngineBravo.h>
+#include <Engine/EngineBravo.h>
+#include <Engine/SceneManager.h>
 #include <GameObject.h>
 #include <Scene.h>
-#include <SceneManager.h>
 #include <iostream>
 
 void InitBehaviourScript::onStart() { createLevelManager(); }

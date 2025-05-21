@@ -1,23 +1,25 @@
 #ifndef DEMOBUTTONBEHAVIOURSCRIPT_H
 #define DEMOBUTTONBEHAVIOURSCRIPT_H
 
-#include "IBehaviourScript.h"
+#include "Components/IBehaviourScript.h"
 
 class GameObject;
 
-class DemoButtonBehaviourScript : public IBehaviourScript {
+class DemoButtonBehaviourScript : public IBehaviourScript
+{
 public:
-    DemoButtonBehaviourScript();
-    ~DemoButtonBehaviourScript();
+	DemoButtonBehaviourScript();
+	~DemoButtonBehaviourScript();
 
-    void onStart() override;
-    void onUpdate() override;
+	void onStart() override;
+	void onUpdate() override;
 
-    void onCollide(GameObject* aGameObject) override;
+	void onCollide(GameObject* aGameObject) override;
 
-    virtual std::unique_ptr<Component> clone() const override {
-        return std::make_unique<DemoButtonBehaviourScript>(*this);
-    }
+	virtual std::unique_ptr<Component> clone() const override
+	{
+		return std::make_unique<DemoButtonBehaviourScript>(*this);
+	}
 
 private:
 };

@@ -1,10 +1,10 @@
 #include "DemoLevel2Behaviour.h"
 
 #include <Animation.h>
+#include <Components/RigidBody.h>
 #include <EnemyBehaviourScript.h>
-#include <EngineBravo.h>
-#include <Input.h>
-#include <RigidBody.h>
+#include <Engine/EngineBravo.h>
+#include <Input/Input.h>
 #include <cmath>
 
 void DemoLevel2Behaviour::onStart()

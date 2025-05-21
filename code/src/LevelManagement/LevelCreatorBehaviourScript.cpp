@@ -2,25 +2,25 @@
 #include "CanvasBehaviourScript.h"
 #include "EnemyPrefab.h"
 #include "LevelEndBehaviourScript.h"
+#include "Network/NetworkObject.h"
 #include "NetworkDemoSceneBehaviour.h"
-#include "NetworkObject.h"
 #include "PlayerPrefab.h"
 #include "RoomBehaviourScript.h"
-#include <AudioSource.h>
-#include <BoxCollider.h>
-#include <CircleCollider.h>
-#include <EngineBravo.h>
-#include <FSConverter.h>
+#include <Components/AudioSource.h>
+#include <Components/BoxCollider.h>
+#include <Components/CircleCollider.h>
+#include <Components/RigidBody.h>
+#include <Components/Sprite.h>
+#include <Engine/EngineBravo.h>
+#include <Engine/SceneManager.h>
 #include <GameObject.h>
+#include <Global/FSConverter.h>
 #include <LevelBuilder.h>
-#include <RigidBody.h>
 #include <Scene.h>
-#include <SceneManager.h>
-#include <Sprite.h>
 #include <SpriteDef.h>
-#include <Text.h>
 #include <TileMapParser.h>
 #include <Transform.h>
+#include <UI/Text.h>
 #include <algorithm>
 #include <iostream>
 
@@ -80,7 +80,7 @@ void LevelCreatorBehaviourScript::createLevel1()
 	LevelBuilder levelBuilder;
 	levelBuilder.createLevel(scene, mTileMapData, 16, 16);
 	createObjects(&scene, mTileMapData);
-    setDoorsLayer(&scene);
+	setDoorsLayer(&scene);
 	// Add specific components
 	addRoomEntries(&scene, mTileMapData);
 	addLevelEndTriggers(&scene, mTileMapData);
@@ -116,7 +116,7 @@ void LevelCreatorBehaviourScript::createLevel2()
 	LevelBuilder levelBuilder;
 	levelBuilder.createLevel(scene, mTileMapData, 16, 16);
 	createObjects(&scene, mTileMapData);
-    setDoorsLayer(&scene);
+	setDoorsLayer(&scene);
 	// Add specific components
 	addRoomEntries(&scene, mTileMapData);
 	addLevelEndTriggers(&scene, mTileMapData);
@@ -151,7 +151,7 @@ void LevelCreatorBehaviourScript::createLevel3()
 	LevelBuilder levelBuilder;
 	levelBuilder.createLevel(scene, mTileMapData, 16, 16);
 	createObjects(&scene, mTileMapData);
-    setDoorsLayer(&scene);
+	setDoorsLayer(&scene);
 	// Add specific components
 	addRoomEntries(&scene, mTileMapData);
 	addLevelEndTriggers(&scene, mTileMapData);
@@ -200,7 +200,7 @@ void LevelCreatorBehaviourScript::createDemoNetworkingLevel()
 	LevelBuilder levelBuilder;
 	levelBuilder.createLevel(scene, tileMapData, 16, 16);
 	createObjects(&scene, tileMapData);
-    setDoorsLayer(&scene);
+	setDoorsLayer(&scene);
 	// Add specific components
 	addRoomEntries(&scene, tileMapData);
 	addLevelEndTriggers(&scene, tileMapData);
@@ -411,8 +411,8 @@ void LevelCreatorBehaviourScript::setDoorsLayer(Scene* scene) const
 		}
 
 		if (gameObject.get().hasComponent<RigidBody>())
-        {
-            gameObject.get().getComponents<RigidBody>()[0].get().setActive(false);
-        }
-    }
+		{
+			gameObject.get().getComponents<RigidBody>()[0].get().setActive(false);
+		}
+	}
 }

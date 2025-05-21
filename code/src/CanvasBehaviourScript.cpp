@@ -1,14 +1,14 @@
 #include "CanvasBehaviourScript.h"
 
-#include <Button.h>
-#include <EngineBravo.h>
+#include <Engine/EngineBravo.h>
+#include <UI/Button.h>
 // #include <FPSCounterBehaviourScript.h>
 // #include "HelloWorldButtonBehaviour.h"
 #include "PlayerStatsBehaviourScript.h"
 // #include <FPSCounterBehaviourScript.h>
 // #include "HelloWorldButtonBehaviour.h"
 // #include "PlayerStatsBehaviourScript.h"
-#include <Text.h>
+#include <UI/Text.h>
 
 // #include "Network/NetworkObject.h"
 

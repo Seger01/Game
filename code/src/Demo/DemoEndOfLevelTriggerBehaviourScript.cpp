@@ -1,9 +1,9 @@
 #include "DemoEndOfLevelTriggerBehaviourScript.h"
 #include "DemoManagerBehaviourScript.h"
-#include <EngineBravo.h>
+#include <Engine/EngineBravo.h>
+#include <Engine/SceneManager.h>
 #include <GameObject.h>
 #include <Scene.h>
-#include <SceneManager.h>
 #include <iostream>
 
 void DemoEndOfLevelTriggerBehaviourScript::onStart() {}

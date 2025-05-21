@@ -1,9 +1,9 @@
 #pragma once
 
+#include <Components/IBehaviourScript.h>
+#include <Components/Sprite.h>
 #include <GameObject.h>
-#include <IBehaviourScript.h>
 #include <Scene.h>
-#include <Sprite.h>
 #include <iostream>
 
 class DemoMusicButtonBehaviourScript : public IBehaviourScript

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <IBehaviourScript.h>
+#include <Components/IBehaviourScript.h>
 
 class BulletDestroyParticleBehaviourScript : public IBehaviourScript
 {

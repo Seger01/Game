@@ -1,6 +1,6 @@
 #include "PlayerStatsBehaviourScript.h"
-#include "EngineBravo.h"
-#include "Input.h"
+#include "Engine/EngineBravo.h"
+#include "Input/Input.h"
 #include "PlayerBehaviourScript.h"
 
 SpriteDef playerStatBackgroundDef = {"UI/ui_images.png", Rect{95, 35, 66, 26}, 99, 39};

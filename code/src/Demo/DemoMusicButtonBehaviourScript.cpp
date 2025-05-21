@@ -1,9 +1,9 @@
 #include "DemoMusicButtonBehaviourScript.h"
-#include <AudioManager.h>
-#include <EngineBravo.h>
+#include <Audio/AudioManager.h>
+#include <Components/Sprite.h>
+#include <Engine/EngineBravo.h>
+#include <Engine/SceneManager.h>
 #include <Scene.h>
-#include <SceneManager.h>
-#include <Sprite.h>
 
 DemoMusicButtonBehaviourScript::DemoMusicButtonBehaviourScript() : mPlayButtonPressed(false), mResetButtonPressed(false)
 {

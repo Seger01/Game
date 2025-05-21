@@ -1,12 +1,12 @@
 #include "MainMenuPrefab.h"
 
-#include "Button.h"
 #include "GameObject.h"
 #include "MainMenuBehaviourScript.h"
 #include "MainMenuButtonBehaviour.h"
 #include "SpriteDef.h"
-#include "Text.h"
-#include <EngineBravo.h>
+#include "UI/Button.h"
+#include "UI/Text.h"
+#include <Engine/EngineBravo.h>
 
 SpriteDef menuBackgroundSpriteDef = {"UI/MenuScreen.png", Rect(), 100, 100};
 SpriteDef buttonSpriteDef = {"UI/ui_images.png", Rect{145, 81, 46, 14}, 46, 14};

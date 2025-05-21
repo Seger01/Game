@@ -4,11 +4,11 @@
 #include "PlayerNetworkBehaviourInputs.h"
 #include "PlayerNetworkBehaviourTransform.h"
 #include <Animation.h>
-#include <EngineBravo.h>
+#include <Components/ParticleEmitter.h>
+#include <Engine/EngineBravo.h>
 #include <GameObject.h>
-#include <NetworkObject.h>
-#include <NetworkTransform.h>
-#include <ParticleEmitter.h>
+#include <Network/NetworkObject.h>
+#include <Network/NetworkTransform.h>
 #include <PlayerBehaviourScript.h>
 #include <SpriteDefUtil.h>
 #include <Transform.h>

@@ -3,18 +3,17 @@
 #include "BulletBehaviourScript.h"
 #include "ECCoinPrefab.h"
 #include <Animation.h>
-#include <EngineBravo.h>
+#include <Components/RigidBody.h>
+#include <Components/Sprite.h>
+#include <Engine/EngineBravo.h>
+#include <Engine/SceneManager.h>
 #include <GameObject.h>
-#include <Input.h>
-#include <RigidBody.h>
-#include <SceneManager.h>
-#include <Sprite.h>
-#include <Time.h>
+#include <Global/Time.h>
+#include <Input/Input.h>
+#include <chrono>
 #include <functional>
 #include <iostream>
-#include <chrono>
 #include <thread>
-
 
 EnemyBehaviourScript::EnemyBehaviourScript(float aHealth) : mHealth(aHealth) {}
 
@@ -89,12 +88,16 @@ void EnemyBehaviourScript::onCollide(GameObject* aGameObject)
 		setGlowRed(true);
 
 		// Reset the color after 0.5 seconds
-        std::thread([this]() {
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
-			if (!mIsDead) {
-            	setGlowRed(false);
-			}
-        }).detach();
+		std::thread(
+			[this]()
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(500));
+				if (!mIsDead)
+				{
+					setGlowRed(false);
+				}
+			})
+			.detach();
 	}
 }
 
@@ -190,18 +193,18 @@ void EnemyBehaviourScript::onDeath()
 
 void EnemyBehaviourScript::setGlowRed(bool aState)
 {
-    if (mGameObject->hasComponent<Sprite>())
-    {
-        Sprite& sprite = mGameObject->getComponents<Sprite>()[0].get();
-        if (aState)
-        {
-            sprite.setColorFilter(Color(255, 0, 0, 255)); // Set color to red
-        }
-        else
-        {
-            sprite.setColorFilter(Color(255, 255, 255, 255)); // Reset to original color
-        }
-    }
+	if (mGameObject->hasComponent<Sprite>())
+	{
+		Sprite& sprite = mGameObject->getComponents<Sprite>()[0].get();
+		if (aState)
+		{
+			sprite.setColorFilter(Color(255, 0, 0, 255)); // Set color to red
+		}
+		else
+		{
+			sprite.setColorFilter(Color(255, 255, 255, 255)); // Reset to original color
+		}
+	}
 }
 
 int EnemyBehaviourScript::getGridPosition(const Vector2& position) const

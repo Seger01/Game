@@ -2,8 +2,8 @@
 
 #include "EnemyPrefab.h"
 
-#include <EngineBravo.h>
-#include <Input.h>
+#include <Engine/EngineBravo.h>
+#include <Input/Input.h>
 #include <iostream>
 
 NetworkDemoSceneBehaviour::NetworkDemoSceneBehaviour() : IBehaviourScript("NetworkDemoSceneBehaviour") {}

@@ -1,6 +1,6 @@
 #include "BulletPrefab.h"
+#include "Components/ParticleEmitter.h"
 #include "Particle.h"
-#include "ParticleEmitter.h"
 
 BulletPrefabFactory::BulletPrefabFactory()
 {

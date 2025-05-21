@@ -1,7 +1,7 @@
 #include "BulletDestroyParticleBehaviourScript.h"
-#include <EngineBravo.h>
-#include <SceneManager.h>
-#include <Time.h>
+#include <Engine/EngineBravo.h>
+#include <Engine/SceneManager.h>
+#include <Global/Time.h>
 
 void BulletDestroyParticleBehaviourScript::onStart() { mElapsedTime = 0.0; }
 

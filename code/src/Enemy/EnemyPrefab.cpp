@@ -3,11 +3,11 @@
 #include "EnemyNetworkBehaviourScript.h"
 #include "EnemyNetworkBehaviourTransform.h"
 #include <Animation.h>
-#include <EngineBravo.h>
+#include <Components/Sprite.h>
+#include <Engine/EngineBravo.h>
 #include <GameObject.h>
-#include <NetworkObject.h>
-#include <NetworkTransform.h>
-#include <Sprite.h>
+#include <Network/NetworkObject.h>
+#include <Network/NetworkTransform.h>
 #include <SpriteDef.h>
 #include <SpriteDefUtil.h>
 #include <Transform.h>

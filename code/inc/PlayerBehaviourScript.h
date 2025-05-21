@@ -3,7 +3,7 @@
 
 #include <Animation.h>
 #include <GameObject.h>
-#include <INetworkBehaviour.h>
+#include <Network/INetworkBehaviour.h>
 #include <Point.h>
 
 class PlayerBehaviourScript : public INetworkBehaviour

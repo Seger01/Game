@@ -1,6 +1,6 @@
 #include "PlayerNetworkBehaviourTransform.h"
-#include "RigidBody.h"
-#include "Time.h"
+#include "Components/RigidBody.h"
+#include "Global/Time.h"
 
 // Register the type
 REGISTER_NETWORK_SERIALIZABLE(transformSerializable);
