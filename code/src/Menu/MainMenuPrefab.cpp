@@ -53,7 +53,7 @@ Button* MainMenuPrefabFactory::createDefaultButton(GameObject* gameObject, Scene
 	buttonObject->addComponent<MainMenuButtonBehaviour>();
 	buttonObject->setParent(*gameObject);
 
-	Text* buttonTextObj = new Text(text, "werkt niet", Color(255, 255, 255, 150), Vector2(0, 0), Vector2(0.5, 0.5));
+	Text* buttonTextObj = new Text(text, "werkt niet", Color(255, 255, 255, 150), Vector2(0, 0), Vector2(0.8, 0.8));
 	buttonTextObj->setLayer(2);
 	buttonTextObj->setParent(*buttonObject);
 	buttonTextObj->setTag(tagText);
