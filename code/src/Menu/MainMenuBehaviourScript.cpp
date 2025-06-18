@@ -43,7 +43,17 @@ void MainMenuBehaviourScript::onStart()
 	}
 }
 
-void MainMenuBehaviourScript::onUpdate() {}
+void MainMenuBehaviourScript::onUpdate()
+{
+	static bool firstUpdate = true;
+
+	if (firstUpdate)
+	{
+		firstUpdate = false;
+		std::cout << "MainMenuBehaviourScript onUpdate called" << std::endl;
+		onDemoRelease();
+	}
+}
 
 void MainMenuBehaviourScript::onPlayRelease()
 {

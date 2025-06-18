@@ -458,8 +458,11 @@ void DemoManagerBehaviourScript::createStressTest()
 	camera->setRenderOrder(0);
 
 	camera->setTransform(Transform(Vector2(80, 96)));
-	camera->setWidth(16 * 30);
-	camera->setHeight(9 * 30);
+	camera->setWidth(16 * 60);
+	camera->setHeight(9 * 60);
+
+	camera->getDebugOverlayRef().renderColliders = true;
+	camera->getDebugOverlayRef().showFPS = true;
 
 	scene.addGameObject(camera);
 
@@ -530,6 +533,27 @@ void DemoManagerBehaviourScript::onUpdate()
 	}
 
 	handleSaveGame();
+
+	static int firstUpdate = 0;
+	static bool permDisable = false;
+
+	if (firstUpdate > 20)
+	{
+		if (!permDisable)
+		{
+			firstUpdate = false;
+			createStressTest();
+			permDisable = true; // Set the flag to true to prevent further updates
+
+			GameObject& playerObject =
+				EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("Player").at(0);
+			playerObject.setTransform(Transform(Vector2(240, 240)));
+		}
+	}
+	else
+	{
+		firstUpdate++;
+	}
 
 	// if (!mPlayerPositionSet)
 	// {
