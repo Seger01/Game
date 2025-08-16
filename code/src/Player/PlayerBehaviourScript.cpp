@@ -4,7 +4,6 @@
 
 #include "BulletBehaviourScript.h"
 #include "BulletPrefab.h"
-#include "Controller.h"
 #include <Animation.h>
 #include <Components/ParticleEmitter.h>
 #include <Components/Sprite.h>
@@ -204,60 +203,57 @@ void PlayerBehaviourScript::handleMovement()
 	}
 
 	Input& input = Input::getInstance();
-	static Controller controller(0);
 
-	controller.update();
-
-	if (controller.isConnected())
-	{
-		if (controller.getLeftStickUp() > 0)
-		{
-			mGameObject->getComponents<RigidBody>()[0].get().addForce(
-				Vector2(0, -(movementSpeed * controller.getLeftStickUp()) * Time::deltaTime));
-		}
-		if (controller.getLeftStickLeft() > 0)
-		{
-			mGameObject->getComponents<RigidBody>()[0].get().addForce(
-				Vector2(-(movementSpeed * controller.getLeftStickLeft()) * Time::deltaTime, 0));
-		}
-		if (controller.getLeftStickDown() > 0)
-		{
-			mGameObject->getComponents<RigidBody>()[0].get().addForce(
-				Vector2(0, (movementSpeed * controller.getLeftStickDown()) * Time::deltaTime));
-		}
-		if (controller.getLeftStickRight() > 0)
-		{
-			mGameObject->getComponents<RigidBody>()[0].get().addForce(
-				Vector2((movementSpeed * controller.getLeftStickRight()) * Time::deltaTime, 0));
-		}
-
-		// controller.print();
-
-		if (controller.isButton(Key::Controller_R1))
-		{
-			if (controller.getRightStickUp() == 0 && controller.getRightStickLeft() == 0 &&
-				controller.getRightStickDown() == 0 && controller.getRightStickRight() == 0)
-			{
-				return;
-			}
-
-			// Create and setup the bullet
-			GameObject* bulletObject = BulletPrefabFactory().createBulletPrefab(*this->mGameObject);
-
-			// Set bullet's initial position
-			bulletObject->getTransformRef().position = mGameObject->getTransform().position;
-
-			// Add force to bullet
-			RigidBody& bulletRigidBody = bulletObject->getComponents<RigidBody>()[0];
-			float bulletSpeed = 16000.0f;
-			Vector2 direction = {-controller.getRightStickLeft() + controller.getRightStickRight(),
-								 -controller.getRightStickUp() + controller.getRightStickDown()};
-
-			bulletRigidBody.addForce(direction * bulletSpeed);
-
-			EngineBravo::getInstance().getSceneManager().getCurrentScene().addGameObject(bulletObject);
-		}
-	}
+	// if (controller.isConnected())
+	// {
+	// 	if (controller.getLeftStickUp() > 0)
+	// 	{
+	// 		mGameObject->getComponents<RigidBody>()[0].get().addForce(
+	// 			Vector2(0, -(movementSpeed * controller.getLeftStickUp()) * Time::deltaTime));
+	// 	}
+	// 	if (controller.getLeftStickLeft() > 0)
+	// 	{
+	// 		mGameObject->getComponents<RigidBody>()[0].get().addForce(
+	// 			Vector2(-(movementSpeed * controller.getLeftStickLeft()) * Time::deltaTime, 0));
+	// 	}
+	// 	if (controller.getLeftStickDown() > 0)
+	// 	{
+	// 		mGameObject->getComponents<RigidBody>()[0].get().addForce(
+	// 			Vector2(0, (movementSpeed * controller.getLeftStickDown()) * Time::deltaTime));
+	// 	}
+	// 	if (controller.getLeftStickRight() > 0)
+	// 	{
+	// 		mGameObject->getComponents<RigidBody>()[0].get().addForce(
+	// 			Vector2((movementSpeed * controller.getLeftStickRight()) * Time::deltaTime, 0));
+	// 	}
+	//
+	// 	// controller.print();
+	//
+	// 	if (controller.isButton(Key::Controller_R1))
+	// 	{
+	// 		if (controller.getRightStickUp() == 0 && controller.getRightStickLeft() == 0 &&
+	// 			controller.getRightStickDown() == 0 && controller.getRightStickRight() == 0)
+	// 		{
+	// 			return;
+	// 		}
+	//
+	// 		// Create and setup the bullet
+	// 		GameObject* bulletObject = BulletPrefabFactory().createBulletPrefab(*this->mGameObject);
+	//
+	// 		// Set bullet's initial position
+	// 		bulletObject->getTransformRef().position = mGameObject->getTransform().position;
+	//
+	// 		// Add force to bullet
+	// 		RigidBody& bulletRigidBody = bulletObject->getComponents<RigidBody>()[0];
+	// 		float bulletSpeed = 16000.0f;
+	// 		Vector2 direction = {-controller.getRightStickLeft() + controller.getRightStickRight(),
+	// 							 -controller.getRightStickUp() + controller.getRightStickDown()};
+	//
+	// 		bulletRigidBody.addForce(direction * bulletSpeed);
+	//
+	// 		EngineBravo::getInstance().getSceneManager().getCurrentScene().addGameObject(bulletObject);
+	// 	}
+	// }
 
 	// controller.print();
 
@@ -477,6 +473,16 @@ void PlayerBehaviourScript::onUpdate()
 		{
 			emitter.setAngle(0, 360);
 			emitter.getRelativeTransform().rotation = 0.0f;
+		}
+	}
+
+	bool* downKeys = input.getDownKeys();
+
+	for (int i = 0; i < 512; ++i)
+	{
+		if (downKeys[i])
+		{
+			std::cout << "Key pressed: " << i << std::endl;
 		}
 	}
 }

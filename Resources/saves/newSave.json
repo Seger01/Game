@@ -2,11 +2,11 @@
     "fields": [
         {
             "name": "PlayerX",
-            "value": 319.5303039550781
+            "value": 40.0
         },
         {
             "name": "PlayerY",
-            "value": 100.02754974365234
+            "value": 40.0
         },
         {
             "name": "PlayerRotation",
