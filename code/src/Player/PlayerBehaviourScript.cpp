@@ -480,11 +480,14 @@ void PlayerBehaviourScript::onUpdate()
 
 	for (int i = 0; i < 512; ++i)
 	{
-		if (downKeys[i])
-		{
-			std::cout << "Key pressed: " << i << std::endl;
-		}
+		// if (downKeys[i])
+		// {
+		// 	std::cout << "Key pressed: " << i << std::endl;
+		// }
 	}
+
+	std::cout << EngineBravo::getInstance().getRenderSystem().getWindow().getSize().x << "x"
+			  << EngineBravo::getInstance().getRenderSystem().getWindow().getSize().y << std::endl;
 }
 
 void PlayerBehaviourScript::onCollide(GameObject* aGameObject)

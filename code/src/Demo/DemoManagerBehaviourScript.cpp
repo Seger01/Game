@@ -514,7 +514,6 @@ void DemoManagerBehaviourScript::nextScene(const std::string& aSceneName)
 
 void DemoManagerBehaviourScript::onStart()
 {
-
 	mCurrentScene = 0;
 	nextScene("DemoStartScene");
 	// createSecondScene();
@@ -534,26 +533,26 @@ void DemoManagerBehaviourScript::onUpdate()
 
 	handleSaveGame();
 
-	static int firstUpdate = 0;
-	static bool permDisable = false;
-
-	if (firstUpdate > 20)
-	{
-		if (!permDisable)
-		{
-			firstUpdate = false;
-			createStressTest();
-			permDisable = true; // Set the flag to true to prevent further updates
-
-			GameObject& playerObject =
-				EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("Player").at(0);
-			playerObject.setTransform(Transform(Vector2(240, 240)));
-		}
-	}
-	else
-	{
-		firstUpdate++;
-	}
+	// static int firstUpdate = 0;
+	// static bool permDisable = false;
+	//
+	// if (firstUpdate > 20)
+	// {
+	// 	if (!permDisable)
+	// 	{
+	// 		firstUpdate = false;
+	// 		createStressTest();
+	// 		permDisable = true; // Set the flag to true to prevent further updates
+	//
+	// 		GameObject& playerObject =
+	// 			EngineBravo::getInstance().getSceneManager().getCurrentScene().getGameObjectsWithTag("Player").at(0);
+	// 		playerObject.setTransform(Transform(Vector2(240, 240)));
+	// 	}
+	// }
+	// else
+	// {
+	// 	firstUpdate++;
+	// }
 
 	// if (!mPlayerPositionSet)
 	// {
