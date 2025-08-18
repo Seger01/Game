@@ -1,15 +1,15 @@
 #include <iostream>
 
-#include "Components/IBehaviourScript.h"
-#include "Components/ParticleEmitter.h"
-#include "Components/RigidBody.h"
+#include "BehaviourScripts/IBehaviourScript.h"
+#include "Engine/EngineBravo.h"
+#include "GameObject/GameObject.h"
 #include "Input/Input.h"
-#include <Engine/EngineBravo.h>
-#include <Engine/SceneManager.h>
-#include <GameObject.h>
-#include <Scene.h>
+#include "Particles/ParticleEmitter.h"
+#include "Physics/RigidBody.h"
+#include "Scenes/Scene.h"
+#include "Scenes/SceneManager.h"
 
-#include "SpriteDef.h"
+#include "Structs/SpriteDef.h"
 
 SpriteDef spriteDef = {"DinoSprites.png", Rect(4, 3, 15, 17), 15, 17};
 
@@ -23,9 +23,40 @@ public:
         Sprite* playerSprite = EngineBravo::getInstance().getResourceManager().createSprite(spriteDef);
 
         mGameObject->addComponent(playerSprite);
+
+        AudioSource* source = new AudioSource("Audio/gun1.wav");
+
+        mGameObject->addComponent(source);
     }
 
-    void onUpdate() override {}
+    void onUpdate() override
+    {
+        Input& input = Input::getInstance();
+
+        float movementSpeed = 1.5;
+
+        if (input.getKey(Key::Key_W))
+        {
+            mGameObject->getTransformRef().position.y -= movementSpeed;
+        }
+        if (input.getKey(Key::Key_A))
+        {
+            mGameObject->getTransformRef().position.x -= movementSpeed;
+        }
+        if (input.getKey(Key::Key_S))
+        {
+            mGameObject->getTransformRef().position.y += movementSpeed;
+        }
+        if (input.getKey(Key::Key_D))
+        {
+            mGameObject->getTransformRef().position.x += movementSpeed;
+        }
+
+        if (input.getKeyDown(Key::Key_Space))
+        {
+            mGameObject->getComponents<AudioSource>()[0].get().play();
+        }
+    }
 
     void onCollide(GameObject* aGameObject) override {}
 
