@@ -1,4 +1,2 @@
-# Bullet Bravo
-This repo is the validation app and game for the engine bravo game engine.
-
-adflkjadflkja
+# Game
+This repo is the game that I want to make alongside the engine
