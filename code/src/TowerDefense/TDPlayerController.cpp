@@ -1,6 +1,7 @@
 #include "TowerDefense/TDPlayerController.h"
 #include "Engine/EngineBravo.h"
 #include "Input/Input.h"
+#include "Input/InputStructs.h"
 #include "Scenes/Scene.h"
 #include "Scenes/SceneManager.h"
 #include <iostream>
@@ -44,8 +45,8 @@ void TDPlayerController::handleInput() {
     }
     
     // Place tower with mouse click
-    if (input.getMouseButtonDown(0)) {
-        Point mousePos = input.getMousePosition();
+    if (input.getMouseButtonDown(MouseButton::LEFT)) {
+        Point mousePos = input.mousePosition();
         
         // Convert mouse position to world coordinates
         // For now, using simple mouse position

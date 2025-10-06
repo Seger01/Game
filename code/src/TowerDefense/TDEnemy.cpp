@@ -58,6 +58,6 @@ void TDEnemy::takeDamage(float damage) {
 
 void TDEnemy::die() {
     if (mGameObject) {
-        mGameObject->destroy();
+        mGameObject->setActive(false);
     }
 }

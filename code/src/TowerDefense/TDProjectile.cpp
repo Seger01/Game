@@ -16,14 +16,14 @@ void TDProjectile::onUpdate() {
     // Destroy projectile after 5 seconds
     if (mLifetime > 5.0f || mTarget == nullptr) {
         if (mGameObject) {
-            mGameObject->destroy();
+            mGameObject->setActive(false);
         }
         return;
     }
     
     // Move towards target
     Transform& myTransform = mGameObject->getTransformRef();
-    Transform& targetTransform = mTarget->getTransform();
+    Transform targetTransform = mTarget->getTransform();
     
     float dx = targetTransform.position.x - myTransform.position.x;
     float dy = targetTransform.position.y - myTransform.position.y;
@@ -38,7 +38,7 @@ void TDProjectile::onUpdate() {
         }
         
         if (mGameObject) {
-            mGameObject->destroy();
+            mGameObject->setActive(false);
         }
         return;
     }
@@ -57,7 +57,7 @@ void TDProjectile::onCollide(GameObject* aGameObject) {
     if (aGameObject->getTag() == "Enemy") {
         // Damage is handled in onUpdate
         if (mGameObject) {
-            mGameObject->destroy();
+            mGameObject->setActive(false);
         }
     }
 }

@@ -68,7 +68,7 @@ GameObject* TDTower::findNearestEnemy() {
     
     for (auto& enemyRef : enemies) {
         GameObject& enemy = enemyRef.get();
-        Transform& enemyTransform = enemy.getTransform();
+        Transform enemyTransform = enemy.getTransform();
         
         float dx = enemyTransform.position.x - towerTransform.position.x;
         float dy = enemyTransform.position.y - towerTransform.position.y;

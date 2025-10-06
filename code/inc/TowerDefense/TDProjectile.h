@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Components/IBehaviourScript.h"
+#include "BehaviourScripts/IBehaviourScript.h"
 #include "GameObject/GameObject.h"
 #include "Structs/Vector2.h"
 

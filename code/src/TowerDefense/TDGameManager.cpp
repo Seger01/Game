@@ -54,7 +54,7 @@ void TDGameManager::onUpdate() {
             TDEnemy& tdEnemy = enemyComponents[0];
             if (tdEnemy.hasReachedEnd()) {
                 damageBase(10);
-                enemy.destroy();
+                enemy.setActive(false);
             }
             if (tdEnemy.isDead()) {
                 addMoney(tdEnemy.getReward());
