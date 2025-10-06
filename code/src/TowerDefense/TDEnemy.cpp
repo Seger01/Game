@@ -1,6 +1,8 @@
 #include "TowerDefense/TDEnemy.h"
 #include "Engine/EngineBravo.h"
 #include "Global/Time.h"
+#include "Rendering/Sprite.h"
+#include "ResourceManager/ResourceManager.h"
 #include <cmath>
 
 TDEnemy::TDEnemy(float health, float speed, int reward, const std::vector<Waypoint>& path)
@@ -9,6 +11,13 @@ TDEnemy::TDEnemy(float health, float speed, int reward, const std::vector<Waypoi
 
 void TDEnemy::onStart() {
     mGameObject->setTag("Enemy");
+    
+    // Add visual representation
+    EngineBravo& engine = EngineBravo::getInstance();
+    SpriteDef enemySprite = {"DinoSprites.png", Rect(4, 3, 15, 17), 15, 17};
+    Sprite* sprite = engine.getResourceManager().createSprite(enemySprite);
+    sprite->setLayer(2);
+    mGameObject->addComponent(sprite);
 }
 
 void TDEnemy::onUpdate() {

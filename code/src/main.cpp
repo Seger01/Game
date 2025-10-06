@@ -42,10 +42,14 @@ void init()
     std::cout << "Defend your base from waves of enemies!" << std::endl;
     std::cout << "Place towers to destroy enemies before they reach the end." << std::endl;
     std::cout << "\nControls:" << std::endl;
-    std::cout << "  1-4: Select tower type" << std::endl;
+    std::cout << "  1: Basic Tower ($100) - Balanced" << std::endl;
+    std::cout << "  2: Rapid Tower ($150) - Fast shooting" << std::endl;
+    std::cout << "  3: Sniper Tower ($250) - Long range, high damage" << std::endl;
+    std::cout << "  4: Splash Tower ($200) - Area damage" << std::endl;
     std::cout << "  Mouse Click: Place selected tower" << std::endl;
-    std::cout << "\nStarting money: $300" << std::endl;
+    std::cout << "\nStarting money: $500" << std::endl;
     std::cout << "Base health: 100" << std::endl;
+    std::cout << "Survive 10 waves to win!" << std::endl;
     std::cout << "==============================\n" << std::endl;
 
     sceneManager.requestSceneChange("tower_defense");

@@ -2,6 +2,8 @@
 #include "TowerDefense/TDProjectile.h"
 #include "Engine/EngineBravo.h"
 #include "Global/Time.h"
+#include "Rendering/Sprite.h"
+#include "ResourceManager/ResourceManager.h"
 #include "Scenes/Scene.h"
 #include "Scenes/SceneManager.h"
 #include <cmath>
@@ -39,6 +41,33 @@ TDTower::TDTower(TowerType type)
 
 void TDTower::onStart() {
     mGameObject->setTag("Tower");
+    
+    // Add visual representation based on tower type
+    EngineBravo& engine = EngineBravo::getInstance();
+    SpriteDef towerSprite;
+    
+    switch(mType) {
+        case TowerType::BASIC:
+            // Blue tower
+            towerSprite = {"enterthegungeon_bullets.png", Rect(0, 0, 16, 16), 16, 16};
+            break;
+        case TowerType::RAPID:
+            // Red tower
+            towerSprite = {"enterthegungeon_bullets.png", Rect(16, 0, 16, 16), 16, 16};
+            break;
+        case TowerType::SNIPER:
+            // Yellow tower
+            towerSprite = {"enterthegungeon_bullets.png", Rect(32, 0, 16, 16), 16, 16};
+            break;
+        case TowerType::SPLASH:
+            // Green tower
+            towerSprite = {"enterthegungeon_bullets.png", Rect(48, 0, 16, 16), 16, 16};
+            break;
+    }
+    
+    Sprite* sprite = engine.getResourceManager().createSprite(towerSprite);
+    sprite->setLayer(1);
+    mGameObject->addComponent(sprite);
 }
 
 void TDTower::onUpdate() {

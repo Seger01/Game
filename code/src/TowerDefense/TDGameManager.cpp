@@ -1,12 +1,14 @@
 #include "TowerDefense/TDGameManager.h"
 #include "Engine/EngineBravo.h"
 #include "Global/Time.h"
+#include "Rendering/Sprite.h"
+#include "ResourceManager/ResourceManager.h"
 #include "Scenes/Scene.h"
 #include "Scenes/SceneManager.h"
 #include <iostream>
 
 TDGameManager::TDGameManager()
-    : mMoney(300), mBaseHealth(100), mCurrentWave(0), mMaxWaves(10),
+    : mMoney(500), mBaseHealth(100), mCurrentWave(0), mMaxWaves(10),
       mSpawnTimer(0.0f), mSpawnInterval(1.0f), 
       mEnemiesToSpawn(0), mEnemiesSpawned(0),
       mGameState(GameState::PLAYING) {}
@@ -152,13 +154,37 @@ void TDGameManager::updateUI() {
 std::vector<Waypoint> TDGameManager::createPath() {
     std::vector<Waypoint> path;
     
-    // Create a simple path across the screen
-    path.push_back({50.0f, 100.0f});
+    // Create a winding path across the screen
+    path.push_back({50.0f, 150.0f});
+    path.push_back({150.0f, 150.0f});
     path.push_back({150.0f, 100.0f});
-    path.push_back({150.0f, 200.0f});
-    path.push_back({300.0f, 200.0f});
-    path.push_back({300.0f, 100.0f});
+    path.push_back({250.0f, 100.0f});
+    path.push_back({250.0f, 200.0f});
+    path.push_back({350.0f, 200.0f});
+    path.push_back({350.0f, 100.0f});
     path.push_back({450.0f, 100.0f});
+    
+    // Add visual markers for the path
+    EngineBravo& engine = EngineBravo::getInstance();
+    Scene& scene = engine.getSceneManager().getCurrentScene();
+    
+    SpriteDef pathMarker = {"Coins/coin_silver.png", Rect(0, 0, 16, 16), 16, 16};
+    
+    for (const auto& waypoint : path) {
+        GameObject* marker = new GameObject();
+        marker->setTag("PathMarker");
+        
+        Transform transform;
+        transform.position.x = waypoint.x;
+        transform.position.y = waypoint.y;
+        marker->setTransform(transform);
+        
+        Sprite* sprite = engine.getResourceManager().createSprite(pathMarker);
+        sprite->setLayer(0);
+        marker->addComponent(sprite);
+        
+        scene.addGameObject(marker);
+    }
     
     return path;
 }

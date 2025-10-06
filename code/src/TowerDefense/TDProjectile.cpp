@@ -1,6 +1,9 @@
 #include "TowerDefense/TDProjectile.h"
 #include "TowerDefense/TDEnemy.h"
+#include "Engine/EngineBravo.h"
 #include "Global/Time.h"
+#include "Rendering/Sprite.h"
+#include "ResourceManager/ResourceManager.h"
 #include <cmath>
 
 TDProjectile::TDProjectile(GameObject* target, float damage, float speed)
@@ -8,6 +11,13 @@ TDProjectile::TDProjectile(GameObject* target, float damage, float speed)
 
 void TDProjectile::onStart() {
     mGameObject->setTag("Projectile");
+    
+    // Add visual representation
+    EngineBravo& engine = EngineBravo::getInstance();
+    SpriteDef projectileSprite = {"enterthegungeon_bullets.png", Rect(64, 0, 8, 8), 8, 8};
+    Sprite* sprite = engine.getResourceManager().createSprite(projectileSprite);
+    sprite->setLayer(3);
+    mGameObject->addComponent(sprite);
 }
 
 void TDProjectile::onUpdate() {
